@@ -29,6 +29,9 @@ export default async function (
     timeout?: number;
   } = { emojis: ["◀", "▶", "❌"], timeout: 12e4 }
 ) {
+  if (!options.emojis) options.emojis = ["◀", "▶", "❌"];
+  if (!options.timeout) options.timeout = 12e4;
+
   if (
     !message &&
     !message.channel &&
@@ -37,9 +40,6 @@ export default async function (
     return;
   if (!pages) return;
   if (options.emojis.length !== 3) return;
-
-  if (!options.emojis) options.emojis = ["◀", "▶", "❌"];
-  if (!options.timeout) options.timeout = 12e4;
 
   let page = 0;
   return message.channel
