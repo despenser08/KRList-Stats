@@ -21,6 +21,7 @@ import { Colors } from "../constants";
 export default async function (
   message: Message,
   pages: MessageEmbed[],
+  description?: { text?: string; icon?: string },
   itemLength?: number,
   itemName?: string,
   emojis = ["◀", "▶", "❌"],
@@ -41,14 +42,8 @@ export default async function (
       pages[page].setFooter(
         `페이지 ${page + 1}/${pages.length}${
           itemLength && itemName ? ` | ${itemLength}개의 ${itemName}` : ""
-        }${
-          pages[page].footer && pages[page].footer.text
-            ? ` • ${pages[page].footer.text}`
-            : ""
-        }`,
-        pages[page].footer && pages[page].footer.iconURL
-          ? pages[page].footer.iconURL
-          : ""
+        }${description && description.text ? ` • ${description.text}` : ""}`,
+        description?.icon ?? null
       )
     )
     .then(async (curPage) => {
@@ -85,13 +80,9 @@ export default async function (
             `페이지 ${page + 1}/${pages.length}${
               itemLength && itemName ? ` | ${itemLength}개의 ${itemName}` : ""
             }${
-              pages[page].footer && pages[page].footer.text
-                ? ` • ${pages[page].footer.text}`
-                : ""
+              description && description.text ? ` • ${description.text}` : ""
             }`,
-            pages[page].footer && pages[page].footer.iconURL
-              ? pages[page].footer.iconURL
-              : ""
+            description?.icon ?? null
           )
         );
       });
