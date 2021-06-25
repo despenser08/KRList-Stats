@@ -21,11 +21,13 @@ import { Colors } from "../constants";
 export default async function (
   message: Message,
   pages: MessageEmbed[],
-  description?: { text?: string; icon?: string },
-  itemLength?: number,
-  itemName?: string,
-  emojis = ["◀", "▶", "❌"],
-  timeout = 12e4
+  options: {
+    description?: { text?: string; icon?: string };
+    itemLength?: number;
+    itemName?: string;
+    emojis?: string[];
+    timeout?: number;
+  } = { emojis: ["◀", "▶", "❌"], timeout: 12e4 }
 ) {
   if (
     !message &&
@@ -34,23 +36,32 @@ export default async function (
   )
     return;
   if (!pages) return;
-  if (emojis.length !== 3) return;
+  if (options.emojis.length !== 3) return;
+
+  if (!options.emojis) options.emojis = ["◀", "▶", "❌"];
+  if (!options.timeout) options.timeout = 12e4;
 
   let page = 0;
   return message.channel
     .send(
       pages[page].setFooter(
         `페이지 ${page + 1}/${pages.length}${
-          itemLength && itemName ? ` | ${itemLength}개의 ${itemName}` : ""
-        }${description && description.text ? ` • ${description.text}` : ""}`,
-        description?.icon ?? null
+          options.itemLength && options.itemName
+            ? ` | ${options.itemLength}개의 ${options.itemName}`
+            : ""
+        }${
+          options.description && options.description.text
+            ? ` • ${options.description.text}`
+            : ""
+        }`,
+        options.description?.icon ?? null
       )
     )
     .then(async (curPage) => {
-      for await (const emoji of emojis) await curPage.react(emoji);
+      for await (const emoji of options.emojis) await curPage.react(emoji);
 
       const collector = curPage.createReactionCollector(() => true, {
-        time: timeout
+        time: options.timeout
       });
 
       collector.on("collect", (reaction, user) => {
@@ -58,31 +69,35 @@ export default async function (
 
         if (
           user.id !== message.author.id ||
-          !emojis.includes(reaction.emoji.name)
+          !options.emojis.includes(reaction.emoji.name)
         )
           return;
 
         switch (reaction.emoji.name) {
-          case emojis[0]:
+          case options.emojis[0]:
             page = page > 0 ? --page : pages.length - 1;
             break;
 
-          case emojis[1]:
+          case options.emojis[1]:
             page = page + 1 < pages.length ? ++page : 0;
             break;
 
-          case emojis[2]:
+          case options.emojis[2]:
             return collector.stop();
         }
 
         curPage.edit(
           pages[page].setFooter(
             `페이지 ${page + 1}/${pages.length}${
-              itemLength && itemName ? ` | ${itemLength}개의 ${itemName}` : ""
+              options.itemLength && options.itemName
+                ? ` | ${options.itemLength}개의 ${options.itemName}`
+                : ""
             }${
-              description && description.text ? ` • ${description.text}` : ""
+              options.description && options.description.text
+                ? ` • ${options.description.text}`
+                : ""
             }`,
-            description?.icon ?? null
+            options.description?.icon ?? null
           )
         );
       });

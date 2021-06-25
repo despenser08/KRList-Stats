@@ -117,6 +117,9 @@ export default class extends Command {
     let cmdCount = 0;
     this.handler.categories.array().forEach((cmd) => (cmdCount += cmd.size));
 
-    return listEmbed(message, pages, cmdCount, "명령어");
+    return listEmbed(message, pages, {
+      itemLength: cmdCount,
+      itemName: "명령어"
+    });
   }
 }
