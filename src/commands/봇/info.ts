@@ -1,0 +1,335 @@
+import axios from "axios";
+import { CanvasRenderService } from "chartjs-node-canvas";
+import { Argument, Command } from "discord-akairo";
+import {
+  MessageEmbed,
+  User,
+  Util,
+  Message,
+  MessageAttachment
+} from "discord.js";
+import {
+  Colors,
+  KoreanbotsEndPoints,
+  KoreanbotsOrigin
+} from "../../lib/constants";
+import Bot from "../../lib/database/models/Bot";
+import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
+import convert from "../../lib/utils/convertRawToType";
+import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
+import listEmbed from "../../lib/utils/listEmbed";
+
+export default class extends Command {
+  constructor() {
+    super("정보", {
+      aliases: [
+        "정보",
+        "information",
+        "info",
+        "data",
+        "데이터",
+        "stat",
+        "stats",
+        "스텟",
+        "status",
+        "상태"
+      ],
+      description: {
+        content: "해당 봇의 정보를 보여줍니다.",
+        usage: '<유저> | <봇 ["현재"] | ["투표" | "서버" [정보 수 | "전체"]]>'
+      },
+      args: [
+        {
+          id: "userOrId",
+          type: Argument.union("user", "string"),
+          prompt: {
+            start: "봇 | 유저를 입력해 주세요."
+          }
+        },
+        {
+          id: "info",
+          type: [
+            ["now", "현재", "current"],
+            ["votes", "투표", "vote", "heart", "hearts", "하트"],
+            ["servers", "서버", "server", "guild", "guilds", "길드"]
+          ],
+          prompt: {
+            optional: true,
+            retry: '"현재" | "투표" | "서버"를 입력해 주세요.'
+          },
+          default: "now"
+        },
+        {
+          id: "limit",
+          type: Argument.union(Argument.range("integer", 1, Infinity), [
+            "all",
+            "전체"
+          ]),
+          prompt: {
+            optional: true,
+            retry: '정보 수(자연수) | "전체"를 입력해 주세요.'
+          },
+          default: 10
+        }
+      ]
+    });
+  }
+
+  public async exec(
+    message: Message,
+    {
+      userOrId,
+      info,
+      limit
+    }: {
+      userOrId: string | User;
+      info: "now" | "votes" | "servers";
+      limit: number | "all";
+    }
+  ) {
+    const msg = await message.channel.send("잠시만 기다려주세요...");
+
+    const id = userOrId instanceof User ? userOrId.id : userOrId;
+
+    return axios
+      .get(KoreanbotsEndPoints.API.bot(id))
+      .then(async ({ data }) => {
+        const bot = convert.bot(data.data);
+
+        const botDB = await Bot.findOneAndUpdate(
+          { id: bot.id },
+          {},
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+
+        if (info === "now") {
+          const flags = bot.flags.toArray();
+
+          msg.delete();
+          const pages: MessageEmbed[] = [];
+
+          pages.push(
+            new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
+              .setURL(KoreanbotsEndPoints.URL.bot(bot.id))
+              .setThumbnail(
+                `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(bot.id, {
+                  format: "webp",
+                  size: 256
+                })}`
+              )
+              .setDescription(
+                `<@!${bot.id}> | ${
+                  botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
+                } | ${
+                  bot.url ? `[초대 링크](${bot.url})` : "초대 링크 없음"
+                }\n\n${bot.intro}`
+              )
+              .addField(
+                "관리자",
+                bot.owners
+                  .map(
+                    (owner) =>
+                      `[${owner.username}#${
+                        owner.tag
+                      }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@!${
+                        owner.id
+                      }>)`
+                  )
+                  .join("\n")
+              )
+              .addField(
+                "카테고리",
+                bot.category.length < 1 ? "없음" : bot.category.join(", ")
+              )
+              .addField("Git", bot.git || "없음")
+              .addField(
+                "플래그",
+                flags.length < 1
+                  ? "없음"
+                  : flags.map((flag) => BotFlagsEnum[flag]).join(", ")
+              )
+              .addField(
+                "디스코드",
+                bot.discord ? `https://discord.gg/${bot.discord}` : "없음",
+                true
+              )
+              .addField("라이브러리", bot.lib, true)
+              .addField("접두사", bot.prefix, true)
+              .addField("서버 수", bot.servers || "N/A", true)
+              .addField("상태", bot.state, true)
+              .addField("투표 수", bot.votes, true)
+              .addField("웹페이지", bot.web || "없음")
+              .setImage(
+                KoreanbotsEndPoints.OG.bot(
+                  bot.id,
+                  bot.name,
+                  bot.intro,
+                  bot.category,
+                  [formatNumber(bot.votes), formatNumber(bot.servers)]
+                )
+              )
+          );
+
+          if (bot.banner)
+            pages.push(
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setTitle("봇 배너")
+                .setImage(bot.banner)
+            );
+          if (bot.bg)
+            pages.push(
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setTitle("봇 배경")
+                .setImage(bot.bg)
+            );
+
+          pages.push(
+            new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setTitle("봇 설명")
+              .setDescription(filterDesc(bot.desc))
+          );
+
+          return listEmbed(message, pages);
+        } else {
+          if (botDB.stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }수집을 사용하여 봇 수집을 시작하세요.`
+            );
+
+          const datas: number[] = [];
+          const dates: string[] = [];
+
+          for await (const stat of botDB.stats) {
+            datas.push(stat[info]);
+            dates.push(
+              formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
+            );
+          }
+
+          if (typeof limit === "number" && Number.isInteger(limit)) {
+            datas.splice(limit);
+            dates.splice(limit);
+          }
+
+          const color =
+            info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
+
+          const canvas = new CanvasRenderService(1920, 1080);
+          const image = await canvas.renderToBuffer(
+            {
+              type: "line",
+              data: {
+                labels: dates,
+                datasets: [
+                  {
+                    label: `# of ${info}`,
+                    data: datas,
+                    backgroundColor: [color],
+                    borderColor: [color],
+                    borderWidth: 5,
+                    spanGaps: true
+                  }
+                ]
+              },
+              plugins: [
+                {
+                  id: "white_background_color",
+                  beforeDraw: (chart) => {
+                    const ctx = chart.canvas.getContext("2d");
+                    ctx.save();
+                    ctx.globalCompositeOperation = "destination-over";
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                  }
+                }
+              ],
+              options: {
+                scales: { yAxes: { ticks: { precision: 0 } } }
+              }
+            },
+            "image/png"
+          );
+
+          msg.edit(`**${Util.escapeBold(bot.name)}** 차트입니다.`);
+          return message.channel.send(
+            new MessageAttachment(image, "chart.png")
+          );
+        }
+      })
+      .catch(async (e) => {
+        this.client.logger.warn(
+          `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+        );
+
+        return axios
+          .get(KoreanbotsEndPoints.API.user(id))
+          .then(async ({ data }) => {
+            const user = convert.user(data.data);
+            const flags = user.flags.toArray();
+
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setTitle(`${user.username}#${user.tag}`)
+                .setURL(KoreanbotsEndPoints.URL.user(user.id))
+                .setThumbnail(
+                  `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
+                    user.id,
+                    {
+                      format: "webp",
+                      size: 256
+                    }
+                  )}`
+                )
+                .setDescription(`<@!${user.id}>`)
+                .addField(
+                  "봇",
+                  user.bots.length < 1
+                    ? "없음"
+                    : user.bots
+                        .map(
+                          (bot) =>
+                            `[${bot.name}#${
+                              bot.tag
+                            }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@!${
+                              bot.id
+                            }>) ${bot.status.emoji} [서버: ${
+                              bot.servers || "N/A"
+                            }]\n> ${bot.intro}`
+                        )
+                        .join("\n")
+                )
+                .addField(
+                  "플래그",
+                  flags.length < 1
+                    ? "없음"
+                    : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
+                  true
+                )
+                .addField(
+                  "GitHub",
+                  user.github ? `https://github.com/${user.github}` : "없음",
+                  true
+                )
+            );
+          })
+          .catch((e) => {
+            this.client.logger.warn(
+              `FetchError: Error occurred while fetching user ${id}:\n${e}`
+            );
+            return msg.edit(
+              `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다.\n${e}`
+            );
+          });
+      });
+  }
+}

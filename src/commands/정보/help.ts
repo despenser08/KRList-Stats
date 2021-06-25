@@ -1,0 +1,106 @@
+import { Argument, Command, Category } from "discord-akairo";
+import { Util } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import { Colors } from "../../lib/constants";
+import listEmbed from "../../lib/utils/listEmbed";
+
+export default class extends Command {
+  public constructor() {
+    super("도움말", {
+      aliases: [
+        "도움말",
+        "help",
+        "도움",
+        "헬프",
+        "command",
+        "cmd",
+        "commands",
+        "cmds",
+        "명령어",
+        "커맨드"
+      ],
+      channel: "guild",
+      description: {
+        content: "도움말을 보여줍니다.",
+        usage: "[명령어 | 카테고리]"
+      },
+      args: [
+        {
+          id: "cmdOrCtgry",
+          type: Argument.union(
+            "commandAlias",
+            (_, str) => this.handler.categories.get(str) || null
+          ),
+          prompt: {
+            optional: true,
+            retry: `명령어 | 카테고리를 입력해 주세요.`
+          }
+        }
+      ]
+    });
+  }
+
+  public async exec(
+    message: Message,
+    { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }
+  ) {
+    if (cmdOrCtgry instanceof Command) {
+      return message.channel.send(
+        new MessageEmbed()
+          .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
+          .setColor(Colors.PRIMARY)
+          .setDescription(
+            `**별칭**: ${
+              cmdOrCtgry.aliases
+                ? cmdOrCtgry.aliases
+                    .map((v) => `\`${Util.escapeInlineCode(v)}\``)
+                    .join(", ")
+                : "별칭 없음"
+            }\n**설명**:\n${
+              cmdOrCtgry.description.content || "설명 없음"
+            }\n**사용법**: ${
+              `${message.util.parsed.prefix}${cmdOrCtgry} ${
+                cmdOrCtgry.description.usage || ""
+              }` || "사용법 없음"
+            }`
+          )
+      );
+    } else if (cmdOrCtgry instanceof Category) {
+      return message.channel.send(
+        new MessageEmbed()
+          .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
+          .setColor(Colors.PRIMARY)
+          .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+          .setDescription(
+            cmdOrCtgry
+              .filter((cmd) => cmd.aliases.length > 0)
+              .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+              .join("\n") || "이 카테고리에는 명령어가 없습니다."
+          )
+      );
+    }
+
+    const pages: MessageEmbed[] = [];
+
+    for (const category of this.handler.categories.values()) {
+      const embed = new MessageEmbed()
+        .setTitle("도움말")
+        .setColor(Colors.PRIMARY)
+        .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+        .addField(
+          category.id,
+          category
+            .filter((cmd) => cmd.aliases.length > 0)
+            .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+            .join("\n") || "이 카테고리에는 명령어가 없습니다."
+        );
+
+      pages.push(embed);
+    }
+
+    let cmdCount = 0;
+    this.handler.categories.array().forEach((cmd) => (cmdCount += cmd.size));
+
+    return listEmbed(message, pages, cmdCount, "명령어");
+  }
+}

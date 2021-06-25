@@ -1,0 +1,5 @@
+{
+  "labels": ["dependencies"],
+  "reviewers": ["despenser08"],
+  "extends": ["config:base"]
+}
