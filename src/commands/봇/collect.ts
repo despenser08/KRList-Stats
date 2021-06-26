@@ -17,7 +17,7 @@
 
 import axios from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message, User, Util } from "discord.js";
+import { GuildMember, Message, User, Util } from "discord.js";
 import { KoreanbotsEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
 import convert from "../../lib/utils/convertRawToType";
@@ -33,7 +33,7 @@ export default class extends Command {
       args: [
         {
           id: "userOrId",
-          type: Argument.union("user", "string"),
+          type: Argument.union("user", "member", "string"),
           prompt: { start: "봇을 입력해 주세요." }
         }
       ]
@@ -42,11 +42,14 @@ export default class extends Command {
 
   public async exec(
     message: Message,
-    { userOrId }: { userOrId: string | User }
+    { userOrId }: { userOrId: string | User | GuildMember }
   ) {
     const msg = await message.channel.send("잠시만 기다려주세요...");
 
-    const id = userOrId instanceof User ? userOrId.id : userOrId;
+    const id =
+      userOrId instanceof User || userOrId instanceof GuildMember
+        ? userOrId.id
+        : userOrId;
 
     await axios
       .get(KoreanbotsEndPoints.API.bot(id))

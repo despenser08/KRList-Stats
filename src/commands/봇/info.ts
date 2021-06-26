@@ -23,7 +23,8 @@ import {
   User,
   Util,
   Message,
-  MessageAttachment
+  MessageAttachment,
+  GuildMember
 } from "discord.js";
 import {
   Colors,
@@ -60,7 +61,7 @@ export default class extends Command {
       args: [
         {
           id: "userOrId",
-          type: Argument.union("user", "string"),
+          type: Argument.union("user", "member", "string"),
           prompt: {
             start: "봇 | 유저를 입력해 주세요."
           }
@@ -102,14 +103,17 @@ export default class extends Command {
       info,
       limit
     }: {
-      userOrId: string | User;
+      userOrId: string | User | GuildMember;
       info: "now" | "votes" | "servers" | "status";
       limit: number | "all";
     }
   ) {
     const msg = await message.channel.send("잠시만 기다려주세요...");
 
-    const id = userOrId instanceof User ? userOrId.id : userOrId;
+    const id =
+      userOrId instanceof User || userOrId instanceof GuildMember
+        ? userOrId.id
+        : userOrId;
 
     return axios
       .get(KoreanbotsEndPoints.API.bot(id))

@@ -19,7 +19,7 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 
 export default class extends Command {
-  public constructor() {
+  constructor() {
     super("독도", {
       aliases: [
         "독도",
