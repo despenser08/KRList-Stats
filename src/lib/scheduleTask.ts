@@ -42,7 +42,7 @@ export default async function (client: AkairoClient) {
                   updated: date,
                   votes: res.votes,
                   servers: res.servers,
-                  status: res.status
+                  status: res.status.raw
                 }
               }
             },
