@@ -244,10 +244,10 @@ export default class extends Command {
           for await (const stat of botDB.stats.map((bot) => bot.status))
             status[stat]++;
 
-          const canvas = new CanvasRenderService(1920, 1080);
+          const canvas = new CanvasRenderService(1080, 1080);
           const image = await canvas.renderToBuffer(
             {
-              type: "pie",
+              type: "polarArea",
               data: {
                 labels: [
                   "Online",
@@ -258,7 +258,7 @@ export default class extends Command {
                 ],
                 datasets: [
                   {
-                    label: `Status`,
+                    label: "Status",
                     data: Object.values(status),
                     backgroundColor: [
                       "rgb(59, 165, 93)",
