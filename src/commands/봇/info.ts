@@ -27,6 +27,7 @@ import {
 } from "discord.js";
 import {
   Colors,
+  DiscordEndPoints,
   KoreanbotsEndPoints,
   KoreanbotsOrigin
 } from "../../lib/constants";
@@ -142,7 +143,11 @@ export default class extends Command {
                 `<@!${bot.id}> | ${
                   botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
                 } | ${
-                  bot.url ? `[초대 링크](${bot.url})` : "초대 링크 없음"
+                  bot.url
+                    ? `[초대 링크](${bot.url})`
+                    : `[초대 링크 (생성됨)](${DiscordEndPoints.URL.inviteBot(
+                        bot.id
+                      )})`
                 }\n\n${bot.intro}`
               )
               .addField(

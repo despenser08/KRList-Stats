@@ -103,3 +103,12 @@ export function makeImageURL(
 export enum Colors {
   PRIMARY = "#7070FB"
 }
+
+export const DiscordOrigin = "https://discord.com";
+export const DiscordEndPoints = {
+  URL: class {
+    static inviteBot(id: string, perms = "8589934591") {
+      return `${DiscordOrigin}/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot`;
+    }
+  }
+};
