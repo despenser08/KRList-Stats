@@ -72,7 +72,7 @@ export default class extends Command {
                     .map((v) => `\`${Util.escapeInlineCode(v)}\``)
                     .join(", ")
                 : "별칭 없음"
-            }\n**설명**:\n${
+            }\n**설명**: ${
               cmdOrCtgry.description.content || "설명 없음"
             }\n**사용법**: ${
               `${message.util.parsed.prefix}${cmdOrCtgry} ${
