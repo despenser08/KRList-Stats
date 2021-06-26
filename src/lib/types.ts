@@ -158,7 +158,7 @@ export interface RawBot {
   state: string;
 }
 
-interface Status {
+export interface Status {
   raw: RawStatus;
   text: StatusEnum;
   emoji: StatusEmojiEnum;

@@ -21,7 +21,7 @@ import {
   prop,
   Severity
 } from "@typegoose/typegoose";
-import { RawStatus } from "../../types";
+import { Status } from "../../types";
 
 class BotStats {
   @prop({ required: true })
@@ -34,7 +34,7 @@ class BotStats {
   public servers?: number;
 
   @prop({ required: true })
-  public status!: RawStatus;
+  public status!: Status;
 }
 
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
