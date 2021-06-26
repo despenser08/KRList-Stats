@@ -53,7 +53,8 @@ export default class extends Command {
       ],
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
-        usage: '<유저> | <봇 ["현재"] | ["투표" | "서버" [정보 수 | "전체"]]>'
+        usage:
+          '<유저> | <봇 ["현재" | "상태"] | ["투표" | "서버" [정보 수 | "전체"]]>'
       },
       args: [
         {
@@ -68,11 +69,12 @@ export default class extends Command {
           type: [
             ["now", "현재", "current"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
-            ["servers", "서버", "server", "guild", "guilds", "길드"]
+            ["servers", "서버", "server", "guild", "guilds", "길드"],
+            ["status", "상태"]
           ],
           prompt: {
             optional: true,
-            retry: '"현재" | "투표" | "서버"를 입력해 주세요.'
+            retry: '"현재" | "투표" | "서버" | "상태"를 입력해 주세요.'
           },
           default: "now"
         },
@@ -100,7 +102,7 @@ export default class extends Command {
       limit
     }: {
       userOrId: string | User;
-      info: "now" | "votes" | "servers";
+      info: "now" | "votes" | "servers" | "status";
       limit: number | "all";
     }
   ) {
@@ -212,6 +214,78 @@ export default class extends Command {
           );
 
           return listEmbed(message, pages);
+        } else if (info === "status") {
+          if (botDB.stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }수집을 사용하여 봇 수집을 시작하세요.`
+            );
+
+          const status: {
+            online: number;
+            idle: number;
+            dnd: number;
+            streaming: number;
+            offline: number;
+          } = {
+            online: 0,
+            idle: 0,
+            dnd: 0,
+            streaming: 0,
+            offline: 0
+          };
+
+          for await (const stat of botDB.stats.map((bot) => bot.status))
+            status[stat]++;
+
+          const canvas = new CanvasRenderService(1920, 1080);
+          const image = await canvas.renderToBuffer(
+            {
+              type: "pie",
+              data: {
+                labels: [
+                  "Online",
+                  "Idle",
+                  "Do Not Disturb",
+                  "Streaming",
+                  "Offline"
+                ],
+                datasets: [
+                  {
+                    label: `Status`,
+                    data: Object.values(status),
+                    backgroundColor: [
+                      "rgb(59, 165, 93)",
+                      "rgb(208, 143, 30)",
+                      "rgb(221, 64, 68)",
+                      "rgb(88, 53, 147)",
+                      "rgb(116, 127, 141)"
+                    ]
+                  }
+                ]
+              },
+              plugins: [
+                {
+                  id: "white_background_color",
+                  beforeDraw: (chart) => {
+                    const ctx = chart.canvas.getContext("2d");
+                    ctx.save();
+                    ctx.globalCompositeOperation = "destination-over";
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                  }
+                }
+              ]
+            },
+            "image/png"
+          );
+
+          msg.edit(`**${Util.escapeBold(bot.name)}** 차트입니다.`);
+          return message.channel.send(
+            new MessageAttachment(image, "chart.png")
+          );
         } else {
           if (botDB.stats.length < 1)
             return msg.edit(
@@ -231,6 +305,8 @@ export default class extends Command {
           }
 
           if (typeof limit === "number" && Number.isInteger(limit)) {
+            datas.reverse();
+            dates.reverse();
             datas.splice(limit);
             dates.splice(limit);
           }
