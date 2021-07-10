@@ -172,12 +172,7 @@ export default class extends Command {
                 bot.category.length < 1 ? "없음" : bot.category.join(", ")
               )
               .addField("Git", bot.git || "없음")
-              .addField(
-                "플래그",
-                flags.length < 1
-                  ? "없음"
-                  : flags.map((flag) => BotFlagsEnum[flag]).join(", ")
-              )
+              .addField("상태", bot.state, true)
               .addField(
                 "디스코드",
                 bot.discord ? `https://discord.gg/${bot.discord}` : "없음",
@@ -185,9 +180,16 @@ export default class extends Command {
               )
               .addField("라이브러리", bot.lib, true)
               .addField("접두사", bot.prefix, true)
+              .addField("샤드 수", bot.shards || "N/A", true)
               .addField("서버 수", bot.servers || "N/A", true)
-              .addField("상태", bot.state, true)
               .addField("투표 수", bot.votes, true)
+              .addField(
+                "플래그",
+                flags.length < 1
+                  ? "없음"
+                  : flags.map((flag) => BotFlagsEnum[flag]).join(", "),
+                true
+              )
               .addField("웹페이지", bot.web || "없음")
               .setImage(
                 KoreanbotsEndPoints.OG.bot(

@@ -144,6 +144,7 @@ export interface RawBot {
   prefix: string;
   votes: number;
   servers?: number;
+  shards?: number;
   intro: string;
   desc: string;
   web?: string;
@@ -175,6 +176,7 @@ export interface Bot {
   prefix: string;
   votes: number;
   servers?: number;
+  shards?: number;
   intro: string;
   desc: string;
   web?: string;

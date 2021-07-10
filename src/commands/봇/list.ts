@@ -93,9 +93,7 @@ export default class extends Command {
                     )
                     .join("\n")
                 )
-                .setFooter(
-                  `페이지 ${page} • 빠른 시일 내에 차트를 지원하겠습니다.`
-                )
+                .setFooter(`페이지 ${page}`)
                 .setTimestamp()
             );
           }
