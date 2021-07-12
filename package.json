@@ -29,7 +29,6 @@
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
     "dokdo": "^0.3.0",
-    "koreanbots": "^2.0.12",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.10.18",
     "node-schedule": "^2.0.0",
