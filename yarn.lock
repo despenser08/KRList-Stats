@@ -649,10 +649,10 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dokdo@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/dokdo/-/dokdo-0.3.0.tgz"
-  integrity sha512-Hvc+gAg9S5+pRYOIov9XlHN1vF4VzaWHSqll396yiuXbT2QoucAImbBBO7XITm15SGM/gF16UAJdN0v1JLRcfA==
+dokdo@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.4.0.tgz#dd14fc82a7af7522a8582b0958978f3f8a9b41c7"
+  integrity sha512-ghwy8/jUzp9O47gIegw76779qyZ6qAzpnxUp6GDNziJ3cY9x9dsjfeZM70RHW450Y8a62QP9kZaZQWV0tzxHUA==
   dependencies:
     dayjs "^1.9.6"
     node-fetch "^2.6.1"
