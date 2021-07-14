@@ -19,6 +19,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, MessageEmbed, Util } from "discord.js";
 import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
+import Bot from "../../lib/database/models/Bot";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -75,8 +76,8 @@ export default class extends Command {
                 .setColor(Colors.PRIMARY)
                 .setDescription(`"${query}"에 대한 검색 결과가 없습니다.`)
             );
-          else
-            return msg.edit(
+          else {
+            msg.edit(
               "",
               new MessageEmbed()
                 .setColor(Colors.PRIMARY)
@@ -98,6 +99,15 @@ export default class extends Command {
                 .setFooter(`페이지 ${page}`)
                 .setTimestamp()
             );
+
+            for (let i = 0; i < res.length; i++) {
+              const botDB = await Bot.findOne({ id: res[i].id, track: true });
+              if (!botDB) continue;
+
+              botDB.keywords.set(query, (botDB.keywords.get(query) || 0) + 1);
+              botDB.save();
+            }
+          }
         }
       )
       .catch((e) => {

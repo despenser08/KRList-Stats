@@ -57,7 +57,7 @@ export default class extends Command {
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<유저> | <봇 ["현재" | "상태"] | ["투표" | "서버" [정보 수 | "전체"]]>'
+          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" [정보 수 | "전체"]]>'
       },
       args: [
         {
@@ -73,11 +73,13 @@ export default class extends Command {
             ["now", "현재", "current"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["servers", "서버", "server", "guild", "guilds", "길드"],
-            ["status", "상태"]
+            ["status", "상태"],
+            ["keyword", "키워드", "keywords"]
           ],
           prompt: {
             optional: true,
-            retry: '"현재" | "투표" | "서버" | "상태"를 입력해 주세요.'
+            retry:
+              '"현재" | "투표" | "서버" | "상태" | "키워드"를 입력해 주세요.'
           },
           default: "now"
         },
@@ -105,7 +107,7 @@ export default class extends Command {
       limit
     }: {
       userOrId: string | User | GuildMember;
-      info: "now" | "votes" | "servers" | "status";
+      info: "now" | "votes" | "servers" | "status" | "keyword";
       limit: number | "all";
     }
   ) {
@@ -297,6 +299,37 @@ export default class extends Command {
           msg.edit(`**${Util.escapeBold(bot.name)}** 차트입니다.`);
           return message.channel.send(
             new MessageAttachment(image, "chart.png")
+          );
+        } else if (info === "keyword") {
+          if (botDB.stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }수집을 사용하여 봇 수집을 시작하세요.`
+            );
+
+          if (botDB.keywords.size < 1)
+            return msg.edit(
+              `봇에서 검색한 결과 중에 **${Util.escapeBold(
+                bot.name
+              )}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
+            );
+
+          msg.delete();
+
+          return message.channel.send(
+            new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setTitle(`${bot.name} 검색 키워드`)
+              .setDescription(
+                [...botDB.keywords.keys()]
+                  .sort((a, b) => botDB.keywords.get(a) - botDB.keywords.get(b))
+                  .map(
+                    (key, index) =>
+                      `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`
+                  )
+                  .join("\n")
+              )
           );
         } else {
           if (botDB.stats.length < 1)

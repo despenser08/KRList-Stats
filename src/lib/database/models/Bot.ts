@@ -40,13 +40,16 @@ class BotStats {
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
 class Bot {
   @prop({ required: true, unique: true })
-  id!: string;
+  public id!: string;
 
   @prop({ required: true, default: false })
-  track!: boolean;
+  public track!: boolean;
 
   @prop({ default: [] })
-  stats: BotStats[];
+  public stats: BotStats[];
+
+  @prop({ type: () => Number })
+  public keywords: Map<string, number>;
 }
 
 export default getModelForClass(Bot);
