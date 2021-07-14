@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { CanvasRenderService } from "chartjs-node-canvas";
 import { Argument, Command } from "discord-akairo";
 import {
@@ -368,10 +368,11 @@ export default class extends Command {
           );
         }
       })
-      .catch(async (e) => {
-        this.client.logger.warn(
-          `FetchError: Error occurred while fetching bot ${id}:\n${e}`
-        );
+      .catch(async (e: AxiosError) => {
+        if (e.response.status < 400 || e.response.status > 499)
+          this.client.logger.warn(
+            `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+          );
 
         return axios
           .get(KoreanbotsEndPoints.API.user(id))
@@ -426,13 +427,47 @@ export default class extends Command {
                 )
             );
           })
-          .catch((e) => {
-            this.client.logger.warn(
-              `FetchError: Error occurred while fetching user ${id}:\n${e}`
-            );
-            return msg.edit(
-              `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-            );
+          .catch((e: AxiosError) => {
+            switch (e.response.status) {
+              case 404:
+                return msg.edit(
+                  "",
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)`
+                    )
+                );
+
+              case 400:
+                return msg.edit(
+                  "",
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)`
+                    )
+                );
+
+              default:
+                this.client.logger.warn(
+                  `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+                );
+                return msg.edit(
+                  "",
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)\n${e}`
+                    )
+                );
+            }
           });
       });
   }

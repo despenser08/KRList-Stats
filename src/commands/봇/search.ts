@@ -17,7 +17,7 @@
 
 import axios from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, Util } from "discord.js";
 import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
@@ -100,12 +100,46 @@ export default class extends Command {
         }
       )
       .catch((e) => {
-        this.client.logger.warn(
-          `FetchError: Error occurred while fetching search list:\n${e}`
-        );
-        return msg.edit(
-          `검색 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-        );
+        switch (e.response.status) {
+          case 404:
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                    query
+                  )}\`)`
+                )
+            );
+
+          case 400:
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                    query
+                  )}\`)`
+                )
+            );
+
+          default:
+            this.client.logger.warn(
+              `FetchError: Error occurred while fetching search list (input: "${query}"):\n${e}`
+            );
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                    query
+                  )}\`)\n${e}`
+                )
+            );
+        }
       });
   }
 }

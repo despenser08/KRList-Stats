@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, User, Util } from "discord.js";
-import { KoreanbotsEndPoints } from "../../lib/constants";
+import { GuildMember, Message, MessageEmbed, User, Util } from "discord.js";
+import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
 import convert from "../../lib/utils/convertRawToType";
 
@@ -75,11 +75,47 @@ export default class extends Command {
           `1분마다 **${Util.escapeBold(bot.name)}** 수집이 시작됩니다.`
         );
       })
-      .catch((e) => {
-        this.client.logger.warn(
-          `FetchError: Error occurred while fetching bot ${id}:\n${e}`
-        );
-        return msg.edit(`해당 봇을 가져오는 중에 에러가 발생하였습니다.\n${e}`);
+      .catch((e: AxiosError) => {
+        switch (e.response.status) {
+          case 404:
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                    userOrId.toString()
+                  )}\`)`
+                )
+            );
+
+          case 400:
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                    userOrId.toString()
+                  )}\`)`
+                )
+            );
+
+          default:
+            this.client.logger.warn(
+              `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+            );
+            return msg.edit(
+              "",
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                    userOrId.toString()
+                  )}\`)\n${e}`
+                )
+            );
+        }
       });
   }
 }
