@@ -36,6 +36,7 @@ import Bot from "../../lib/database/models/Bot";
 import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
+import isInterface from "../../lib/utils/isInterface";
 import listEmbed from "../../lib/utils/listEmbed";
 
 export default class extends Command {
@@ -368,10 +369,15 @@ export default class extends Command {
           );
         }
       })
-      .catch(async (e: AxiosError) => {
-        if (e.response.status < 400 || e.response.status > 499)
+      .catch(async (e) => {
+        if (isInterface<AxiosError>(e, "response")) {
+          if (e.response.status < 400 || e.response.status > 499)
+            this.client.logger.warn(
+              `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+            );
+        } else
           this.client.logger.warn(
-            `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+            `Error: Error occurred while fetching bot ${id}:\n${e}`
           );
 
         return axios
@@ -427,46 +433,62 @@ export default class extends Command {
                 )
             );
           })
-          .catch((e: AxiosError) => {
-            switch (e.response.status) {
-              case 404:
-                return msg.edit(
-                  "",
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)`
-                    )
-                );
+          .catch((e) => {
+            if (isInterface<AxiosError>(e, "response"))
+              switch (e.response.status) {
+                case 404:
+                  return msg.edit(
+                    "",
+                    new MessageEmbed()
+                      .setColor(Colors.PRIMARY)
+                      .setDescription(
+                        `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)`
+                      )
+                  );
 
-              case 400:
-                return msg.edit(
-                  "",
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)`
-                    )
-                );
+                case 400:
+                  return msg.edit(
+                    "",
+                    new MessageEmbed()
+                      .setColor(Colors.PRIMARY)
+                      .setDescription(
+                        `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)`
+                      )
+                  );
 
-              default:
-                this.client.logger.warn(
-                  `FetchError: Error occurred while fetching bot ${id}:\n${e}`
-                );
-                return msg.edit(
-                  "",
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)\n${e}`
-                    )
-                );
+                default:
+                  this.client.logger.warn(
+                    `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+                  );
+                  return msg.edit(
+                    "",
+                    new MessageEmbed()
+                      .setColor(Colors.PRIMARY)
+                      .setDescription(
+                        `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)\n${e}`
+                      )
+                  );
+              }
+            else {
+              this.client.logger.warn(
+                `Error: Error occurred while fetching bot ${id}:\n${e}`
+              );
+              return msg.edit(
+                "",
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setDescription(
+                    `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
+              );
             }
           });
       });

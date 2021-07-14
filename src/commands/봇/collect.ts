@@ -21,6 +21,7 @@ import { GuildMember, Message, MessageEmbed, User, Util } from "discord.js";
 import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
 import convert from "../../lib/utils/convertRawToType";
+import isInterface from "../../lib/utils/isInterface";
 
 export default class extends Command {
   constructor() {
@@ -75,46 +76,62 @@ export default class extends Command {
           `1분마다 **${Util.escapeBold(bot.name)}** 수집이 시작됩니다.`
         );
       })
-      .catch((e: AxiosError) => {
-        switch (e.response.status) {
-          case 404:
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setDescription(
-                  `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                    userOrId.toString()
-                  )}\`)`
-                )
-            );
+      .catch((e) => {
+        if (isInterface<AxiosError>(e, "response"))
+          switch (e.response.status) {
+            case 404:
+              return msg.edit(
+                "",
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setDescription(
+                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)`
+                  )
+              );
 
-          case 400:
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setDescription(
-                  `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                    userOrId.toString()
-                  )}\`)`
-                )
-            );
+            case 400:
+              return msg.edit(
+                "",
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setDescription(
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)`
+                  )
+              );
 
-          default:
-            this.client.logger.warn(
-              `FetchError: Error occurred while fetching bot ${id}:\n${e}`
-            );
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setDescription(
-                  `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                    userOrId.toString()
-                  )}\`)\n${e}`
-                )
-            );
+            default:
+              this.client.logger.warn(
+                `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+              );
+              return msg.edit(
+                "",
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setDescription(
+                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
+              );
+          }
+        else {
+          this.client.logger.warn(
+            `Error: Error occurred while fetching bot ${id}:\n${e}`
+          );
+          return msg.edit(
+            "",
+            new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setDescription(
+                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  userOrId.toString()
+                )}\`)\n${e}`
+              )
+          );
         }
       });
   }
