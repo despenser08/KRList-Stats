@@ -308,7 +308,7 @@ export default class extends Command {
               }수집을 사용하여 봇 수집을 시작하세요.`
             );
 
-          if (botDB.keywords.size < 1)
+          if (!botDB.keywords || botDB.keywords.size < 1)
             return msg.edit(
               `봇에서 검색한 결과 중에 **${Util.escapeBold(
                 bot.name
