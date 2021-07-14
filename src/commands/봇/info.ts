@@ -323,7 +323,7 @@ export default class extends Command {
               .setTitle(`${bot.name} 검색 키워드`)
               .setDescription(
                 [...botDB.keywords.keys()]
-                  .sort((a, b) => botDB.keywords.get(a) - botDB.keywords.get(b))
+                  .sort((a, b) => botDB.keywords.get(b) - botDB.keywords.get(a))
                   .map(
                     (key, index) =>
                       `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`
