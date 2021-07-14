@@ -48,8 +48,12 @@ class Bot {
   @prop({ default: [] })
   public stats: BotStats[];
 
-  @prop({ type: () => Number })
-  public keywords: Map<string, number>;
+  @prop({
+    type: () => Number,
+    required: true,
+    default: new Map<string, number>()
+  })
+  public keywords!: Map<string, number>;
 }
 
 export default getModelForClass(Bot);
