@@ -372,6 +372,7 @@ export default class extends Command {
                     backgroundColor: [color],
                     borderColor: [color],
                     borderWidth: 5,
+                    pointRadius: 0,
                     spanGaps: true
                   }
                 ]
