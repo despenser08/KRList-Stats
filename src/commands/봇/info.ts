@@ -26,6 +26,7 @@ import {
   MessageAttachment,
   GuildMember
 } from "discord.js";
+import path from "path";
 import {
   Colors,
   DiscordEndPoints,
@@ -253,17 +254,35 @@ export default class extends Command {
           for await (const stat of botDB.stats.map((bot) => bot.status))
             status[stat]++;
 
-          const canvas = new CanvasRenderService(1080, 1080);
+          const canvas = new CanvasRenderService(1080, 1080, (chart) => {
+            chart.defaults.font.family = "Noto Sans KR";
+            chart.defaults.color = "#000";
+          });
+          canvas.registerFont(
+            path.join(
+              __dirname,
+              "..",
+              "..",
+              "..",
+              "assets",
+              "fonts",
+              "NotoSansKR-Regular.otf"
+            ),
+            {
+              family: "Noto Sans KR"
+            }
+          );
+
           const image = await canvas.renderToBuffer(
             {
               type: "polarArea",
               data: {
                 labels: [
-                  "Online",
-                  "Idle",
-                  "Do Not Disturb",
-                  "Streaming",
-                  "Offline"
+                  "온라인",
+                  "자리 비움",
+                  "다른 용무 중",
+                  "방송 중",
+                  "오프라인"
                 ],
                 datasets: [
                   {
@@ -291,7 +310,17 @@ export default class extends Command {
                     ctx.restore();
                   }
                 }
-              ]
+              ],
+              options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `${bot.name} 상태`,
+                    font: { size: 40 }
+                  },
+                  legend: { position: "bottom", labels: { font: { size: 20 } } }
+                }
+              }
             },
             "image/png"
           );
@@ -359,7 +388,25 @@ export default class extends Command {
           const color =
             info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
 
-          const canvas = new CanvasRenderService(1920, 1080);
+          const canvas = new CanvasRenderService(1920, 1080, (chart) => {
+            chart.defaults.font.family = "Noto Sans KR";
+            chart.defaults.color = "#000";
+          });
+          canvas.registerFont(
+            path.join(
+              __dirname,
+              "..",
+              "..",
+              "..",
+              "assets",
+              "fonts",
+              "NotoSansKR-Regular.otf"
+            ),
+            {
+              family: "Noto Sans KR"
+            }
+          );
+
           const image = await canvas.renderToBuffer(
             {
               type: "line",
@@ -367,12 +414,13 @@ export default class extends Command {
                 labels: dates,
                 datasets: [
                   {
-                    label: `# of ${info}`,
+                    label: `${info === "servers" ? "서버" : "투표"} 수`,
                     data: datas,
                     backgroundColor: [color],
                     borderColor: [color],
                     borderWidth: 5,
                     pointRadius: 0,
+                    tension: 0.1,
                     spanGaps: true
                   }
                 ]
@@ -391,6 +439,16 @@ export default class extends Command {
                 }
               ],
               options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: `${bot.name} ${
+                      info === "servers" ? "서버" : "투표"
+                    } 수`,
+                    font: { size: 40 }
+                  },
+                  legend: { position: "bottom", labels: { font: { size: 20 } } }
+                },
                 scales: { yAxes: { ticks: { precision: 0 } } }
               }
             },
