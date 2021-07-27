@@ -421,7 +421,6 @@ export default class extends Command {
                     borderWidth: 5,
                     pointRadius: 0,
                     tension: 0.1,
-                    spanGaps: true
                   }
                 ]
               },
