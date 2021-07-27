@@ -318,7 +318,10 @@ export default class extends Command {
                     text: `${bot.name} 상태`,
                     font: { size: 40 }
                   },
-                  legend: { position: "bottom", labels: { font: { size: 20 } } }
+                  legend: {
+                    position: "bottom",
+                    labels: { pointStyle: "circle", font: { size: 20 } }
+                  }
                 }
               }
             },
@@ -420,7 +423,7 @@ export default class extends Command {
                     borderColor: [color],
                     borderWidth: 5,
                     pointRadius: 0,
-                    tension: 0.1,
+                    tension: 0.1
                   }
                 ]
               },
@@ -446,7 +449,10 @@ export default class extends Command {
                     } 수`,
                     font: { size: 40 }
                   },
-                  legend: { position: "bottom", labels: { font: { size: 20 } } }
+                  legend: {
+                    position: "bottom",
+                    labels: { pointStyle: "dash", font: { size: 20 } }
+                  }
                 },
                 scales: { yAxes: { ticks: { precision: 0 } } }
               }
