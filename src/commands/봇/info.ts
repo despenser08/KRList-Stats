@@ -320,7 +320,7 @@ export default class extends Command {
                   },
                   legend: {
                     position: "bottom",
-                    labels: { pointStyle: "circle", font: { size: 20 } }
+                    labels: { boxHeight: 3, font: { size: 20 } }
                   }
                 }
               }
@@ -451,7 +451,7 @@ export default class extends Command {
                   },
                   legend: {
                     position: "bottom",
-                    labels: { pointStyle: "dash", font: { size: 20 } }
+                    labels: { boxHeight: 3, font: { size: 20 } }
                   }
                 },
                 scales: { yAxes: { ticks: { precision: 0 } } }
