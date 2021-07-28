@@ -1,7 +1,13 @@
 {
   "root": true,
-  "extends": "@sapphire/eslint-config",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.eslint.json"
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "prettier/prettier": "warn"
   }
 }

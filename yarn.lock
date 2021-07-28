@@ -123,19 +123,6 @@
   dependencies:
     "@sapphire/discord-utilities" "^2.1.5"
 
-"@sapphire/eslint-config@^3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@sapphire/eslint-config/-/eslint-config-3.2.3.tgz#4dfdb6915617715303fd9dcd399035943d5dd362"
-  integrity sha512-c6VV3jwTjV2UMqSrH/yDo6tuPx/fYEb53MsOXpBySOo6g6JuK+/yBY0HRW2OlZTJZn/7GlCXB/ZBD1Jo7igmuA==
-  dependencies:
-    "@typescript-eslint/eslint-plugin" "^4.28.3"
-    "@typescript-eslint/parser" "^4.28.3"
-    eslint "^7.31.0"
-    eslint-config-prettier "^8.3.0"
-    eslint-plugin-prettier "^3.4.0"
-    prettier "^2.3.2"
-    typescript "^4.3.5"
-
 "@sapphire/framework@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@sapphire/framework/-/framework-1.0.2.tgz#50db64c0f7c9e0e87d604033fda0024345d23e74"
@@ -258,7 +245,7 @@
   dependencies:
     "@types/node" "*"
 
-"@typescript-eslint/eslint-plugin@^4.28.3":
+"@typescript-eslint/eslint-plugin@^4.28.5":
   version "4.28.5"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.28.5.tgz#8197f1473e7da8218c6a37ff308d695707835684"
   integrity sha512-m31cPEnbuCqXtEZQJOXAHsHvtoDi9OVaeL5wZnO2KZTnkvELk+u6J6jHg+NzvWQxk+87Zjbc4lJS4NHmgImz6Q==
@@ -283,7 +270,7 @@
     eslint-scope "^5.1.1"
     eslint-utils "^3.0.0"
 
-"@typescript-eslint/parser@^4.28.3":
+"@typescript-eslint/parser@^4.28.5":
   version "4.28.5"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-4.28.5.tgz#9c971668f86d1b5c552266c47788a87488a47d1c"
   integrity sha512-NPCOGhTnkXGMqTznqgVbA5LqVsnw+i3+XA1UKLnAb+MG1Y1rP4ZSK9GX0kJBmAZTMIktf+dTwXToT6kFwyimbw==
@@ -1503,7 +1490,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@2.x, prettier@^2.3.2:
+prettier@2.x:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
   integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==

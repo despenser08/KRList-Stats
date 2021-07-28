@@ -15,6 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const OWNERS = ["YOUR_DISCORD_USER_ID"];
-export const TIMEZONE = "YOUR_TIMEZONE";
+export const OWNERS = ["552348635283587082"];
+export const TIMEZONE = "Asia/Seoul";
 export const PREFIX: string[] = JSON.parse(process.env.PREFIX as string);
