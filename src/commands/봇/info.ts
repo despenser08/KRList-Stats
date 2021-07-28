@@ -58,7 +58,7 @@ export default class extends Command {
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" [정보 수 | "전체"]]>'
+          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수]]>'
       },
       args: [
         {
@@ -92,9 +92,9 @@ export default class extends Command {
           ]),
           prompt: {
             optional: true,
-            retry: '정보 수(자연수) | "전체"를 입력해 주세요.'
+            retry: '"전체" | 최근 정보 수(자연수)를 입력해 주세요.'
           },
-          default: 10
+          default: "all"
         }
       ]
     });
@@ -109,7 +109,7 @@ export default class extends Command {
     }: {
       userOrId: string | User | GuildMember;
       info: "now" | "votes" | "servers" | "status" | "keyword";
-      limit: number | "all";
+      limit: "all" | number;
     }
   ) {
     const msg = await message.channel.send("잠시만 기다려주세요...");
