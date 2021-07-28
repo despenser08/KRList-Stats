@@ -15,17 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Listener } from "discord-akairo";
+import { Event } from "@sapphire/framework";
+import type { Message } from "discord.js";
 
-export default class extends Listener {
-  public constructor() {
-    super("uncaughtException", {
-      emitter: "process",
-      event: "uncaughtException"
-    });
-  }
+export class UserEvent extends Event {
+  public run(oldMessage: Message, newMessage: Message) {
+    if (oldMessage.content === newMessage.content) return;
 
-  public async exec(error: Error) {
-    this.client.logger.error(`Uncaught Exception: ${error}\n${error.stack}`);
+    if (newMessage.webhookID !== null) return;
+
+    if (newMessage.system) return;
+    if (newMessage.author.bot) return;
+
+    this.context.client.emit("preMessageParsed", newMessage);
   }
 }

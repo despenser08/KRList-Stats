@@ -15,29 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Command, Listener } from "discord-akairo";
-import { Message } from "discord.js";
+import { Args, CommandErrorPayload, Event, Events } from "@sapphire/framework";
 
-export default class extends Listener {
-  public constructor() {
-    super("missingPermissions", {
-      emitter: "commandHandler",
-      event: "missingPermissions"
-    });
-  }
+export default class extends Event<Events.CommandError> {
+  public async run(err: Error, piece: CommandErrorPayload<Args>) {
+    this.context.logger.fatal(`Requested: "${piece.message.content}"\nError on "${piece.command}" command: ${err.message}\n${err.stack}`);
 
-  public async exec(
-    message: Message,
-    command: Command,
-    type: string,
-    missing: unknown
-  ) {
-    return message.channel.send(
-      `${
-        type === "user"
-          ? `${message.author}님은 \`${missing}\` 권한이 없어`
-          : `현재 봇이 \`${missing}\` 권한이 없어`
-      } \`${command}\` 명령어를 사용하실 수 없습니다.`
-    );
+    piece.message.reply(`\`${piece.command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`${err}\`\`\``);
   }
 }

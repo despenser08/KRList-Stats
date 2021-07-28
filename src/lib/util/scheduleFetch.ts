@@ -16,17 +16,17 @@
  */
 
 import axios from "axios";
-import { AkairoClient } from "discord-akairo";
 import schedule from "node-schedule";
-import { KoreanbotsEndPoints } from "./constants";
-import Bot from "./database/models/Bot";
-import convert from "./utils/convertRawToType";
+import { KoreanbotsEndPoints } from "../constants";
+import BotDB from "../database/models/Bot";
+import type KRBSClient from "../KRBSClient";
+import convert from "./convertRawToType";
 
 let cachedGuildCount = 0;
 
-export default async function (client: AkairoClient) {
+export default async function (client: KRBSClient) {
   schedule.scheduleJob("*/1 * * * *", async (date) => {
-    const bots = await Bot.find({ track: true });
+    const bots = await BotDB.find({ track: true });
 
     for (const bot of bots)
       await axios
@@ -34,7 +34,7 @@ export default async function (client: AkairoClient) {
         .then(async ({ data }) => {
           const res = convert.bot(data.data);
 
-          await Bot.findOneAndUpdate(
+          await BotDB.findOneAndUpdate(
             { id: res.id },
             {
               $push: {
@@ -42,7 +42,7 @@ export default async function (client: AkairoClient) {
                   updated: date,
                   votes: res.votes,
                   servers: res.servers,
-                  status: res.status.raw
+                  status: res.status ? res.status.raw : undefined
                 }
               }
             },
@@ -50,16 +50,14 @@ export default async function (client: AkairoClient) {
           );
         })
         .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while fetching bot ${bot.id}:\n${e}`
-          );
+          client.logger.warn(`FetchError: Error occurred while fetching bot ${bot.id}:\n${e}`);
         });
 
     const guildCount = client.guilds.cache.size;
     if (guildCount !== cachedGuildCount)
       await axios
         .post(
-          KoreanbotsEndPoints.API.stats(client.user.id),
+          KoreanbotsEndPoints.API.stats(client.user?.id as string),
           { servers: guildCount },
           {
             headers: {
@@ -69,17 +67,11 @@ export default async function (client: AkairoClient) {
           }
         )
         .then(({ data }) => {
-          client.logger.info(
-            `Bumped ${guildCount} guilds to koreanbots.dev | Response:\n${JSON.stringify(
-              data
-            )}`
-          );
+          client.logger.info(`Bumped ${guildCount} guilds to koreanbots.dev | Response:\n${JSON.stringify(data)}`);
           cachedGuildCount = guildCount;
         })
         .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while updaing bot server count:\n${e}`
-          );
+          client.logger.warn(`FetchError: Error occurred while updaing bot server count:\n${e}`);
         });
   });
 }

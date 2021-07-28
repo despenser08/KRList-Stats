@@ -56,4 +56,5 @@ dist
 .idea
 
 # Bot
+config.ts
 db

@@ -15,17 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Listener } from "discord-akairo";
-
-export default class extends Listener {
-  public constructor() {
-    super("warning", {
-      emitter: "process",
-      event: "warning"
-    });
-  }
-
-  public async exec(warn: Error) {
-    this.client.logger.warn(`Warning: ${warn}\n${warn.stack}`);
-  }
-}
+export const OWNERS = ["YOUR_DISCORD_USER_ID"];
+export const TIMEZONE = "YOUR_TIMEZONE";
+export const PREFIX: string[] = JSON.parse(process.env.PREFIX as string);

@@ -15,17 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Listener } from "discord-akairo";
+import "@sapphire/plugin-logger/register";
+import KRBSClient from "./lib/KRBSClient";
 
-export default class extends Listener {
-  public constructor() {
-    super("unhandledRejection", {
-      emitter: "process",
-      event: "unhandledRejection"
-    });
-  }
+const client = new KRBSClient();
 
-  public async exec(error: Error) {
-    this.client.logger.error(`Unhandled Rejection: ${error}\n${error.stack}`);
+async function main() {
+  try {
+    client.logger.info("Logging in...");
+    await client.login(process.env.DISCORD_TOKEN);
+    client.logger.info(`Logged in as ${client.user?.tag} (${client.user?.id})`);
+  } catch (error) {
+    client.logger.fatal(error);
+    client.destroy();
+    process.exit(1);
   }
 }
+
+main();

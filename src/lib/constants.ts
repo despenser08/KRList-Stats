@@ -15,26 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ImageFormat, ImageSize, KoreanbotsImageOptions } from "./types";
+import { BitField } from "discord.js";
+import { URL } from "url";
+import type { BotFlagsString, ImageFormat, ImageSize, KoreanbotsImageOptions, UserFlagsString } from "./types/Koreanbots";
 
 export const KoreanbotsOrigin = "https://koreanbots.dev";
 export const KoreanbotsEndPoints = {
   OG: class {
     static root = "https://og.kbots.link";
-    static bot(
-      id: string,
-      name: string,
-      bio: string,
-      tags: string[],
-      stats: string[]
-    ) {
+    static bot(id: string, name: string, bio: string, tags: string[], stats: string[]) {
       const u = new URL(this.root);
       u.pathname = name;
-      u.searchParams.append(
-        "image",
-        KoreanbotsOrigin +
-          KoreanbotsEndPoints.CDN.avatar(id, { format: "webp", size: 256 })
-      );
+      u.searchParams.append("image", KoreanbotsOrigin + KoreanbotsEndPoints.CDN.avatar(id, { format: "webp", size: 256 }));
       u.searchParams.append("bio", bio);
       tags.map((t) => u.searchParams.append("tags", t));
       stats.map((s) => u.searchParams.append("stats", s));
@@ -43,7 +35,7 @@ export const KoreanbotsEndPoints = {
   },
   CDN: class {
     static root = "/api/image";
-    static avatar(id: string, options?: KoreanbotsImageOptions) {
+    static avatar(id: string, options: KoreanbotsImageOptions) {
       return makeImageURL(`${this.root}/discord/avatars/${id}`, options);
     }
   },
@@ -68,9 +60,7 @@ export const KoreanbotsEndPoints = {
       return `${this.base}/bots/${id}`;
     }
     static search(query: string, page = 1) {
-      return `${this.base}/search/bots?query=${encodeURIComponent(
-        query
-      )}&page=${page}`;
+      return `${this.base}/search/bots?query=${encodeURIComponent(query)}&page=${page}`;
     }
     static voteList(page = 1) {
       return `${this.base}/list/bots/votes?page=${page}`;
@@ -100,7 +90,27 @@ export function makeImageURL(
   return `${root}.${format}?size=${size}`;
 }
 
-export enum Colors {
+export class BotFlags extends BitField<BotFlagsString> {
+  static FLAGS = {
+    OFFICIAL: 1 << 0,
+    KOREANBOTS_VERIFIED: 1 << 2,
+    PARTNER: 1 << 3,
+    DISCORD_VERIFIED: 1 << 4,
+    PREMIUM: 1 << 5,
+    FIRST_KOREANBOTS_HACKATHON_WINNER: 1 << 6
+  };
+}
+
+export class UserFlags extends BitField<UserFlagsString> {
+  static FLAGS = {
+    ADMINISTRATOR: 1 << 0,
+    BUG_HUNTER: 1 << 1,
+    BOT_REVIEWER: 1 << 2,
+    PREMIUM: 1 << 3
+  };
+}
+
+export enum Color {
   PRIMARY = "#7070FB"
 }
 

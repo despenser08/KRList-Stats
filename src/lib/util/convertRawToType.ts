@@ -15,29 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  Bot,
-  Owner,
-  RawBot,
-  RawOwner,
-  RawUser,
-  State,
-  StatusEmojiEnum,
-  StatusEnum,
-  User
-} from "../types";
-import { BotFlags, UserFlags } from "./Flags";
+import { BotFlags, UserFlags } from "../constants";
+import { Bot, Owner, RawBot, RawOwner, RawUser, State, StatusEmojiEnum, StatusEnum, User } from "../types/Koreanbots";
 
 function bot(bot: RawBot): Bot {
   return {
     ...bot,
     owners: bot.owners.map((raw) => owner(raw)),
     flags: new BotFlags(bot.flags),
-    status: {
-      raw: bot.status,
-      text: StatusEnum[bot.status],
-      emoji: StatusEmojiEnum[bot.status]
-    },
+    status: bot.status
+      ? {
+          raw: bot.status,
+          text: StatusEnum[bot.status],
+          emoji: StatusEmojiEnum[bot.status]
+        }
+      : undefined,
     state: State[bot.state]
   };
 }

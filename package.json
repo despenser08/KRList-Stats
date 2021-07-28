@@ -1,49 +1,42 @@
 {
   "name": "krbots-stats",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Discord Bot that show Koreanbots stats",
-  "main": "dist/index.js",
-  "scripts": {
-    "start": "node .",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "prettier": "prettier --write **/*.{ts,js,json,yml,yaml}",
-    "build": "tsc",
-    "build:check": "tsc --noEmit --incremental false"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/despenser08/KRBots-Stats.git"
-  },
-  "author": "despenser08",
+  "main": "dist/KRBS.js",
+  "author": "despenser08 <despenser08@gmail.com>",
   "license": "AGPL-3.0",
-  "bugs": {
-    "url": "https://github.com/despenser08/KRBots-Stats/issues"
+  "private": true,
+  "scripts": {
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "build": "tsc -b src",
+    "clean": "tsc -b src --clean",
+    "watch": "tsc -b src -w",
+    "start": "node ."
   },
   "homepage": "https://github.com/despenser08/KRBots-Stats#readme",
   "dependencies": {
+    "@sapphire/decorators": "^2.2.0",
+    "@sapphire/framework": "^1.0.2",
+    "@sapphire/plugin-logger": "^1.0.13",
     "@typegoose/typegoose": "^8.0.0",
     "axios": "^0.21.1",
-    "chart.js": "^3.3.2",
+    "chart.js": "^3.5.0",
     "chartjs-node-canvas": "^3.2.0",
-    "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
     "dokdo": "^0.4.0",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.3",
-    "node-schedule": "^2.0.0",
-    "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "node-schedule": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "15.12.3",
-    "@types/node-schedule": "1.3.2",
-    "@typescript-eslint/eslint-plugin": "4.28.5",
-    "@typescript-eslint/parser": "4.28.5",
-    "eslint": "7.31.0",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-prettier": "3.4.0",
-    "prettier": "2.3.2",
-    "typescript": "4.3.5"
+    "@sapphire/eslint-config": "^3.2.3",
+    "@sapphire/prettier-config": "^1.1.6",
+    "@sapphire/ts-config": "^3.0.0",
+    "@types/node": "^16.4.5",
+    "@types/node-schedule": "^1.3.2",
+    "@types/ws": "^7.4.7",
+    "typescript": "^4.3.5"
   }
 }

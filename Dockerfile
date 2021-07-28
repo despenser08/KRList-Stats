@@ -4,8 +4,9 @@ WORKDIR /usr/src/bot
 COPY . .
 
 RUN yarn install --frozen-lockfile \
-  && yarn cache clean \
-  && yarn build
+  && yarn cache clean
+
+RUN yarn build
 
 
 FROM node:lts as RUNNER

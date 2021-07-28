@@ -15,25 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Listener } from "discord-akairo";
-import scheduleFetch from "../../lib/scheduleTask";
+import { Precondition } from "@sapphire/framework";
+import type { Message } from "discord.js";
+import { OWNERS } from "../config";
 
-export default class extends Listener {
-  constructor() {
-    super("ready", { emitter: "client", event: "ready" });
-  }
-
-  public async exec() {
-    scheduleFetch(this.client);
-
-    this.client.user.setPresence({
-      status: "idle",
-      activity: {
-        name: `${this.client.commandHandler.prefix[0]}도움말`,
-        type: "PLAYING"
-      }
-    });
-
-    this.client.logger.info(`${this.client.user.tag} is ready.`);
+export default class extends Precondition {
+  public async run(message: Message) {
+    return OWNERS.includes(message.author.id) ? this.ok() : this.error({ message: "봇 관리자 전용 명령어입니다." });
   }
 }

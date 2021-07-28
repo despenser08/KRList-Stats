@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BotFlags, UserFlags } from "./utils/Flags";
+import type { BotFlags, UserFlags } from "../constants";
 
 export type ImageFormat = "webp" | "png" | "jpg" | "gif";
 export type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
@@ -29,13 +29,7 @@ export interface KoreanbotsImageOptions {
   size?: 128 | 256 | 512;
 }
 
-export type BotFlagsString =
-  | "OFFICIAL"
-  | "KOREANBOTS_VERIFIED"
-  | "PARTNER"
-  | "DISCORD_VERIFIED"
-  | "PREMIUM"
-  | "FIRST_KOREANBOTS_HACKATHON_WINNER";
+export type BotFlagsString = "OFFICIAL" | "KOREANBOTS_VERIFIED" | "PARTNER" | "DISCORD_VERIFIED" | "PREMIUM" | "FIRST_KOREANBOTS_HACKATHON_WINNER";
 
 export enum BotFlagsEnum {
   OFFICIAL = "공식",
@@ -46,11 +40,7 @@ export enum BotFlagsEnum {
   FIRST_KOREANBOTS_HACKATHON_WINNER = "제1회 한국 디스코드봇 리스트 해커톤 우승자"
 }
 
-export type UserFlagsString =
-  | "ADMINISTRATOR"
-  | "BUG_HUNTER"
-  | "BOT_REVIEWER"
-  | "PREMIUM";
+export type UserFlagsString = "ADMINISTRATOR" | "BUG_HUNTER" | "BOT_REVIEWER" | "PREMIUM";
 
 export enum UserFlagsEnum {
   ADMINISTRATOR = "관리자",
@@ -133,6 +123,8 @@ export enum State {
   archived = "잠금 처리 (지원 종료)"
 }
 
+export type RawState = "ok" | "reported" | "blocked" | "private" | "archived";
+
 export interface RawBot {
   id: string;
   name: string;
@@ -156,7 +148,7 @@ export interface RawBot {
   bg?: string;
   banner?: string;
   status?: RawStatus;
-  state: string;
+  state: RawState;
 }
 
 export interface Status {

@@ -16,7 +16,7 @@
  */
 
 import { Message, MessageEmbed } from "discord.js";
-import { Colors } from "../constants";
+import { Color } from "../constants";
 
 export default async function (
   message: Message,
@@ -29,87 +29,61 @@ export default async function (
     timeout?: number;
   } = { emojis: ["◀", "▶", "❌"], timeout: 12e4 }
 ) {
-  if (!options.emojis) options.emojis = ["◀", "▶", "❌"];
-  if (!options.timeout) options.timeout = 12e4;
+  const emojis = options.emojis ?? ["◀", "▶", "❌"];
+  const timeout = options.timeout ?? 12e4;
 
-  if (
-    !message &&
-    !message.channel &&
-    !(message.channel.type === "text" || message.channel.type === "news")
-  )
-    return;
+  if (!message || !message.channel || !(message.channel.type === "text" || message.channel.type === "news")) return;
   if (!pages) return;
-  if (options.emojis.length !== 3) return;
+  if (emojis.length !== 3) return;
 
   let page = 0;
   return message.channel
     .send(
       pages[page].setFooter(
-        `페이지 ${page + 1}/${pages.length}${
-          options.itemLength && options.itemName
-            ? ` | ${options.itemLength}개의 ${options.itemName}`
-            : ""
-        }${
-          options.description && options.description.text
-            ? ` • ${options.description.text}`
-            : ""
+        `페이지 ${page + 1}/${pages.length}${options.itemLength && options.itemName ? ` | ${options.itemLength}개의 ${options.itemName}` : ""}${
+          options.description && options.description.text ? ` • ${options.description.text}` : ""
         }`,
-        options.description?.icon ?? null
+        options.description?.icon ?? undefined
       )
     )
     .then(async (curPage) => {
-      for await (const emoji of options.emojis) await curPage.react(emoji);
+      for await (const emoji of emojis) await curPage.react(emoji);
 
       const collector = curPage.createReactionCollector(() => true, {
-        time: options.timeout
+        time: timeout
       });
 
       collector.on("collect", (reaction, user) => {
         reaction.users.remove(user);
 
-        if (
-          user.id !== message.author.id ||
-          !options.emojis.includes(reaction.emoji.name)
-        )
-          return;
+        if (user.id !== message.author.id || !emojis.includes(reaction.emoji.name)) return;
 
         switch (reaction.emoji.name) {
-          case options.emojis[0]:
+          case emojis[0]:
             page = page > 0 ? --page : pages.length - 1;
             break;
 
-          case options.emojis[1]:
+          case emojis[1]:
             page = page + 1 < pages.length ? ++page : 0;
             break;
 
-          case options.emojis[2]:
+          case emojis[2]:
             return collector.stop();
         }
 
         curPage.edit(
           pages[page].setFooter(
-            `페이지 ${page + 1}/${pages.length}${
-              options.itemLength && options.itemName
-                ? ` | ${options.itemLength}개의 ${options.itemName}`
-                : ""
-            }${
-              options.description && options.description.text
-                ? ` • ${options.description.text}`
-                : ""
+            `페이지 ${page + 1}/${pages.length}${options.itemLength && options.itemName ? ` | ${options.itemLength}개의 ${options.itemName}` : ""}${
+              options.description && options.description.text ? ` • ${options.description.text}` : ""
             }`,
-            options.description?.icon ?? null
+            options.description?.icon ?? undefined
           )
         );
       });
 
       collector.on("end", () => {
         curPage.reactions.removeAll();
-        if (curPage.editable)
-          curPage.edit(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setDescription("세션이 만료되었습니다. 다시 요청해주세요.")
-          );
+        if (curPage.editable) curPage.edit(new MessageEmbed().setColor(Color.PRIMARY).setDescription("세션이 만료되었습니다. 다시 요청해주세요."));
       });
     });
 }

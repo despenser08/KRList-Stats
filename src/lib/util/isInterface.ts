@@ -15,5 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const owners = ["552348635283587082"];
-export const timezone = "Asia/Seoul";
+export default function <T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  object: any,
+  property: string
+): object is T {
+  return property in object;
+}

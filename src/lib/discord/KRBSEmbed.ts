@@ -15,8 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import KRBSClient from "./client/KRBSClient";
+import type { MessageEmbedOptions } from "discord.js";
+import { MessageEmbed } from "discord.js";
+import { Color } from "../constants";
 
-const client = new KRBSClient();
+export class DespenserEmbed extends MessageEmbed {
+  constructor(data?: MessageEmbed | MessageEmbedOptions) {
+    super(data);
 
-client.start();
+    if (!data) return this.setColor(Color.PRIMARY);
+    this.setColor(data.color ?? Color.PRIMARY);
+  }
+}

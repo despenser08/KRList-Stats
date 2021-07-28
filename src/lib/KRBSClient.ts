@@ -15,24 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Command, Listener } from "discord-akairo";
-import { Message } from "discord.js";
+import { LogLevel, SapphireClient, Store } from "@sapphire/framework";
+import Dokdo from "dokdo";
+import { OWNERS, PREFIX } from "../config";
 
-export default class extends Listener {
-  public constructor() {
-    super("error", {
-      emitter: "commandHandler",
-      event: "error"
+export default class KRBSClient extends SapphireClient {
+  constructor() {
+    super({
+      defaultPrefix: PREFIX,
+      caseInsensitiveCommands: true,
+      logger: {
+        level: LogLevel.Trace
+      },
+      shards: "auto"
+    });
+
+    Store.injectedContext.dokdo = new Dokdo(this, {
+      prefix: PREFIX[0],
+      owners: OWNERS,
+      noPerm: (message) => message.channel.send("봇 관리자 전용 명령어입니다.")
     });
   }
 
-  public async exec(error: Error, message: Message, command: Command) {
-    this.client.logger.error(
-      `Requested: "${message.content}"\nError on "${command}" command: ${error.message}\n${error.stack}`
-    );
-
-    return message.channel.send(
-      `\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n${error}`
-    );
+  public get context() {
+    return Store.injectedContext;
   }
 }

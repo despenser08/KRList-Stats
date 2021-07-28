@@ -7,8 +7,6 @@ services:
     env_file: .env
     environment:
       DB_HOST: db
-    volumes:
-      - ./logs:/usr/src/bot/logs
     depends_on:
       - db
   db:
