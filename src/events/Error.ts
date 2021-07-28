@@ -19,8 +19,8 @@ import { Args, CommandErrorPayload, Event, Events } from "@sapphire/framework";
 
 export default class extends Event<Events.CommandError> {
   public async run(err: Error, piece: CommandErrorPayload<Args>) {
-    this.context.logger.fatal(`Requested: "${piece.message.content}"\nError on "${piece.command}" command: ${err.message}\n${err.stack}`);
+    this.context.logger.fatal(`Requested: "${piece.message.content}"\nError on "${piece.command.name}" command: ${err.message}\n${err.stack}`);
 
-    piece.message.reply(`\`${piece.command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`${err}\`\`\``);
+    return piece.message.reply(`\`${piece.command.name}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`${err}\`\`\``);
   }
 }

@@ -13,6 +13,6 @@ export default class extends Command {
     this.context.dokdo.options.prefix = args.commandContext.commandPrefix;
     this.context.dokdo.options.aliases = [...this.aliases];
 
-    this.context.dokdo.run(message);
+    return this.context.dokdo.run(message);
   }
 }
