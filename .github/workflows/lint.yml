@@ -20,4 +20,4 @@ jobs:
         run: yarn lint
 
       - name: Run TSC
-        run: yarn build:check
+        run: yarn build
