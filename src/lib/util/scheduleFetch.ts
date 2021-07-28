@@ -24,7 +24,7 @@ import convert from "./convertRawToType";
 
 let cachedGuildCount = 0;
 
-export default async function (client: KRBSClient) {
+export default async function scheduleFetch(client: KRBSClient) {
   schedule.scheduleJob("*/1 * * * *", async (date) => {
     const bots = await BotDB.find({ track: true });
 

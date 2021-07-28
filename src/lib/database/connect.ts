@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { connect } from "mongoose";
+import { connect as dbConnect } from "mongoose";
 
-export default function (
+export default function connect(
   url = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
 ) {
-  return connect(url, {
+  return dbConnect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,

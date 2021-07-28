@@ -18,7 +18,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Color } from "../constants";
 
-export default async function (
+export default async function listEmbed(
   message: Message,
   pages: MessageEmbed[],
   options: {
