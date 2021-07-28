@@ -11,7 +11,7 @@
     "lint:fix": "eslint src --ext ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "tsc -b src",
-    "build:check": "tsc --noEmit --incremental false",
+    "build:check": "tsc --noEmit --incremental false src",
     "clean": "tsc -b src --clean",
     "watch": "tsc -b src -w",
     "start": "node ."
