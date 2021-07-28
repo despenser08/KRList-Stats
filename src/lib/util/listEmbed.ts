@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, MessageEmbed } from "discord.js";
-import { Color } from "../constants";
+import type { Message } from "discord.js";
+import KRBSEmbed from "../discord/KRBSEmbed";
 
 export default async function listEmbed(
   message: Message,
-  pages: MessageEmbed[],
+  pages: KRBSEmbed[],
   options: {
     description?: { text?: string; icon?: string };
     itemLength?: number;
@@ -83,7 +83,7 @@ export default async function listEmbed(
 
       collector.on("end", () => {
         curPage.reactions.removeAll();
-        if (curPage.editable) curPage.edit(new MessageEmbed().setColor(Color.PRIMARY).setDescription("세션이 만료되었습니다. 다시 요청해주세요."));
+        if (curPage.editable) curPage.edit(new KRBSEmbed().setDescription("세션이 만료되었습니다. 다시 요청해주세요."));
       });
     });
 }
