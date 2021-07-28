@@ -15,6 +15,13 @@
     "watch": "tsc -b src -w",
     "start": "node ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/despenser08/KRBots-Stats.git"
+  },
+  "bugs": {
+    "url": "https://github.com/despenser08/KRBots-Stats/issues"
+  },
   "homepage": "https://github.com/despenser08/KRBots-Stats#readme",
   "dependencies": {
     "@sapphire/decorators": "^2.2.0",
