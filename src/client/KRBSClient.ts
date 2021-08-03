@@ -77,7 +77,7 @@ export default class KRBSClient extends AkairoClient {
       "exec",
       "실행"
     ],
-    owners: owners,
+    owners,
     noPerm: (message) => message.channel.send("봇 관리자 전용 명령어입니다.")
   });
 

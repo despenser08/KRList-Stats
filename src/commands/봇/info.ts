@@ -26,6 +26,7 @@ import {
   MessageAttachment,
   GuildMember
 } from "discord.js";
+import moment from "moment-timezone";
 import path from "path";
 import {
   Colors,
@@ -33,7 +34,7 @@ import {
   KoreanbotsEndPoints,
   KoreanbotsOrigin
 } from "../../lib/constants";
-import Bot from "../../lib/database/models/Bot";
+import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
@@ -86,13 +87,13 @@ export default class extends Command {
         },
         {
           id: "limit",
-          type: Argument.union(Argument.range("integer", 1, Infinity), [
+          type: Argument.union("date", Argument.range("integer", 1, Infinity), [
             "all",
             "전체"
           ]),
           prompt: {
             optional: true,
-            retry: '"전체" | 최근 정보 수(자연수)를 입력해 주세요.'
+            retry: '"전체" | 날짜 | 최근 정보 수(자연수)를 입력해 주세요.'
           },
           default: "all"
         }
@@ -109,7 +110,7 @@ export default class extends Command {
     }: {
       userOrId: string | User | GuildMember;
       info: "now" | "votes" | "servers" | "status" | "keyword";
-      limit: "all" | number;
+      limit: "all" | Date | number;
     }
   ) {
     const msg = await message.channel.send("잠시만 기다려주세요...");
@@ -124,11 +125,30 @@ export default class extends Command {
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 
-        const botDB = await Bot.findOneAndUpdate(
+        const botDB = await BotDB.findOneAndUpdate(
           { id: bot.id },
           {},
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
+
+        let stats = botDB.stats;
+        if (limit instanceof Date) {
+          const date = moment(limit);
+
+          stats = stats.filter(
+            (stat) =>
+              stat.updated >= date.startOf("day").toDate() &&
+              stat.updated <= date.endOf("day").toDate()
+          );
+        } else if (
+          typeof limit === "number" &&
+          Number.isInteger(limit) &&
+          stats.length > limit
+        ) {
+          stats.reverse();
+          stats.splice(limit);
+          stats.reverse();
+        }
 
         if (info === "now") {
           const flags = bot.flags.toArray();
@@ -148,7 +168,7 @@ export default class extends Command {
                 })}`
               )
               .setDescription(
-                `<@!${bot.id}> | ${
+                `<@${bot.id}> | ${
                   botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
                 } | ${
                   bot.url
@@ -165,7 +185,7 @@ export default class extends Command {
                     (owner) =>
                       `[${owner.username}#${
                         owner.tag
-                      }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@!${
+                      }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@${
                         owner.id
                       }>)`
                   )
@@ -230,7 +250,7 @@ export default class extends Command {
 
           return listEmbed(message, pages);
         } else if (info === "status") {
-          if (botDB.stats.length < 1)
+          if (stats.length < 1)
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
@@ -251,7 +271,7 @@ export default class extends Command {
             offline: 0
           };
 
-          for await (const stat of botDB.stats.map((bot) => bot.status))
+          for await (const stat of stats.map((bot) => bot.status))
             status[stat]++;
 
           const canvas = new CanvasRenderService(1080, 1080, (chart) => {
@@ -333,7 +353,7 @@ export default class extends Command {
             new MessageAttachment(image, "chart.png")
           );
         } else if (info === "keyword") {
-          if (botDB.stats.length < 1)
+          if (stats.length < 1)
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
@@ -364,7 +384,7 @@ export default class extends Command {
               )
           );
         } else {
-          if (botDB.stats.length < 1)
+          if (stats.length < 1)
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
@@ -374,18 +394,11 @@ export default class extends Command {
           const datas: number[] = [];
           const dates: string[] = [];
 
-          for await (const stat of botDB.stats) {
+          for await (const stat of stats) {
             datas.push(stat[info]);
             dates.push(
               formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
             );
-          }
-
-          if (typeof limit === "number" && Number.isInteger(limit)) {
-            datas.reverse();
-            dates.reverse();
-            datas.splice(limit);
-            dates.splice(limit);
           }
 
           const color =
@@ -498,7 +511,7 @@ export default class extends Command {
                     }
                   )}`
                 )
-                .setDescription(`<@!${user.id}>`)
+                .setDescription(`<@${user.id}>`)
                 .addField(
                   "봇",
                   user.bots.length < 1
@@ -508,7 +521,7 @@ export default class extends Command {
                           (bot) =>
                             `[${bot.name}#${
                               bot.tag
-                            }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@!${
+                            }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
                               bot.id
                             }>) ${bot.status.emoji} [서버: ${
                               bot.servers || "N/A"
