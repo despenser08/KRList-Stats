@@ -59,7 +59,7 @@ export default class extends Command {
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수]]>'
+          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 날짜 | 최근 정보 수 [날짜의 끝]]]>'
       },
       args: [
         {
@@ -96,6 +96,14 @@ export default class extends Command {
             retry: '"전체" | 날짜 | 최근 정보 수(자연수)를 입력해 주세요.'
           },
           default: "all"
+        },
+        {
+          id: "endOfDate",
+          type: "date",
+          prompt: {
+            optional: true,
+            retry: "날짜를 입력해 주세요."
+          }
         }
       ]
     });
@@ -106,11 +114,13 @@ export default class extends Command {
     {
       userOrId,
       info,
-      limit
+      limit,
+      endOfDate
     }: {
       userOrId: string | User | GuildMember;
       info: "now" | "votes" | "servers" | "status" | "keyword";
       limit: "all" | Date | number;
+      endOfDate?: Date;
     }
   ) {
     const msg = await message.channel.send("잠시만 기다려주세요...");
@@ -133,12 +143,14 @@ export default class extends Command {
 
         let stats = botDB.stats;
         if (limit instanceof Date) {
-          const date = moment(limit);
+          const date = moment(limit).startOf("day");
+          const nextDate = endOfDate
+            ? moment(endOfDate).endOf("day")
+            : date.endOf("day");
 
           stats = stats.filter(
             (stat) =>
-              stat.updated >= date.startOf("day").toDate() &&
-              stat.updated <= date.endOf("day").toDate()
+              stat.updated >= date.toDate() && stat.updated <= nextDate.toDate()
           );
         } else if (
           typeof limit === "number" &&
