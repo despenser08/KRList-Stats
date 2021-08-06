@@ -15,5 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const owners = ["552348635283587082"];
-export const timezone = "Asia/Seoul";
+export const OWNERS = ["552348635283587082"];
+export const TIMEZONE = "Asia/Seoul";

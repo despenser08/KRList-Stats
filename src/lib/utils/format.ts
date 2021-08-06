@@ -16,12 +16,12 @@
  */
 
 import moment from "moment-timezone";
-import { timezone as cTimezone } from "../../config";
+import { TIMEZONE } from "../../config";
 
 export function formatTime({
   date = null,
   format = "YYYY/MM/DD hh:mm:ss A",
-  timezone = cTimezone
+  timezone = TIMEZONE
 } = {}) {
   return date
     ? moment(date).tz(timezone).format(format)

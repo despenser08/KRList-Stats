@@ -19,7 +19,7 @@ import axios from "axios";
 import { AkairoClient } from "discord-akairo";
 import moment from "moment-timezone";
 import schedule from "node-schedule";
-import { timezone } from "../config";
+import { TIMEZONE } from "../config";
 import { KoreanbotsEndPoints } from "./constants";
 import Bot from "./database/models/Bot";
 import convert from "./utils/convertRawToType";
@@ -41,7 +41,7 @@ export default async function (client: AkairoClient) {
             {
               $push: {
                 stats: {
-                  updated: moment(date).tz(timezone).toDate(),
+                  updated: moment(date).tz(TIMEZONE).toDate(),
                   votes: res.votes,
                   servers: res.servers,
                   status: res.status.raw

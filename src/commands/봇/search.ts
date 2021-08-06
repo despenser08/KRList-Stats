@@ -28,7 +28,7 @@ export default class extends Command {
   constructor() {
     super("검색", {
       aliases: ["검색", "search"],
-      description: {
+      fullDescription: {
         content: "검색으로 봇 리스트를 보여줍니다.",
         usage: '"<검색어>" [페이지 번호]'
       },
@@ -56,7 +56,7 @@ export default class extends Command {
     message: Message,
     { query, page }: { query: string; page: number }
   ) {
-    const msg = await message.channel.send("잠시만 기다려주세요...");
+    const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
       .get(KoreanbotsEndPoints.API.search(query, page))
@@ -71,34 +71,32 @@ export default class extends Command {
           const res = data.map((rawBot) => convert.bot(rawBot));
 
           if (res.length < 1)
-            return msg.edit(
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setDescription(`"${query}"에 대한 검색 결과가 없습니다.`)
-            );
+            return msg.edit(`"${query}"에 대한 검색 결과가 없습니다.`);
           else {
-            msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle(`"${query}"에 대한 검색 결과입니다.`)
-                .setDescription(
-                  res
-                    .map(
-                      (bot, index) =>
-                        `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
-                          bot.tag
-                        }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                          bot.id
-                        }>) ${bot.status.emoji} [서버: ${
-                          bot.servers || "N/A"
-                        }] - ❤️${bot.votes}`
-                    )
-                    .join("\n")
-                )
-                .setFooter(`페이지 ${page}`)
-                .setTimestamp()
-            );
+            msg.edit({
+              content: "",
+              embeds: [
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setTitle(`"${query}"에 대한 검색 결과입니다.`)
+                  .setDescription(
+                    res
+                      .map(
+                        (bot, index) =>
+                          `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
+                            bot.tag
+                          }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
+                            bot.id
+                          }>) ${bot.status.emoji} [서버: ${
+                            bot.servers || "N/A"
+                          }] - ❤️${bot.votes}`
+                      )
+                      .join("\n")
+                  )
+                  .setFooter(`페이지 ${page}`)
+                  .setTimestamp()
+              ]
+            });
 
             for (let i = 0; i < res.length; i++) {
               const botDB = await Bot.findOne({ id: res[i].id, track: true });
@@ -111,61 +109,69 @@ export default class extends Command {
         }
       )
       .catch((e) => {
-        if (isInterface<AxiosError>(e, "response"))
+        if (isInterface<AxiosError>(e, "response")) {
           switch (e.response.status) {
             case 404:
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                        query
+                      )}\`)`
+                    )
+                ]
+              });
 
             case 400:
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                        query
+                      )}\`)`
+                    )
+                ]
+              });
 
             default:
               this.client.logger.warn(
                 `FetchError: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
               );
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)\n${e}`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                        query
+                      )}\`)\n${e}`
+                    )
+                ]
+              });
           }
-        else {
+        } else {
           this.client.logger.warn(
             `Error: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
           );
-          return msg.edit(
-            "",
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setDescription(
-                `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  query
-                )}\`)\n${e}`
-              )
-          );
+          return msg.edit({
+            content: "",
+            embeds: [
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                    query
+                  )}\`)\n${e}`
+                )
+            ]
+          });
         }
       });
   }

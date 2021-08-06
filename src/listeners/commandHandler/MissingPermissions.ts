@@ -32,7 +32,7 @@ export default class extends Listener {
     type: string,
     missing: unknown
   ) {
-    return message.channel.send(
+    return message.reply(
       `${
         type === "user"
           ? `${message.author}님은 \`${missing}\` 권한이 없어`

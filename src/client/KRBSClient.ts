@@ -16,10 +16,11 @@
  */
 
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
+import { Intents } from "discord.js";
 import Dokdo from "dokdo";
 import path from "path";
 import { Logger as WinstonLogger } from "winston";
-import { owners } from "../config";
+import { OWNERS } from "../config";
 import connect from "../lib/database/connect";
 import Logger from "./Logger";
 
@@ -30,6 +31,20 @@ declare module "discord-akairo" {
     inhibitorHandler: InhibitorHandler;
     logger: WinstonLogger;
     dokdo: Dokdo;
+  }
+
+  interface Command {
+    fullDescription: {
+      content: string;
+      usage?: string;
+    };
+  }
+
+  interface CommandOptions {
+    fullDescription: {
+      content: string;
+      usage?: string;
+    };
   }
 }
 
@@ -59,7 +74,7 @@ export default class KRBSClient extends AkairoClient {
       },
       otherwise: ""
     },
-    ignorePermissions: owners
+    ignorePermissions: OWNERS
   });
 
   public logger = Logger("BOT");
@@ -77,12 +92,15 @@ export default class KRBSClient extends AkairoClient {
       "exec",
       "실행"
     ],
-    owners,
-    noPerm: (message) => message.channel.send("봇 관리자 전용 명령어입니다.")
+    owners: OWNERS,
+    noPerm: (message) => message.reply("봇 관리자 전용 명령어입니다.")
   });
 
   constructor() {
-    super({ ownerID: owners });
+    super({
+      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+      ownerID: OWNERS
+    });
   }
 
   private async _init() {

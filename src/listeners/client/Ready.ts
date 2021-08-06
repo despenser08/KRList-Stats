@@ -28,10 +28,12 @@ export default class extends Listener {
 
     this.client.user.setPresence({
       status: "idle",
-      activity: {
-        name: `${this.client.commandHandler.prefix[0]}도움말`,
-        type: "PLAYING"
-      }
+      activities: [
+        {
+          name: `${this.client.commandHandler.prefix[0]}도움말`,
+          type: "PLAYING"
+        }
+      ]
     });
 
     this.client.logger.info(`${this.client.user.tag} is ready.`);

@@ -15,35 +15,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, MessageEmbed } from "discord.js";
-import { Colors } from "../constants";
+import {
+  Message,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed
+} from "discord.js";
+
+const defaultButton = [
+  new MessageButton().setCustomId("prev").setLabel("이전").setStyle("PRIMARY"),
+  new MessageButton()
+    .setCustomId("cancel")
+    .setLabel("취소")
+    .setStyle("SECONDARY"),
+  new MessageButton().setCustomId("next").setLabel("다음").setStyle("PRIMARY")
+];
 
 export default async function (
-  message: Message,
+  targetMessage: Message,
   pages: MessageEmbed[],
   options: {
     description?: { text?: string; icon?: string };
     itemLength?: number;
     itemName?: string;
-    emojis?: string[];
+    buttons?: MessageButton[];
     timeout?: number;
-  } = { emojis: ["◀", "▶", "❌"], timeout: 12e4 }
+    message?: Message;
+  } = {
+    buttons: defaultButton,
+    timeout: 12e4
+  }
 ) {
-  if (!options.emojis) options.emojis = ["◀", "▶", "❌"];
+  const buttons = options.buttons ?? defaultButton;
   if (!options.timeout) options.timeout = 12e4;
 
-  if (
-    !message &&
-    !message.channel &&
-    !(message.channel.type === "text" || message.channel.type === "news")
-  )
-    return;
+  if (!targetMessage && !targetMessage.channel) return;
   if (!pages) return;
-  if (options.emojis.length !== 3) return;
+  if (buttons.length !== 3) return;
 
   let page = 0;
-  return message.channel
-    .send(
+  const content = {
+    content: "",
+    embeds: [
       pages[page].setFooter(
         `페이지 ${page + 1}/${pages.length}${
           options.itemLength && options.itemName
@@ -56,60 +69,57 @@ export default async function (
         }`,
         options.description?.icon ?? null
       )
-    )
-    .then(async (curPage) => {
-      for await (const emoji of options.emojis) await curPage.react(emoji);
+    ],
+    components: [new MessageActionRow().addComponents(buttons)]
+  };
+  let curPage: Message;
 
-      const collector = curPage.createReactionCollector(() => true, {
-        time: options.timeout
-      });
+  if (options.message) curPage = await options.message.edit(content);
+  else curPage = await targetMessage.reply(content);
 
-      collector.on("collect", (reaction, user) => {
-        reaction.users.remove(user);
+  const collector = curPage.createMessageComponentCollector({
+    filter: (i) => i.user.id === targetMessage.author.id,
+    time: options.timeout
+  });
 
-        if (
-          user.id !== message.author.id ||
-          !options.emojis.includes(reaction.emoji.name)
+  collector.on("collect", async (interaction) => {
+    await interaction.deferUpdate();
+
+    switch (interaction.customId) {
+      case buttons[0].customId:
+        page = page > 0 ? --page : pages.length - 1;
+        break;
+
+      case buttons[1].customId:
+        return collector.stop();
+
+      case buttons[2].customId:
+        page = page + 1 < pages.length ? ++page : 0;
+        break;
+
+      default:
+        return;
+    }
+
+    await interaction.editReply({
+      embeds: [
+        pages[page].setFooter(
+          `페이지 ${page + 1}/${pages.length}${
+            options.itemLength && options.itemName
+              ? ` | ${options.itemLength}개의 ${options.itemName}`
+              : ""
+          }${
+            options.description && options.description.text
+              ? ` • ${options.description.text}`
+              : ""
+          }`,
+          options.description?.icon ?? null
         )
-          return;
-
-        switch (reaction.emoji.name) {
-          case options.emojis[0]:
-            page = page > 0 ? --page : pages.length - 1;
-            break;
-
-          case options.emojis[1]:
-            page = page + 1 < pages.length ? ++page : 0;
-            break;
-
-          case options.emojis[2]:
-            return collector.stop();
-        }
-
-        curPage.edit(
-          pages[page].setFooter(
-            `페이지 ${page + 1}/${pages.length}${
-              options.itemLength && options.itemName
-                ? ` | ${options.itemLength}개의 ${options.itemName}`
-                : ""
-            }${
-              options.description && options.description.text
-                ? ` • ${options.description.text}`
-                : ""
-            }`,
-            options.description?.icon ?? null
-          )
-        );
-      });
-
-      collector.on("end", () => {
-        curPage.reactions.removeAll();
-        if (curPage.editable)
-          curPage.edit(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setDescription("세션이 만료되었습니다. 다시 요청해주세요.")
-          );
-      });
+      ]
     });
+  });
+
+  collector.on("end", () => {
+    curPage.edit({ components: [] });
+  });
 }
