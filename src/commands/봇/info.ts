@@ -31,8 +31,7 @@ import {
   Util,
   Message,
   MessageAttachment,
-  GuildMember,
-  APIMessage
+  GuildMember
 } from "discord.js";
 import moment from "moment-timezone";
 import path from "path";
