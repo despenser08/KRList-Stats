@@ -419,7 +419,8 @@ export default class extends Command {
                 legend: {
                   position: "bottom",
                   labels: { boxHeight: 3, font: { size: 20 } }
-                }
+                },
+                datalabels: { display: false }
               },
               scales: { yAxes: { ticks: { precision: 0 } } }
             }
@@ -571,6 +572,9 @@ function createChart(
     width,
     height,
     chartCallback: (chart) => {
+      delete require.cache[require.resolve("chart.js")];
+      delete require.cache[require.resolve("chartjs-plugin-datalabels")];
+
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
       chart.register(ChartDataLabels);
