@@ -28,6 +28,7 @@ import {
 } from "discord.js";
 import moment from "moment-timezone";
 import path from "path";
+import { timezone } from "../../config";
 import {
   Colors,
   DiscordEndPoints,
@@ -143,9 +144,9 @@ export default class extends Command {
 
         let stats = botDB.stats;
         if (limit instanceof Date) {
-          const date = moment(limit).startOf("day");
+          const date = moment(limit).tz(timezone).startOf("day");
           const nextDate = endOfDate
-            ? moment(endOfDate).endOf("day")
+            ? moment(endOfDate).tz(timezone).endOf("day")
             : date.endOf("day");
 
           stats = stats.filter(
