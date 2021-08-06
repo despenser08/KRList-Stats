@@ -36,7 +36,7 @@ export default class extends Command {
         "커맨드"
       ],
       channel: "guild",
-      description: {
+      fullDescription: {
         content: "도움말을 보여줍니다.",
         usage: "[명령어 | 카테고리]"
       },
@@ -61,39 +61,43 @@ export default class extends Command {
     { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }
   ) {
     if (cmdOrCtgry instanceof Command) {
-      return message.channel.send(
-        new MessageEmbed()
-          .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
-          .setColor(Colors.PRIMARY)
-          .setDescription(
-            `**별칭**: ${
-              cmdOrCtgry.aliases
-                ? cmdOrCtgry.aliases
-                    .map((v) => `\`${Util.escapeInlineCode(v)}\``)
-                    .join(", ")
-                : "별칭 없음"
-            }\n**설명**: ${
-              cmdOrCtgry.description.content || "설명 없음"
-            }\n**사용법**: ${
-              `${message.util.parsed.prefix}${cmdOrCtgry} ${
-                cmdOrCtgry.description.usage || ""
-              }` || "사용법 없음"
-            }`
-          )
-      );
+      return message.reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
+            .setColor(Colors.PRIMARY)
+            .setDescription(
+              `**별칭**: ${
+                cmdOrCtgry.aliases
+                  ? cmdOrCtgry.aliases
+                      .map((v) => `\`${Util.escapeInlineCode(v)}\``)
+                      .join(", ")
+                  : "별칭 없음"
+              }\n**설명**: ${
+                cmdOrCtgry.fullDescription.content || "설명 없음"
+              }\n**사용법**: ${
+                `${message.util.parsed.prefix}${cmdOrCtgry} ${
+                  cmdOrCtgry.fullDescription.usage || ""
+                }` || "사용법 없음"
+              }`
+            )
+        ]
+      });
     } else if (cmdOrCtgry instanceof Category) {
-      return message.channel.send(
-        new MessageEmbed()
-          .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
-          .setColor(Colors.PRIMARY)
-          .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
-          .setDescription(
-            cmdOrCtgry
-              .filter((cmd) => cmd.aliases.length > 0)
-              .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
-              .join("\n") || "이 카테고리에는 명령어가 없습니다."
-          )
-      );
+      return message.reply({
+        embeds: [
+          new MessageEmbed()
+            .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
+            .setColor(Colors.PRIMARY)
+            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .setDescription(
+              cmdOrCtgry
+                .filter((cmd) => cmd.aliases.length > 0)
+                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+            )
+        ]
+      });
     }
 
     const pages: MessageEmbed[] = [];
@@ -115,7 +119,7 @@ export default class extends Command {
     }
 
     let cmdCount = 0;
-    this.handler.categories.array().forEach((cmd) => (cmdCount += cmd.size));
+    this.handler.categories.toJSON().forEach((cmd) => (cmdCount += cmd.size));
 
     return listEmbed(message, pages, {
       itemLength: cmdCount,

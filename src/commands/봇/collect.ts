@@ -27,7 +27,7 @@ export default class extends Command {
   constructor() {
     super("수집", {
       aliases: ["수집", "collect", "track", "추적"],
-      description: {
+      fullDescription: {
         content: "해당 봇의 정보를 수집합니다.",
         usage: "<봇>"
       },
@@ -45,7 +45,7 @@ export default class extends Command {
     message: Message,
     { userOrId }: { userOrId: string | User | GuildMember }
   ) {
-    const msg = await message.channel.send("잠시만 기다려주세요...");
+    const msg = await message.reply("잠시만 기다려주세요...");
 
     const id =
       userOrId instanceof User || userOrId instanceof GuildMember
@@ -77,61 +77,69 @@ export default class extends Command {
         );
       })
       .catch((e) => {
-        if (isInterface<AxiosError>(e, "response"))
+        if (isInterface<AxiosError>(e, "response")) {
           switch (e.response.status) {
             case 404:
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
-                    )}\`)`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)`
+                    )
+                ]
+              });
 
             case 400:
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
-                    )}\`)`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)`
+                    )
+                ]
+              });
 
             default:
               this.client.logger.warn(
                 `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
               );
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
-                    )}\`)\n${e}`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)\n${e}`
+                    )
+                ]
+              });
           }
-        else {
+        } else {
           this.client.logger.warn(
             `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
           );
-          return msg.edit(
-            "",
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  userOrId.toString()
-                )}\`)\n${e}`
-              )
-          );
+          return msg.edit({
+            content: "",
+            embeds: [
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setDescription(
+                  `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                    userOrId.toString()
+                  )}\`)\n${e}`
+                )
+            ]
+          });
         }
       });
   }

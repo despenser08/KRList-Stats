@@ -26,7 +26,7 @@ export default class extends Command {
   constructor() {
     super("리스트", {
       aliases: ["리스트", "list"],
-      description: {
+      fullDescription: {
         content: "카테고리로 봇 리스트를 보여줍니다.",
         usage: '<"하트" [페이지 번호]> | <"신규">'
       },
@@ -59,7 +59,7 @@ export default class extends Command {
     message: Message,
     { category, page }: { category: "votes" | "new"; page: number }
   ) {
-    const msg = await message.channel.send("잠시만 기다려주세요...");
+    const msg = await message.reply("잠시만 기다려주세요...");
 
     if (category === "votes") {
       await axios
@@ -74,28 +74,30 @@ export default class extends Command {
           }) => {
             const res = data.map((rawBot) => convert.bot(rawBot));
 
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle("봇 투표순 리스트")
-                .setDescription(
-                  res
-                    .map(
-                      (bot, index) =>
-                        `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
-                          bot.tag
-                        }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                          bot.id
-                        }>) ${bot.status.emoji} [서버: ${
-                          bot.servers || "N/A"
-                        }] - ❤️${bot.votes}`
-                    )
-                    .join("\n")
-                )
-                .setFooter(`페이지 ${page}`)
-                .setTimestamp()
-            );
+            return msg.edit({
+              content: "",
+              embeds: [
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setTitle("봇 투표순 리스트")
+                  .setDescription(
+                    res
+                      .map(
+                        (bot, index) =>
+                          `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
+                            bot.tag
+                          }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
+                            bot.id
+                          }>) ${bot.status.emoji} [서버: ${
+                            bot.servers || "N/A"
+                          }] - ❤️${bot.votes}`
+                      )
+                      .join("\n")
+                  )
+                  .setFooter(`페이지 ${page}`)
+                  .setTimestamp()
+              ]
+            });
           }
         )
         .catch((e) => {
@@ -119,25 +121,29 @@ export default class extends Command {
           }) => {
             const res = data.map((rawBot) => convert.bot(rawBot));
 
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle("신규 봇 리스트")
-                .setDescription(
-                  res
-                    .map(
-                      (bot, index) =>
-                        `**${index + 1}.** [${bot.name}#${
-                          bot.tag
-                        }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                          bot.id
-                        }>) ${bot.status.emoji} [서버: ${bot.servers || "N/A"}]`
-                    )
-                    .join("\n")
-                )
-                .setTimestamp()
-            );
+            return msg.edit({
+              content: "",
+              embeds: [
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setTitle("신규 봇 리스트")
+                  .setDescription(
+                    res
+                      .map(
+                        (bot, index) =>
+                          `**${index + 1}.** [${bot.name}#${
+                            bot.tag
+                          }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
+                            bot.id
+                          }>) ${bot.status.emoji} [서버: ${
+                            bot.servers || "N/A"
+                          }]`
+                      )
+                      .join("\n")
+                  )
+                  .setTimestamp()
+              ]
+            });
           }
         )
         .catch((e) => {

@@ -31,7 +31,7 @@ export default class extends Listener {
       `Requested: "${message.content}"\nError on "${command}" command: ${error.message}\n${error.stack}`
     );
 
-    return message.channel.send(
+    return message.reply(
       `\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n${error}`
     );
   }

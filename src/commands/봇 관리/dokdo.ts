@@ -32,7 +32,7 @@ export default class extends Command {
         "exec",
         "실행"
       ],
-      description: {
+      fullDescription: {
         content: "wonderlandpark님이 개발하신 디스코드 봇 디버깅 툴"
       },
       ownerOnly: true

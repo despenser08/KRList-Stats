@@ -16,14 +16,6 @@
  */
 
 import axios, { AxiosError } from "axios";
-import {
-  BubbleDataPoint,
-  ChartConfiguration,
-  ChartTypeRegistry,
-  ScatterDataPoint
-} from "chart.js";
-import { ChartJSNodeCanvas } from "chartjs-node-canvas";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Argument, Command } from "discord-akairo";
 import {
   MessageEmbed,
@@ -34,8 +26,7 @@ import {
   GuildMember
 } from "discord.js";
 import moment from "moment-timezone";
-import path from "path";
-import { timezone } from "../../config";
+import { TIMEZONE } from "../../config";
 import {
   Colors,
   DiscordEndPoints,
@@ -45,6 +36,7 @@ import {
 import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
+import createChart from "../../lib/utils/createChart";
 import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import listEmbed from "../../lib/utils/listEmbed";
@@ -64,7 +56,7 @@ export default class extends Command {
         "status",
         "상태"
       ],
-      description: {
+      fullDescription: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
           '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 날짜 | 최근 정보 수 [날짜]]]>'
@@ -131,7 +123,7 @@ export default class extends Command {
       endOfDate?: Date;
     }
   ) {
-    const msg = await message.channel.send("잠시만 기다려주세요...");
+    const msg = await message.reply("잠시만 기다려주세요...");
 
     const id =
       userOrId instanceof User || userOrId instanceof GuildMember
@@ -151,10 +143,10 @@ export default class extends Command {
 
         let stats = botDB.stats;
         if (limit instanceof Date) {
-          const date = moment(limit).tz(timezone).startOf("day");
+          const date = moment(limit).tz(TIMEZONE).startOf("day");
           const nextDate = endOfDate
-            ? moment(endOfDate).tz(timezone).endOf("day")
-            : moment(limit).tz(timezone).endOf("day");
+            ? moment(endOfDate).tz(TIMEZONE).endOf("day")
+            : moment(limit).tz(TIMEZONE).endOf("day");
 
           stats = stats.filter(
             (stat) =>
@@ -173,7 +165,6 @@ export default class extends Command {
         if (info === "now") {
           const flags = bot.flags.toArray();
 
-          msg.delete();
           const pages: MessageEmbed[] = [];
 
           pages.push(
@@ -224,9 +215,17 @@ export default class extends Command {
               )
               .addField("라이브러리", bot.lib, true)
               .addField("접두사", bot.prefix, true)
-              .addField("샤드 수", bot.shards || "N/A", true)
-              .addField("서버 수", bot.servers || "N/A", true)
-              .addField("투표 수", bot.votes, true)
+              .addField(
+                "샤드 수",
+                bot.shards ? bot.shards.toString() : "N/A",
+                true
+              )
+              .addField(
+                "서버 수",
+                bot.servers ? bot.servers.toString() : "N/A",
+                true
+              )
+              .addField("투표 수", bot.votes.toString(), true)
               .addField(
                 "플래그",
                 flags.length < 1
@@ -268,7 +267,7 @@ export default class extends Command {
               .setDescription(filterDesc(bot.desc))
           );
 
-          return listEmbed(message, pages);
+          return listEmbed(message, pages, { message: msg });
         } else if (info === "status") {
           if (stats.length < 1)
             return msg.edit(
@@ -340,11 +339,10 @@ export default class extends Command {
             }
           });
 
-          msg.delete();
-          return message.channel.send(
-            `**${Util.escapeBold(bot.name)}** 차트입니다.`,
-            new MessageAttachment(chart, "chart.png")
-          );
+          return msg.edit({
+            content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+            files: [new MessageAttachment(chart, "chart.png")]
+          });
         } else if (info === "keyword") {
           if (stats.length < 1)
             return msg.edit(
@@ -360,22 +358,25 @@ export default class extends Command {
               )}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
             );
 
-          msg.delete();
-
-          return message.channel.send(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setTitle(`${bot.name} 검색 키워드`)
-              .setDescription(
-                [...botDB.keywords.keys()]
-                  .sort((a, b) => botDB.keywords.get(b) - botDB.keywords.get(a))
-                  .map(
-                    (key, index) =>
-                      `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`
-                  )
-                  .join("\n")
-              )
-          );
+          return msg.edit({
+            content: "",
+            embeds: [
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setTitle(`${bot.name} 검색 키워드`)
+                .setDescription(
+                  [...botDB.keywords.keys()]
+                    .sort(
+                      (a, b) => botDB.keywords.get(b) - botDB.keywords.get(a)
+                    )
+                    .map(
+                      (key, index) =>
+                        `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`
+                    )
+                    .join("\n")
+                )
+            ]
+          });
         } else {
           if (stats.length < 1)
             return msg.edit(
@@ -432,11 +433,10 @@ export default class extends Command {
             }
           });
 
-          msg.delete();
-          return message.channel.send(
-            `**${Util.escapeBold(bot.name)}** 차트입니다.`,
-            new MessageAttachment(chart, "chart.png")
-          );
+          return msg.edit({
+            content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+            files: [new MessageAttachment(chart, "chart.png")]
+          });
         }
       })
       .catch(async (e) => {
@@ -456,163 +456,121 @@ export default class extends Command {
             const user = convert.user(data.data);
             const flags = user.flags.toArray();
 
-            return msg.edit(
-              "",
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle(`${user.username}#${user.tag}`)
-                .setURL(KoreanbotsEndPoints.URL.user(user.id))
-                .setThumbnail(
-                  `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
-                    user.id,
-                    {
-                      format: "webp",
-                      size: 256
-                    }
-                  )}`
-                )
-                .setDescription(`<@${user.id}>`)
-                .addField(
-                  "봇",
-                  user.bots.length < 1
-                    ? "없음"
-                    : user.bots
-                        .map(
-                          (bot) =>
-                            `[${bot.name}#${
-                              bot.tag
-                            }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                              bot.id
-                            }>) ${bot.status.emoji} [서버: ${
-                              bot.servers || "N/A"
-                            }]\n> ${bot.intro}`
-                        )
-                        .join("\n")
-                )
-                .addField(
-                  "플래그",
-                  flags.length < 1
-                    ? "없음"
-                    : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
-                  true
-                )
-                .addField(
-                  "GitHub",
-                  user.github ? `https://github.com/${user.github}` : "없음",
-                  true
-                )
-            );
+            return msg.edit({
+              content: "",
+              embeds: [
+                new MessageEmbed()
+                  .setColor(Colors.PRIMARY)
+                  .setTitle(`${user.username}#${user.tag}`)
+                  .setURL(KoreanbotsEndPoints.URL.user(user.id))
+                  .setThumbnail(
+                    `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
+                      user.id,
+                      {
+                        format: "webp",
+                        size: 256
+                      }
+                    )}`
+                  )
+                  .setDescription(`<@${user.id}>`)
+                  .addField(
+                    "봇",
+                    user.bots.length < 1
+                      ? "없음"
+                      : user.bots
+                          .map(
+                            (bot) =>
+                              `[${bot.name}#${
+                                bot.tag
+                              }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
+                                bot.id
+                              }>) ${bot.status.emoji} [서버: ${
+                                bot.servers || "N/A"
+                              }]\n> ${bot.intro}`
+                          )
+                          .join("\n")
+                  )
+                  .addField(
+                    "플래그",
+                    flags.length < 1
+                      ? "없음"
+                      : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
+                    true
+                  )
+                  .addField(
+                    "GitHub",
+                    user.github ? `https://github.com/${user.github}` : "없음",
+                    true
+                  )
+              ]
+            });
           })
           .catch((e) => {
-            if (isInterface<AxiosError>(e, "response"))
+            if (isInterface<AxiosError>(e, "response")) {
               switch (e.response.status) {
                 case 404:
-                  return msg.edit(
-                    "",
-                    new MessageEmbed()
-                      .setColor(Colors.PRIMARY)
-                      .setDescription(
-                        `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)`
-                      )
-                  );
+                  return msg.edit({
+                    content: "",
+                    embeds: [
+                      new MessageEmbed()
+                        .setColor(Colors.PRIMARY)
+                        .setDescription(
+                          `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                            userOrId.toString()
+                          )}\`)`
+                        )
+                    ]
+                  });
 
                 case 400:
-                  return msg.edit(
-                    "",
-                    new MessageEmbed()
-                      .setColor(Colors.PRIMARY)
-                      .setDescription(
-                        `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)`
-                      )
-                  );
+                  return msg.edit({
+                    content: "",
+                    embeds: [
+                      new MessageEmbed()
+                        .setColor(Colors.PRIMARY)
+                        .setDescription(
+                          `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                            userOrId.toString()
+                          )}\`)`
+                        )
+                    ]
+                  });
 
                 default:
                   this.client.logger.warn(
                     `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
                   );
-                  return msg.edit(
-                    "",
-                    new MessageEmbed()
-                      .setColor(Colors.PRIMARY)
-                      .setDescription(
-                        `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)\n${e}`
-                      )
-                  );
+                  return msg.edit({
+                    content: "",
+                    embeds: [
+                      new MessageEmbed()
+                        .setColor(Colors.PRIMARY)
+                        .setDescription(
+                          `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                            userOrId.toString()
+                          )}\`)\n${e}`
+                        )
+                    ]
+                  });
               }
-            else {
+            } else {
               this.client.logger.warn(
                 `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
               );
-              return msg.edit(
-                "",
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setDescription(
-                    `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
-                    )}\`)\n${e}`
-                  )
-              );
+              return msg.edit({
+                content: "",
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setDescription(
+                      `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                        userOrId.toString()
+                      )}\`)\n${e}`
+                    )
+                ]
+              });
             }
           });
       });
   }
-}
-
-function createChart(
-  width: number,
-  height: number,
-  configuration: ChartConfiguration<
-    keyof ChartTypeRegistry,
-    (number | ScatterDataPoint | BubbleDataPoint)[],
-    unknown
-  >
-) {
-  const chart = new ChartJSNodeCanvas({
-    width,
-    height,
-    chartCallback: (chart) => {
-      delete require.cache[require.resolve("chart.js")];
-      delete require.cache[require.resolve("chartjs-plugin-datalabels")];
-
-      chart.defaults.font.family = "Noto Sans KR";
-      chart.defaults.color = "#000";
-      chart.register(ChartDataLabels);
-    }
-  });
-  chart.registerFont(
-    path.join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "assets",
-      "fonts",
-      "NotoSansKR-Regular.otf"
-    ),
-    {
-      family: "Noto Sans KR"
-    }
-  );
-
-  if (!configuration.plugins) configuration.plugins = [];
-  configuration.plugins.unshift({
-    id: "white_background_color",
-    beforeDraw: (chart) => {
-      const ctx = chart.canvas.getContext("2d");
-      ctx.save();
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, chart.width, chart.height);
-      ctx.restore();
-    }
-  });
-
-  return chart.renderToBuffer(configuration, "image/png");
 }
