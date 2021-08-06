@@ -139,7 +139,7 @@ export default class extends Command {
 
             default:
               this.client.logger.warn(
-                `FetchError: Error occurred while fetching search list (input: "${query}"):\n${e}`
+                `FetchError: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
               );
               return msg.edit(
                 "",
@@ -154,7 +154,7 @@ export default class extends Command {
           }
         else {
           this.client.logger.warn(
-            `Error: Error occurred while fetching search list (input: "${query}"):\n${e}`
+            `Error: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
           );
           return msg.edit(
             "",

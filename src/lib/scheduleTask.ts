@@ -53,7 +53,7 @@ export default async function (client: AkairoClient) {
         })
         .catch((e) => {
           client.logger.warn(
-            `FetchError: Error occurred while fetching bot ${bot.id}:\n${e}`
+            `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
           );
         });
 
@@ -80,7 +80,7 @@ export default async function (client: AkairoClient) {
         })
         .catch((e) => {
           client.logger.warn(
-            `FetchError: Error occurred while updaing bot server count:\n${e}`
+            `FetchError: Error occurred while updaing bot server count:\n${e.message}\n${e.stack}`
           );
         });
   });

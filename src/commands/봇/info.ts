@@ -16,7 +16,14 @@
  */
 
 import axios, { AxiosError } from "axios";
-import { CanvasRenderService } from "chartjs-node-canvas";
+import {
+  BubbleDataPoint,
+  ChartConfiguration,
+  ChartTypeRegistry,
+  ScatterDataPoint
+} from "chart.js";
+import { ChartJSNodeCanvas } from "chartjs-node-canvas";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Argument, Command } from "discord-akairo";
 import {
   MessageEmbed,
@@ -24,7 +31,8 @@ import {
   Util,
   Message,
   MessageAttachment,
-  GuildMember
+  GuildMember,
+  APIMessage
 } from "discord.js";
 import moment from "moment-timezone";
 import path from "path";
@@ -287,83 +295,51 @@ export default class extends Command {
           for await (const stat of stats.map((bot) => bot.status))
             status[stat]++;
 
-          const canvas = new CanvasRenderService(1080, 1080, (chart) => {
-            chart.defaults.font.family = "Noto Sans KR";
-            chart.defaults.color = "#000";
-          });
-          canvas.registerFont(
-            path.join(
-              __dirname,
-              "..",
-              "..",
-              "..",
-              "assets",
-              "fonts",
-              "NotoSansKR-Regular.otf"
-            ),
-            {
-              family: "Noto Sans KR"
-            }
-          );
-
-          const image = await canvas.renderToBuffer(
-            {
-              type: "pie",
-              data: {
-                labels: [
-                  "온라인",
-                  "자리 비움",
-                  "다른 용무 중",
-                  "방송 중",
-                  "오프라인"
-                ],
-                datasets: [
-                  {
-                    label: "Status",
-                    data: Object.values(status),
-                    backgroundColor: [
-                      "rgb(59, 165, 93)",
-                      "rgb(208, 143, 30)",
-                      "rgb(221, 64, 68)",
-                      "rgb(88, 53, 147)",
-                      "rgb(116, 127, 141)"
-                    ]
-                  }
-                ]
-              },
-              plugins: [
-                {
-                  id: "white_background_color",
-                  beforeDraw: (chart) => {
-                    const ctx = chart.canvas.getContext("2d");
-                    ctx.save();
-                    ctx.globalCompositeOperation = "destination-over";
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(0, 0, chart.width, chart.height);
-                    ctx.restore();
-                  }
-                }
+          const chart = await createChart(1080, 1080, {
+            type: "pie",
+            data: {
+              labels: [
+                "온라인",
+                "자리 비움",
+                "다른 용무 중",
+                "방송 중",
+                "오프라인"
               ],
-              options: {
-                plugins: {
-                  title: {
-                    display: true,
-                    text: `${bot.name} 상태`,
-                    font: { size: 40 }
-                  },
-                  legend: {
-                    position: "bottom",
-                    labels: { boxHeight: 3, font: { size: 20 } }
-                  }
+              datasets: [
+                {
+                  label: "Status",
+                  data: Object.values(status),
+                  backgroundColor: [
+                    "rgb(59, 165, 93)",
+                    "rgb(208, 143, 30)",
+                    "rgb(221, 64, 68)",
+                    "rgb(88, 53, 147)",
+                    "rgb(116, 127, 141)"
+                  ]
+                }
+              ]
+            },
+            options: {
+              plugins: {
+                datalabels: { color: "#000" },
+                title: {
+                  display: true,
+                  text: `${bot.name} 상태`,
+                  font: { size: 40 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
                 }
               }
-            },
-            "image/png"
-          );
+            }
+          });
 
-          msg.edit(`**${Util.escapeBold(bot.name)}** 차트입니다.`);
-          return message.channel.send(
-            new MessageAttachment(image, "chart.png")
+          return msg.edit(
+            new APIMessage(message.channel, {
+              content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+              files: [new MessageAttachment(chart, "chart.png")]
+            })
           );
         } else if (info === "keyword") {
           if (stats.length < 1)
@@ -417,78 +393,45 @@ export default class extends Command {
           const color =
             info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
 
-          const canvas = new CanvasRenderService(1920, 1080, (chart) => {
-            chart.defaults.font.family = "Noto Sans KR";
-            chart.defaults.color = "#000";
-          });
-          canvas.registerFont(
-            path.join(
-              __dirname,
-              "..",
-              "..",
-              "..",
-              "assets",
-              "fonts",
-              "NotoSansKR-Regular.otf"
-            ),
-            {
-              family: "Noto Sans KR"
-            }
-          );
-
-          const image = await canvas.renderToBuffer(
-            {
-              type: "line",
-              data: {
-                labels: dates,
-                datasets: [
-                  {
-                    label: `${info === "servers" ? "서버" : "투표"} 수`,
-                    data: datas,
-                    backgroundColor: [color],
-                    borderColor: [color],
-                    borderWidth: 5,
-                    pointRadius: 0,
-                    tension: 0.1
-                  }
-                ]
-              },
-              plugins: [
+          const chart = await createChart(1920, 1080, {
+            type: "line",
+            data: {
+              labels: dates,
+              datasets: [
                 {
-                  id: "white_background_color",
-                  beforeDraw: (chart) => {
-                    const ctx = chart.canvas.getContext("2d");
-                    ctx.save();
-                    ctx.globalCompositeOperation = "destination-over";
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(0, 0, chart.width, chart.height);
-                    ctx.restore();
-                  }
+                  label: `${info === "servers" ? "서버" : "투표"} 수`,
+                  data: datas,
+                  backgroundColor: [color],
+                  borderColor: [color],
+                  borderWidth: 5,
+                  pointRadius: 0,
+                  tension: 0.1
                 }
-              ],
-              options: {
-                plugins: {
-                  title: {
-                    display: true,
-                    text: `${bot.name} ${
-                      info === "servers" ? "서버" : "투표"
-                    } 수`,
-                    font: { size: 40 }
-                  },
-                  legend: {
-                    position: "bottom",
-                    labels: { boxHeight: 3, font: { size: 20 } }
-                  }
-                },
-                scales: { yAxes: { ticks: { precision: 0 } } }
-              }
+              ]
             },
-            "image/png"
-          );
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `${bot.name} ${
+                    info === "servers" ? "서버" : "투표"
+                  } 수`,
+                  font: { size: 40 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
+                }
+              },
+              scales: { yAxes: { ticks: { precision: 0 } } }
+            }
+          });
 
-          msg.edit(`**${Util.escapeBold(bot.name)}** 차트입니다.`);
-          return message.channel.send(
-            new MessageAttachment(image, "chart.png")
+          return msg.edit(
+            new APIMessage(message.channel, {
+              content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+              files: [new MessageAttachment(chart, "chart.png")]
+            })
           );
         }
       })
@@ -496,11 +439,11 @@ export default class extends Command {
         if (isInterface<AxiosError>(e, "response")) {
           if (e.response.status < 400 || e.response.status > 499)
             this.client.logger.warn(
-              `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+              `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
             );
         } else
           this.client.logger.warn(
-            `Error: Error occurred while fetching bot ${id}:\n${e}`
+            `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
           );
 
         return axios
@@ -585,7 +528,7 @@ export default class extends Command {
 
                 default:
                   this.client.logger.warn(
-                    `FetchError: Error occurred while fetching bot ${id}:\n${e}`
+                    `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
                   );
                   return msg.edit(
                     "",
@@ -600,7 +543,7 @@ export default class extends Command {
               }
             else {
               this.client.logger.warn(
-                `Error: Error occurred while fetching bot ${id}:\n${e}`
+                `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
               );
               return msg.edit(
                 "",
@@ -616,4 +559,53 @@ export default class extends Command {
           });
       });
   }
+}
+
+function createChart(
+  width: number,
+  height: number,
+  configuration: ChartConfiguration<
+    keyof ChartTypeRegistry,
+    (number | ScatterDataPoint | BubbleDataPoint)[],
+    unknown
+  >
+) {
+  const chart = new ChartJSNodeCanvas({
+    width,
+    height,
+    chartCallback: (chart) => {
+      chart.defaults.font.family = "Noto Sans KR";
+      chart.defaults.color = "#000";
+      chart.register(ChartDataLabels);
+    }
+  });
+  chart.registerFont(
+    path.join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "assets",
+      "fonts",
+      "NotoSansKR-Regular.otf"
+    ),
+    {
+      family: "Noto Sans KR"
+    }
+  );
+
+  if (!configuration.plugins) configuration.plugins = [];
+  configuration.plugins.unshift({
+    id: "white_background_color",
+    beforeDraw: (chart) => {
+      const ctx = chart.canvas.getContext("2d");
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, chart.width, chart.height);
+      ctx.restore();
+    }
+  });
+
+  return chart.renderToBuffer(configuration, "image/png");
 }

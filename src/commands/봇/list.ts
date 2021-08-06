@@ -100,7 +100,7 @@ export default class extends Command {
         )
         .catch((e) => {
           this.client.logger.warn(
-            `FetchError: Error occurred while fetching bot votes list:\n${e}`
+            `FetchError: Error occurred while fetching bot votes list:\n${e.message}\n${e.stack}`
           );
           return msg.edit(
             `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
@@ -142,7 +142,7 @@ export default class extends Command {
         )
         .catch((e) => {
           this.client.logger.warn(
-            `FetchError: Error occurred while fetching bot new list:\n${e}`
+            `FetchError: Error occurred while fetching bot new list:\n${e.message}\n${e.stack}`
           );
           return msg.edit(
             `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`

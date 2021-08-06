@@ -26,6 +26,7 @@
     "axios": "^0.21.1",
     "chart.js": "^3.3.2",
     "chartjs-node-canvas": "^3.2.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
     "dokdo": "^0.4.0",

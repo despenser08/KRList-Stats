@@ -98,7 +98,9 @@ export default class KRBSClient extends AkairoClient {
 
     connect()
       .then((m) => this.logger.info(`Database ${m.connection.host} connected.`))
-      .catch((e) => this.logger.error(`Database connect error: ${e}`));
+      .catch((e) =>
+        this.logger.error(`Database connect error: ${e.message}\n${e.stack}`)
+      );
   }
 
   public async start(token?: string) {
