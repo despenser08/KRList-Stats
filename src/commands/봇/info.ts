@@ -335,11 +335,10 @@ export default class extends Command {
             }
           });
 
-          return msg.edit(
-            new APIMessage(message.channel, {
-              content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
-              files: [new MessageAttachment(chart, "chart.png")]
-            })
+          msg.delete();
+          return message.channel.send(
+            `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+            new MessageAttachment(chart, "chart.png")
           );
         } else if (info === "keyword") {
           if (stats.length < 1)
@@ -427,11 +426,10 @@ export default class extends Command {
             }
           });
 
-          return msg.edit(
-            new APIMessage(message.channel, {
-              content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
-              files: [new MessageAttachment(chart, "chart.png")]
-            })
+          msg.delete();
+          return message.channel.send(
+            `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+            new MessageAttachment(chart, "chart.png")
           );
         }
       })
