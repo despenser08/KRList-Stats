@@ -147,7 +147,7 @@ export default class extends Command {
           const date = moment(limit).tz(timezone).startOf("day");
           const nextDate = endOfDate
             ? moment(endOfDate).tz(timezone).endOf("day")
-            : date.endOf("day");
+            : moment(limit).tz(timezone).endOf("day");
 
           stats = stats.filter(
             (stat) =>
@@ -308,7 +308,7 @@ export default class extends Command {
 
           const image = await canvas.renderToBuffer(
             {
-              type: "polarArea",
+              type: "pie",
               data: {
                 labels: [
                   "온라인",
