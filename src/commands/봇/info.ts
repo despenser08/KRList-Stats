@@ -320,7 +320,13 @@ export default class extends Command {
             },
             options: {
               plugins: {
-                datalabels: { color: "#000" },
+                datalabels: {
+                  formatter: (value, ctx) =>
+                    value !== 0
+                      ? `${ctx.chart.data.labels[ctx.dataIndex]}: ${value}분`
+                      : "",
+                  font: { size: 30 }
+                },
                 title: {
                   display: true,
                   text: `${bot.name} 상태`,
