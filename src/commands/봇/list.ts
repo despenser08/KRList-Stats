@@ -75,7 +75,7 @@ export default class extends Command {
             const res = data.map((rawBot) => convert.bot(rawBot));
 
             return msg.edit({
-              content: "",
+              content: null,
               embeds: [
                 new MessageEmbed()
                   .setColor(Colors.PRIMARY)
@@ -122,7 +122,7 @@ export default class extends Command {
             const res = data.map((rawBot) => convert.bot(rawBot));
 
             return msg.edit({
-              content: "",
+              content: null,
               embeds: [
                 new MessageEmbed()
                   .setColor(Colors.PRIMARY)

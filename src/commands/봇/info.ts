@@ -359,7 +359,7 @@ export default class extends Command {
             );
 
           return msg.edit({
-            content: "",
+            content: null,
             embeds: [
               new MessageEmbed()
                 .setColor(Colors.PRIMARY)
@@ -457,7 +457,7 @@ export default class extends Command {
             const flags = user.flags.toArray();
 
             return msg.edit({
-              content: "",
+              content: null,
               embeds: [
                 new MessageEmbed()
                   .setColor(Colors.PRIMARY)
@@ -510,7 +510,7 @@ export default class extends Command {
               switch (e.response.status) {
                 case 404:
                   return msg.edit({
-                    content: "",
+                    content: null,
                     embeds: [
                       new MessageEmbed()
                         .setColor(Colors.PRIMARY)
@@ -524,7 +524,7 @@ export default class extends Command {
 
                 case 400:
                   return msg.edit({
-                    content: "",
+                    content: null,
                     embeds: [
                       new MessageEmbed()
                         .setColor(Colors.PRIMARY)
@@ -541,7 +541,7 @@ export default class extends Command {
                     `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
                   );
                   return msg.edit({
-                    content: "",
+                    content: null,
                     embeds: [
                       new MessageEmbed()
                         .setColor(Colors.PRIMARY)
@@ -558,7 +558,7 @@ export default class extends Command {
                 `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
               );
               return msg.edit({
-                content: "",
+                content: null,
                 embeds: [
                   new MessageEmbed()
                     .setColor(Colors.PRIMARY)

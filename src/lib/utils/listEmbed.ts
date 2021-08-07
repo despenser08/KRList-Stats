@@ -55,7 +55,7 @@ export default async function (
 
   let page = 0;
   const content = {
-    content: "",
+    content: null,
     embeds: [
       pages[page].setFooter(
         `페이지 ${page + 1}/${pages.length}${
