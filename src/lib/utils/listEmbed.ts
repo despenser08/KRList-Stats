@@ -78,11 +78,18 @@ export default async function (
   else curPage = await targetMessage.reply(content);
 
   const collector = curPage.createMessageComponentCollector({
-    filter: (i) => i.user.id === targetMessage.author.id,
     time: options.timeout
   });
 
   collector.on("collect", async (interaction) => {
+    await interaction.deferUpdate();
+
+    if (interaction.user.id !== targetMessage.author.id)
+      return interaction.reply({
+        content: "요청한 사람만 조작할 수 있습니다.",
+        ephemeral: true
+      });
+
     switch (interaction.customId) {
       case buttons[0].customId:
         page = page > 0 ? --page : pages.length - 1;
