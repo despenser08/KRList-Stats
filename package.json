@@ -28,7 +28,7 @@
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "https://github.com/discord-akairo/discord-akairo#master",
-    "discord.js": "^13.0.0",
+    "discord.js": "^13.0.1",
     "dokdo": "^0.4.0",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.3",
