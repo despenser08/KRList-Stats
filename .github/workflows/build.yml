@@ -1,8 +1,5 @@
 name: Build
-on:
-  push:
-    branches:
-      - "main"
+on: [push, pull_request]
 
 jobs:
   test:
@@ -38,6 +35,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.IMAGE }}:latest
