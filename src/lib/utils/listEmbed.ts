@@ -119,9 +119,8 @@ export default async function (
       });
     } else {
       await interaction.deferReply({ ephemeral: true });
-      interaction.followUp({
-        content: "요청한 사람만 조작할 수 있습니다.",
-        ephemeral: true
+      await interaction.editReply({
+        content: "요청한 사람만 조작할 수 있습니다."
       });
     }
   });
