@@ -82,46 +82,46 @@ export default async function (
   });
 
   collector.on("collect", async (interaction) => {
-    await interaction.deferUpdate();
+    await interaction.deferReply();
 
-    if (interaction.user.id !== targetMessage.author.id)
-      return interaction.reply({
+    if (interaction.user.id == targetMessage.author.id) {
+      switch (interaction.customId) {
+        case buttons[0].customId:
+          page = page > 0 ? --page : pages.length - 1;
+          break;
+
+        case buttons[1].customId:
+          return collector.stop();
+
+        case buttons[2].customId:
+          page = page + 1 < pages.length ? ++page : 0;
+          break;
+
+        default:
+          return;
+      }
+
+      await interaction.editReply({
+        embeds: [
+          pages[page].setFooter(
+            `페이지 ${page + 1}/${pages.length}${
+              options.itemLength && options.itemName
+                ? ` | ${options.itemLength}개의 ${options.itemName}`
+                : ""
+            }${
+              options.description && options.description.text
+                ? ` • ${options.description.text}`
+                : ""
+            }`,
+            options.description?.icon ?? null
+          )
+        ]
+      });
+    } else
+      interaction.followUp({
         content: "요청한 사람만 조작할 수 있습니다.",
         ephemeral: true
       });
-
-    switch (interaction.customId) {
-      case buttons[0].customId:
-        page = page > 0 ? --page : pages.length - 1;
-        break;
-
-      case buttons[1].customId:
-        return collector.stop();
-
-      case buttons[2].customId:
-        page = page + 1 < pages.length ? ++page : 0;
-        break;
-
-      default:
-        return;
-    }
-
-    await interaction.editReply({
-      embeds: [
-        pages[page].setFooter(
-          `페이지 ${page + 1}/${pages.length}${
-            options.itemLength && options.itemName
-              ? ` | ${options.itemLength}개의 ${options.itemName}`
-              : ""
-          }${
-            options.description && options.description.text
-              ? ` • ${options.description.text}`
-              : ""
-          }`,
-          options.description?.icon ?? null
-        )
-      ]
-    });
   });
 
   collector.on("end", () => {
