@@ -82,9 +82,9 @@ export default async function (
   });
 
   collector.on("collect", async (interaction) => {
-    await interaction.deferReply({ ephemeral: true });
-
     if (interaction.user.id == targetMessage.author.id) {
+      await interaction.deferUpdate();
+
       switch (interaction.customId) {
         case buttons[0].customId:
           page = page > 0 ? --page : pages.length - 1;
@@ -117,11 +117,13 @@ export default async function (
           )
         ]
       });
-    } else
+    } else {
+      await interaction.deferReply({ ephemeral: true });
       interaction.followUp({
         content: "요청한 사람만 조작할 수 있습니다.",
         ephemeral: true
       });
+    }
   });
 
   collector.on("end", () => {
