@@ -82,7 +82,7 @@ export default async function (
   });
 
   collector.on("collect", async (interaction) => {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
     if (interaction.user.id == targetMessage.author.id) {
       switch (interaction.customId) {
