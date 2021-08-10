@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import CustomEmoji from "./utils/CustomEmoji";
 import { BotFlags, UserFlags } from "./utils/Flags";
 
 export type ImageFormat = "webp" | "png" | "jpg" | "gif";
@@ -117,13 +118,13 @@ export enum StatusEnum {
   offline = "오프라인"
 }
 
-export enum StatusEmojiEnum {
-  online = "🟢",
-  idle = "🌙",
-  dnd = "⛔",
-  streaming = "📺",
-  offline = "⚫"
-}
+export const StatusEmojiEnum = {
+  online: new CustomEmoji("708147696879272027", "online"),
+  idle: new CustomEmoji("708147696807968842", "idle"),
+  dnd: new CustomEmoji("708147696976003092", "dnd"),
+  offline: new CustomEmoji("708147696523018255", "offline"),
+  streaming: new CustomEmoji("708147697168810024", "streaming")
+};
 
 export enum State {
   ok = "정상",
@@ -162,7 +163,7 @@ export interface RawBot {
 export interface Status {
   raw: RawStatus;
   text: StatusEnum;
-  emoji: StatusEmojiEnum;
+  emoji: CustomEmoji;
 }
 
 export interface Bot {
