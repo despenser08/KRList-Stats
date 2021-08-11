@@ -2,7 +2,7 @@ FROM node:16-slim AS BUILDER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
-  libjpeg-dev libgif-dev librsvg2-dev \
+  libjpeg-dev libgif-dev librsvg2-dev git \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -18,7 +18,7 @@ FROM node:16-slim as RUNNER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
-  libjpeg-dev libgif-dev librsvg2-dev \
+  libjpeg-dev libgif-dev librsvg2-dev git \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
