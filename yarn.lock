@@ -581,11 +581,6 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-dayjs@^1.9.6:
-  version "1.10.5"
-  resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.10.5.tgz"
-  integrity sha512-BUFis41ikLz+65iH6LHQCDm4YPMj5r1YFLdupPIyM4SGcXMmtiLQ7U37i+hGS8urIuqe7I/ou3IS1jVc4nbN4g==
-
 debug@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -676,12 +671,11 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dokdo@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.4.0.tgz#dd14fc82a7af7522a8582b0958978f3f8a9b41c7"
-  integrity sha512-ghwy8/jUzp9O47gIegw76779qyZ6qAzpnxUp6GDNziJ3cY9x9dsjfeZM70RHW450Y8a62QP9kZaZQWV0tzxHUA==
+dokdo@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.4.1.tgz#9f5c09a98429567ce00cddfa6d2854ce8fdc63b1"
+  integrity sha512-mn/ZHWX/n3Z5ahnm3E/YAsJID9DMId8ajuq882IsBcryY03LkmgZJvbCidkpR3W3rmoO7HgoV7kQBLNYsW2/kg==
   dependencies:
-    dayjs "^1.9.6"
     node-fetch "^2.6.1"
 
 dot-prop@^6.0.1:
