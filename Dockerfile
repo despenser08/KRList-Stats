@@ -1,4 +1,4 @@
-FROM node:16 AS BUILDER
+FROM node:16-slim AS BUILDER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
@@ -14,7 +14,7 @@ RUN yarn install --frozen-lockfile \
   && yarn build
 
 
-FROM node:16 as RUNNER
+FROM node:16-slim as RUNNER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
