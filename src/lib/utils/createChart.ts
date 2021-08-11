@@ -5,7 +5,7 @@ import {
   ScatterDataPoint
 } from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
-import ChartDataLabel from "chartjs-plugin-datalabels";
+import "chartjs-plugin-datalabels";
 import path from "path";
 
 export default function createChart(
