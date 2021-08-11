@@ -21,14 +21,10 @@ export default function createChart(
     width,
     height,
     chartCallback: (chart) => {
-      chart.register(ChartDataLabel);
-
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
     },
-    plugins: {
-      modern: ["chartjs-plugin-datalabels"]
-    }
+    plugins: { requireLegacy: ["chartjs-plugin-datalabels"] }
   });
   chart.registerFont(
     path.join(
