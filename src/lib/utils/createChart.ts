@@ -20,20 +20,14 @@ export default function createChart(
   const chart = new ChartJSNodeCanvas({
     width,
     height,
-    chartCallback: () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const chart = require("chart.js");
-
-      require("chartjs-plugin-datalabels");
-      delete require.cache[require.resolve("chart.js")];
-      delete require.cache[require.resolve("chartjs-plugin-datalabels")];
-
+    chartCallback: (chart) => {
       chart.register(ChartDataLabel);
 
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
-
-      return chart;
+    },
+    plugins: {
+      modern: ["chartjs-plugin-datalabels"]
     }
   });
   chart.registerFont(
