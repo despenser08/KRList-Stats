@@ -1,4 +1,9 @@
-import { ChartConfiguration } from "chart.js";
+import {
+  BubbleDataPoint,
+  ChartConfiguration,
+  ChartTypeRegistry,
+  ScatterDataPoint
+} from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import ChartDataLabel from "chartjs-plugin-datalabels";
 import path from "path";
@@ -6,14 +11,18 @@ import path from "path";
 export default function createChart(
   width: number,
   height: number,
-  configuration: ChartConfiguration
+  configuration: ChartConfiguration<
+    keyof ChartTypeRegistry,
+    (number | ScatterDataPoint | BubbleDataPoint)[],
+    unknown
+  >
 ) {
   const chart = new ChartJSNodeCanvas({
     width,
     height,
     chartCallback: (chart) => {
-      chart.defaults.global.defaultFontFamily = "Noto Sans KR";
-      chart.defaults.global.defaultColor = "#000";
+      chart.defaults.font.family = "Noto Sans KR";
+      chart.defaults.color = "#000";
     },
     plugins: { requireLegacy: ["chartjs-plugin-datalabels"] }
   });
@@ -34,6 +43,7 @@ export default function createChart(
 
   if (!configuration.plugins) configuration.plugins = [];
   configuration.plugins.unshift({
+    id: "white_background_color",
     beforeDraw: (chart) => {
       const ctx = chart.canvas.getContext("2d");
       ctx.save();

@@ -329,11 +329,11 @@ export default class extends Command {
                 title: {
                   display: true,
                   text: `${bot.name} 상태`,
-                  fontSize: 40
+                  font: { size: 40 }
                 },
                 legend: {
                   position: "bottom",
-                  labels: { boxHeight: 3, fontSize: 20 }
+                  labels: { boxHeight: 3, font: { size: 20 } }
                 }
               }
             }
@@ -410,7 +410,7 @@ export default class extends Command {
                   borderColor: [color],
                   borderWidth: 5,
                   pointRadius: 0,
-                  lineTension: 0.1
+                  tension: 0.1
                 }
               ]
             },
@@ -421,15 +421,15 @@ export default class extends Command {
                   text: `${bot.name} ${
                     info === "servers" ? "서버" : "투표"
                   } 수`,
-                  fontSize: 40
+                  font: { size: 40 }
                 },
                 legend: {
                   position: "bottom",
-                  labels: { boxHeight: 3, fontSize: 20 }
+                  labels: { boxHeight: 3, font: { size: 20 } }
                 },
                 datalabels: { display: false }
               },
-              scales: { yAxes: [{ ticks: { precision: 0 } }] }
+              scales: { yAxes: { ticks: { precision: 0 } } }
             }
           });
 
