@@ -319,13 +319,13 @@ export default class extends Command {
             },
             options: {
               plugins: {
-                datalabels: {
+                /* datalabels: {
                   formatter: (value, ctx) =>
                     value !== 0
                       ? `${ctx.chart.data.labels[ctx.dataIndex]}: ${value}분`
                       : "",
                   font: { size: 30 }
-                },
+                }, */
                 title: {
                   display: true,
                   text: `${bot.name} 상태`,
@@ -426,8 +426,8 @@ export default class extends Command {
                 legend: {
                   position: "bottom",
                   labels: { boxHeight: 3, font: { size: 20 } }
-                },
-                datalabels: { display: false }
+                } /* ,
+                datalabels: { display: false } */
               },
               scales: { yAxes: { ticks: { precision: 0 } } }
             }
