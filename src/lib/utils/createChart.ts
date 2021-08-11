@@ -5,7 +5,6 @@ import {
   ScatterDataPoint
 } from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 import path from "path";
 
 export default function createChart(
@@ -20,13 +19,18 @@ export default function createChart(
   const chart = new ChartJSNodeCanvas({
     width,
     height,
-    chartCallback: (chart) => {
+    chartCallback: () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const chart = require("chart.js");
+
+      require("chartjs-plugin-datalabels");
       delete require.cache[require.resolve("chart.js")];
       delete require.cache[require.resolve("chartjs-plugin-datalabels")];
 
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
-      chart.register(ChartDataLabels);
+
+      return chart;
     }
   });
   chart.registerFont(
