@@ -1,8 +1,8 @@
-FROM node:16-slim AS BUILDER
+FROM node:16 AS BUILDER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
-  libjpeg-dev libgif-dev librsvg2-dev git \
+  libjpeg-dev libgif-dev librsvg2-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -14,11 +14,11 @@ RUN yarn install --frozen-lockfile \
   && yarn build
 
 
-FROM node:16-slim as RUNNER
+FROM node:16 as RUNNER
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
-  libjpeg-dev libgif-dev librsvg2-dev git \
+  libjpeg-dev libgif-dev librsvg2-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
