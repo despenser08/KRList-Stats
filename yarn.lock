@@ -132,10 +132,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.0.1.tgz#d26729db850fa327b7cacc5522252194404226f5"
   integrity sha512-Qm9hBEBu18wt1PO2flE7LPb30BHMQt1eQgbV76YntdNk73XZGpn3izvGTYxbGgzXKgbCjiia0uxTd3aTNQrY/g==
 
-"@typegoose/typegoose@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-8.0.0.tgz#dde24caf329c6b779c2001d2f087685677553659"
-  integrity sha512-UUzeXOXq6VQ3eUvWW8fvQkifsj92Rso8vCa7pQPGQgV4StHQxSxb6/7cASptxXMiDxeKZGPg1yP5ABymDQiASQ==
+"@typegoose/typegoose@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-8.1.1.tgz#bad88b711f27178923687618d38efb1dfedee7dc"
+  integrity sha512-itsozSJ2v4pZ+mQ5whkNl9AVVAh/LWoJandN2lnMUcJxHLyng6emLxJPwRuSTgcOdXLMUm5VYA4U3eBs7Dbe+Q==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.7.0"
@@ -461,10 +461,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chart.js@^3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.3.2.tgz#667f3a0b6371b9719d8949c04a5bcbaec0d8c615"
-  integrity sha512-H0hSO7xqTIrwxoACqnSoNromEMfXvfuVnrbuSt2TuXfBDDofbnto4zuZlRtRvC73/b37q3wGAWZyUU41QPvNbA==
+chart.js@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.5.0.tgz#6eb075332d4ebbbb20a94e5a07a234052ed6c4fb"
+  integrity sha512-J1a4EAb1Gi/KbhwDRmoovHTRuqT8qdF0kZ4XgwxpGethJHUdDrkqyPYwke0a+BuvSeUxPf8Cos6AX2AB8H8GLA==
 
 chartjs-node-canvas@^3.2.0:
   version "3.2.0"
