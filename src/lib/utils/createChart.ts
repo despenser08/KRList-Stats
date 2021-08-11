@@ -5,7 +5,7 @@ import {
   ScatterDataPoint
 } from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
-import "chartjs-plugin-datalabels";
+import ChartDataLabel from "chartjs-plugin-datalabels";
 import path from "path";
 
 export default function createChart(
@@ -27,6 +27,8 @@ export default function createChart(
       require("chartjs-plugin-datalabels");
       delete require.cache[require.resolve("chart.js")];
       delete require.cache[require.resolve("chartjs-plugin-datalabels")];
+
+      chart.register(ChartDataLabel);
 
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
