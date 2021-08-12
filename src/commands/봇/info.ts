@@ -59,7 +59,7 @@ export default class extends Command {
       fullDescription: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 날짜 | 최근 정보 수 [날짜]]]>'
+          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -87,13 +87,13 @@ export default class extends Command {
         },
         {
           id: "limit",
-          type: Argument.union("date", Argument.range("integer", 1, Infinity), [
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", [
             "all",
             "전체"
           ]),
           prompt: {
             optional: true,
-            retry: '"전체" | 날짜 | 최근 정보 수(자연수)를 입력해 주세요.'
+            retry: '"전체" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
           },
           default: "all"
         },
@@ -119,7 +119,7 @@ export default class extends Command {
     }: {
       userOrId: string | User | GuildMember;
       info: "now" | "votes" | "servers" | "status" | "keyword";
-      limit: "all" | Date | number;
+      limit: "all" | number | Date;
       endOfDate?: Date;
     }
   ) {
