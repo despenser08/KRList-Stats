@@ -17,6 +17,7 @@
 
 // https://github.com/koreanbots/koreanbots
 
+import { Permissions } from "discord.js";
 import { ImageFormat, ImageSize, KoreanbotsImageOptions } from "./types";
 
 export const KoreanbotsOrigin = "https://koreanbots.dev";
@@ -109,8 +110,10 @@ export enum Colors {
 export const DiscordOrigin = "https://discord.com";
 export const DiscordEndPoints = {
   URL: class {
-    static inviteBot(id: string, perms = "8589934591") {
-      return `${DiscordOrigin}/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot`;
+    static inviteBot(id: string, slash = true, perms = Permissions.ALL) {
+      return `${DiscordOrigin}/api/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot${
+        slash ? "%20applications.commands" : ""
+      }`;
     }
   }
 };

@@ -181,11 +181,14 @@ export default class extends Command {
               .setDescription(
                 `<@${bot.id}> | ${
                   botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
-                } | ${
+                }${
                   bot.url
-                    ? `[초대 링크](${bot.url})`
-                    : `[초대 링크 (생성됨)](${DiscordEndPoints.URL.inviteBot(
+                    ? ` | [초대 링크](${bot.url})`
+                    : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
                         bot.id
+                      )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+                        bot.id,
+                        true
                       )})`
                 }\n\n${bot.intro}`
               )

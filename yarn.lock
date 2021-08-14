@@ -633,7 +633,6 @@ dir-glob@^3.0.1:
 
 "discord-akairo@https://github.com/discord-akairo/discord-akairo#master":
   version "8.1.0"
-  uid "905f69382957023601ebbb6f8a3a8b6b0f615bd1"
   resolved "https://github.com/discord-akairo/discord-akairo#905f69382957023601ebbb6f8a3a8b6b0f615bd1"
 
 discord-api-types@^0.22.0:
