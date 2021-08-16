@@ -86,9 +86,9 @@ export default class extends Command {
                         (bot, index) =>
                           `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
                             bot.tag
-                          }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                            bot.id
-                          }>) ${bot.status.emoji} [서버: ${
+                          }](${KoreanbotsEndPoints.URL.bot(
+                            bot.vanity || bot.id
+                          )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }] - ❤️${bot.votes}`
                       )
@@ -133,9 +133,9 @@ export default class extends Command {
                         (bot, index) =>
                           `**${index + 1}.** [${bot.name}#${
                             bot.tag
-                          }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                            bot.id
-                          }>) ${bot.status.emoji} [서버: ${
+                          }](${KoreanbotsEndPoints.URL.bot(
+                            bot.vanity || bot.id
+                          )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }]`
                       )

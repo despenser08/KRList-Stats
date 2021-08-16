@@ -171,7 +171,7 @@ export default class extends Command {
             new MessageEmbed()
               .setColor(Colors.PRIMARY)
               .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-              .setURL(KoreanbotsEndPoints.URL.bot(bot.id))
+              .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
               .setThumbnail(
                 `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(bot.id, {
                   format: "webp",
@@ -485,9 +485,9 @@ export default class extends Command {
                             (bot) =>
                               `[${bot.name}#${
                                 bot.tag
-                              }](${KoreanbotsEndPoints.URL.bot(bot.id)}) (<@${
-                                bot.id
-                              }>) ${bot.status.emoji} [서버: ${
+                              }](${KoreanbotsEndPoints.URL.bot(
+                                bot.vanity || bot.id
+                              )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                                 bot.servers || "N/A"
                               }]\n> ${bot.intro}`
                           )
