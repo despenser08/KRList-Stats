@@ -188,7 +188,7 @@ export default class extends Command {
                         bot.id
                       )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
                         bot.id,
-                        true
+                        false
                       )})`
                 }\n\n${bot.intro}`
               )
