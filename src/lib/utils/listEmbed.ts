@@ -21,6 +21,7 @@ import {
   MessageButton,
   MessageEmbed
 } from "discord.js";
+import CustomEmoji from "./CustomEmoji";
 
 const defaultButton = [
   new MessageButton().setCustomId("prev").setLabel("이전").setStyle("PRIMARY"),
@@ -70,7 +71,16 @@ export default async function (
         options.description?.icon ?? null
       )
     ],
-    components: [new MessageActionRow().addComponents(buttons)]
+    components: [
+      new MessageActionRow().addComponents(buttons),
+      // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setURL("https://github.com/despenser08/KRBots-Stats")
+          .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
+          .setLabel("GitHub")
+      )
+    ]
   };
   let curPage: Message;
 
