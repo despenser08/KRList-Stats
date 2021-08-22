@@ -661,10 +661,9 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dokdo@^0.4.1:
+"dokdo@https://github.com/mome0320/dokdo#support-djs-v13":
   version "0.4.1"
-  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.4.1.tgz#9f5c09a98429567ce00cddfa6d2854ce8fdc63b1"
-  integrity sha512-mn/ZHWX/n3Z5ahnm3E/YAsJID9DMId8ajuq882IsBcryY03LkmgZJvbCidkpR3W3rmoO7HgoV7kQBLNYsW2/kg==
+  resolved "https://github.com/mome0320/dokdo#9b8840350dafff6d650fe256ec71ba5b511323b9"
   dependencies:
     node-fetch "^2.6.1"
 
