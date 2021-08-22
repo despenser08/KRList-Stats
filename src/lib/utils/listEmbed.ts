@@ -78,7 +78,8 @@ export default async function (
         new MessageButton()
           .setURL("https://github.com/despenser08/KRBots-Stats")
           .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
-          .setLabel("GitHub")
+          .setLabel("KRBots-Stats GitHub")
+          .setStyle("LINK")
       )
     ]
   };
