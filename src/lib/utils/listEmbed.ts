@@ -32,6 +32,15 @@ const defaultButton = [
   new MessageButton().setCustomId("next").setLabel("다음").setStyle("PRIMARY")
 ];
 
+// PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+const creditRow = new MessageActionRow().addComponents(
+  new MessageButton()
+    .setURL("https://github.com/despenser08/KRBots-Stats")
+    .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
+    .setLabel("KRBots-Stats GitHub")
+    .setStyle("LINK")
+);
+
 export default async function (
   targetMessage: Message,
   pages: MessageEmbed[],
@@ -71,17 +80,7 @@ export default async function (
         options.description?.icon ?? null
       )
     ],
-    components: [
-      new MessageActionRow().addComponents(buttons),
-      // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setURL("https://github.com/despenser08/KRBots-Stats")
-          .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
-          .setLabel("KRBots-Stats GitHub")
-          .setStyle("LINK")
-      )
-    ]
+    components: [new MessageActionRow().addComponents(buttons), creditRow]
   };
   let curPage: Message;
 
@@ -137,6 +136,6 @@ export default async function (
   });
 
   collector.on("end", () => {
-    curPage.edit({ components: [] });
+    curPage.edit({ components: [creditRow] });
   });
 }
