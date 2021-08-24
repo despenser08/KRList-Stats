@@ -31,7 +31,7 @@
     "discord.js": "^13.1.0",
     "dokdo": "https://github.com/mome0320/dokdo#support-djs-v13",
     "moment-timezone": "^0.5.33",
-    "mongoose": "^5.13.7",
+    "mongoose": "^5.13.8",
     "node-schedule": "^2.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
