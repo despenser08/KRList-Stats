@@ -52,7 +52,7 @@ export function filterDesc(text: string) {
     .replace(imageRegex, (image) => {
       images.push(image.replace(imageRegex, "$1"));
 
-      return "";
+      return `[봇 설명 이미지 #${images.length}]`;
     })
     .replace(
       /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
