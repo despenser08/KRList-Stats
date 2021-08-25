@@ -459,54 +459,71 @@ export default class extends Command {
             const user = convert.user(data.data);
             const flags = user.flags.toArray();
 
-            return msg.edit({
-              content: null,
-              embeds: [
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
-                  .setTitle(`${user.username}#${user.tag}`)
-                  .setURL(KoreanbotsEndPoints.URL.user(user.id))
-                  .setThumbnail(
-                    `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
-                      user.id,
-                      {
-                        format: "webp",
-                        size: 256
-                      }
-                    )}`
-                  )
-                  .setDescription(`<@${user.id}>`)
-                  .addField(
-                    "봇",
-                    user.bots.length < 1
-                      ? "없음"
-                      : user.bots
-                          .map(
-                            (bot) =>
-                              `[${bot.name}#${
-                                bot.tag
-                              }](${KoreanbotsEndPoints.URL.bot(
-                                bot.vanity || bot.id
-                              )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
-                                bot.servers || "N/A"
-                              }]\n> ${bot.intro}`
-                          )
-                          .join("\n")
-                  )
-                  .addField(
-                    "플래그",
-                    flags.length < 1
-                      ? "없음"
-                      : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
-                    true
-                  )
-                  .addField(
-                    "GitHub",
-                    user.github ? `https://github.com/${user.github}` : "없음",
-                    true
-                  )
-              ]
-            });
+            const infoEmbed = new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setTitle(`${user.username}#${user.tag}`)
+              .setURL(KoreanbotsEndPoints.URL.user(user.id))
+              .setThumbnail(
+                `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(user.id, {
+                  format: "webp",
+                  size: 256
+                })}`
+              )
+              .setDescription(`<@${user.id}>`)
+              .addField(
+                "봇",
+                user.bots.length > 0 ? `${user.bots.length}개` : "없음"
+              )
+              .addField(
+                "플래그",
+                flags.length < 1
+                  ? "없음"
+                  : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
+                true
+              )
+              .addField(
+                "GitHub",
+                user.github ? `https://github.com/${user.github}` : "없음",
+                true
+              );
+
+            if (user.bots.length < 1)
+              return msg.edit({ content: null, embeds: [infoEmbed] });
+            else {
+              const pages: MessageEmbed[] = [];
+              pages.push(infoEmbed);
+
+              for await (const bot of user.bots)
+                pages.push(
+                  new MessageEmbed()
+                    .setColor(Colors.PRIMARY)
+                    .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
+                    .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
+                    .setDescription(
+                      `<@${bot.id}>${
+                        bot.url
+                          ? ` | [초대 링크](${bot.url})`
+                          : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
+                              bot.id
+                            )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+                              bot.id,
+                              false
+                            )})`
+                      }`
+                    )
+                    .setImage(
+                      KoreanbotsEndPoints.OG.bot(
+                        bot.id,
+                        bot.name,
+                        bot.intro,
+                        bot.category,
+                        [formatNumber(bot.votes), formatNumber(bot.servers)]
+                      )
+                    )
+                );
+
+              return listEmbed(message, pages, { message: msg });
+            }
           })
           .catch((e) => {
             if (isInterface<AxiosError>(e, "response")) {
