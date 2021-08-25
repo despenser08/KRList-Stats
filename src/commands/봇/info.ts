@@ -248,6 +248,23 @@ export default class extends Command {
               )
           );
 
+          const desc = filterDesc(bot.desc);
+          pages.push(
+            new MessageEmbed()
+              .setColor(Colors.PRIMARY)
+              .setTitle("봇 설명")
+              .setDescription(desc.res)
+          );
+
+          for (let i = 0; i < desc.images.length; i++) {
+            pages.push(
+              new MessageEmbed()
+                .setColor(Colors.PRIMARY)
+                .setTitle(`봇 설명 이미지 #${i + 1}`)
+                .setImage(desc.images[i])
+            );
+          }
+
           if (bot.banner)
             pages.push(
               new MessageEmbed()
@@ -262,13 +279,6 @@ export default class extends Command {
                 .setTitle("봇 배경")
                 .setImage(bot.bg)
             );
-
-          pages.push(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setTitle("봇 설명")
-              .setDescription(filterDesc(bot.desc))
-          );
 
           return listEmbed(message, pages, { message: msg });
         } else if (info === "status") {

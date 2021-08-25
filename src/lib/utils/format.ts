@@ -44,12 +44,21 @@ export function formatNumber(value?: number) {
 }
 
 export function filterDesc(text: string) {
-  return text
+  const imageRegex = /!\[(.*?)\][[(].*?[\])]/g;
+  const imageURLList: string[] = [];
+
+  const result = text
     .replace(/<[^>]*>/g, "")
-    .replace(/!\[(.*?)\][[(].*?[\])]/g, "")
+    .replace(imageRegex, (image) => {
+      imageURLList.push(image.replace(imageRegex, "$1"));
+
+      return "";
+    })
     .replace(
       /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
       "\n"
     )
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
+
+  return { res: result, images: imageURLList };
 }
