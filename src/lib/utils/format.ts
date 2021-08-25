@@ -45,12 +45,12 @@ export function formatNumber(value?: number) {
 
 export function filterDesc(text: string) {
   const imageRegex = /!\[(.*?)\][[(].*?[\])]/g;
-  const imageURLList: string[] = [];
+  const images: string[] = [];
 
-  const result = text
+  const res = text
     .replace(/<[^>]*>/g, "")
     .replace(imageRegex, (image) => {
-      imageURLList.push(image.replace(imageRegex, "$1"));
+      images.push(image.replace(imageRegex, "$1"));
 
       return "";
     })
@@ -60,5 +60,5 @@ export function filterDesc(text: string) {
     )
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
 
-  return { res: result, images: imageURLList };
+  return { res, images };
 }
