@@ -44,7 +44,7 @@ export function formatNumber(value?: number) {
 }
 
 export function filterDesc(text: string) {
-  const imageRegex = /!\[(.*?)\][[(].*?[\])]/g;
+  const imageRegex = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/g;
   const images: string[] = [];
 
   const res = text
