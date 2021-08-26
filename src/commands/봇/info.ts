@@ -547,7 +547,7 @@ export default class extends Command {
                         .setDescription(
                           `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
                             userOrId.toString()
-                          )}\`)`
+                          )}\`)\n${e}`
                         )
                     ]
                   });
@@ -561,7 +561,7 @@ export default class extends Command {
                         .setDescription(
                           `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
                             userOrId.toString()
-                          )}\`)`
+                          )}\`)\n${e}`
                         )
                     ]
                   });

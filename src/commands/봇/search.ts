@@ -120,7 +120,7 @@ export default class extends Command {
                     .setDescription(
                       `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
                         query
-                      )}\`)`
+                      )}\`)\n${e}`
                     )
                 ]
               });
@@ -134,7 +134,7 @@ export default class extends Command {
                     .setDescription(
                       `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
                         query
-                      )}\`)`
+                      )}\`)\n${e}`
                     )
                 ]
               });
