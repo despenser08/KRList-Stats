@@ -261,6 +261,7 @@ export default class extends Command {
               new MessageEmbed()
                 .setColor(Colors.PRIMARY)
                 .setTitle(`봇 설명 이미지 #${i + 1}`)
+                .setURL(desc.images[i])
                 .setImage(desc.images[i])
             );
           }
