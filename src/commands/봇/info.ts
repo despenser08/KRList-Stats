@@ -256,7 +256,7 @@ export default class extends Command {
               .setDescription(desc.res)
           );
 
-          for (let i = 0; i < desc.images.length; i++) {
+          for (let i = 0; i < desc.images.length; i++)
             pages.push(
               new MessageEmbed()
                 .setColor(Colors.PRIMARY)
@@ -264,7 +264,6 @@ export default class extends Command {
                 .setURL(desc.images[i])
                 .setImage(desc.images[i])
             );
-          }
 
           if (bot.banner)
             pages.push(
