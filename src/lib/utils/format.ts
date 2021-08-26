@@ -50,9 +50,10 @@ export function filterDesc(text: string) {
   const res = text
     .replace(/<[^>]*>/g, "")
     .replace(imageRegex, (image) => {
-      images.push(image.replace(imageRegex, "$1"));
+      const url = image.replace(imageRegex, "$1");
+      images.push();
 
-      return `[봇 설명 이미지 #${images.length}]`;
+      return `[[봇 설명 이미지 #${images.length}]](${url})`;
     })
     .replace(
       /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
