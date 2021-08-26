@@ -51,7 +51,7 @@ export function filterDesc(text: string) {
     .replace(/<[^>]*>/g, "")
     .replace(imageRegex, (image) => {
       const url = image.replace(imageRegex, "$1");
-      images.push();
+      images.push(url);
 
       return `[[봇 설명 이미지 #${images.length}]](${url})`;
     })
