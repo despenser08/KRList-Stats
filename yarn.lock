@@ -663,7 +663,8 @@ doctrine@^3.0.0:
 
 "dokdo@https://github.com/mome0320/dokdo#support-djs-v13":
   version "0.4.1"
-  resolved "https://github.com/mome0320/dokdo#9b8840350dafff6d650fe256ec71ba5b511323b9"
+  uid "4faf38dcb6cb2bf92b8f0744b7f9621ecf09a4ad"
+  resolved "https://github.com/mome0320/dokdo#4faf38dcb6cb2bf92b8f0744b7f9621ecf09a4ad"
   dependencies:
     node-fetch "^2.6.1"
 
