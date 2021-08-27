@@ -29,7 +29,7 @@
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "https://github.com/discord-akairo/discord-akairo#master",
     "discord.js": "^13.1.0",
-    "djs-interaction-util": "^0.1.4",
+    "djs-interaction-util": "^0.1.5",
     "dokdo": "^0.5.0",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.8",

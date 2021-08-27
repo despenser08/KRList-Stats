@@ -709,10 +709,10 @@ discord.js@^13.1.0:
     node-fetch "^2.6.1"
     ws "^7.5.1"
 
-djs-interaction-util@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.4.tgz#384af03feb587de31060c76fcca6cc407c870744"
-  integrity sha512-OKuvFN/QfGVbO7iX4G1L35NFbS/rimR9bjmF2/vvafCxUwgtnG1MAJlFngPFDdnade0JlOe8FnECL92wgNCDBg==
+djs-interaction-util@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.5.tgz#9e8ea77e4093df3de2177d4461911cc9e9fad2bb"
+  integrity sha512-n8QJ0VoLAhjfhMU9/7NfQwgbighprMs0FceQ/I5Tui7XhHR8Z+JYLDMmD1ezTONNYzVeq+6FBTrX/ZUq8wpSVA==
 
 doctrine@^3.0.0:
   version "3.0.0"
