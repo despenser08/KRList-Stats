@@ -16,9 +16,9 @@
  */
 
 import { Argument, Command, Category } from "discord-akairo";
-import { Message, MessageEmbed, Util } from "discord.js";
-import { Colors } from "../../lib/constants";
-import listEmbed from "../../lib/utils/listEmbed";
+import { Message, Util } from "discord.js";
+import KRBSEmbed from "../../lib/utils/KRBSEmbed";
+import KRBSPaginator from "../../lib/utils/KRBSPaginator";
 
 export default class extends Command {
   public constructor() {
@@ -63,9 +63,8 @@ export default class extends Command {
     if (cmdOrCtgry instanceof Command) {
       return message.reply({
         embeds: [
-          new MessageEmbed()
+          new KRBSEmbed()
             .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
-            .setColor(Colors.PRIMARY)
             .setDescription(
               `**별칭**: ${
                 cmdOrCtgry.aliases
@@ -86,9 +85,8 @@ export default class extends Command {
     } else if (cmdOrCtgry instanceof Category) {
       return message.reply({
         embeds: [
-          new MessageEmbed()
+          new KRBSEmbed()
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
-            .setColor(Colors.PRIMARY)
             .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
             .setDescription(
               cmdOrCtgry
@@ -100,30 +98,24 @@ export default class extends Command {
       });
     }
 
-    const pages: MessageEmbed[] = [];
+    const paginator = new KRBSPaginator();
 
-    for (const category of this.handler.categories.values()) {
-      const embed = new MessageEmbed()
-        .setTitle("도움말")
-        .setColor(Colors.PRIMARY)
-        .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
-        .addField(
-          category.id,
-          category
-            .filter((cmd) => cmd.aliases.length > 0)
-            .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
-            .join("\n") || "이 카테고리에는 명령어가 없습니다."
-        );
+    for (const category of this.handler.categories.values())
+      paginator.addPage({
+        embeds: [
+          new KRBSEmbed()
+            .setTitle("도움말")
+            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .addField(
+              category.id,
+              category
+                .filter((cmd) => cmd.aliases.length > 0)
+                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+            )
+        ]
+      });
 
-      pages.push(embed);
-    }
-
-    let cmdCount = 0;
-    this.handler.categories.toJSON().forEach((cmd) => (cmdCount += cmd.size));
-
-    return listEmbed(message, pages, {
-      itemLength: cmdCount,
-      itemName: "명령어"
-    });
+    return paginator.run(message);
   }
 }

@@ -17,11 +17,12 @@
 
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, User, Util } from "discord.js";
-import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
+import { GuildMember, Message, User, Util } from "discord.js";
+import { KoreanbotsEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
+import KRBSEmbed from "../../lib/utils/KRBSEmbed";
 
 export default class extends Command {
   constructor() {
@@ -83,13 +84,11 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)\n${e}`
-                    )
+                  new KRBSEmbed().setDescription(
+                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
                 ]
               });
 
@@ -97,13 +96,11 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)\n${e}`
-                    )
+                  new KRBSEmbed().setDescription(
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
                 ]
               });
 
@@ -114,13 +111,11 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)\n${e}`
-                    )
+                  new KRBSEmbed().setDescription(
+                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
                 ]
               });
           }
@@ -131,13 +126,11 @@ export default class extends Command {
           return msg.edit({
             content: null,
             embeds: [
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setDescription(
-                  `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                    userOrId.toString()
-                  )}\`)\n${e}`
-                )
+              new KRBSEmbed().setDescription(
+                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  userOrId.toString()
+                )}\`)\n${e}`
+              )
             ]
           });
         }

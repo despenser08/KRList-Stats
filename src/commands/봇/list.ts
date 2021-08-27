@@ -17,10 +17,11 @@
 
 import axios from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { Colors, KoreanbotsEndPoints } from "../../lib/constants";
+import { Message } from "discord.js";
+import { KoreanbotsEndPoints } from "../../lib/constants";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
+import KRBSEmbed from "../../lib/utils/KRBSEmbed";
 
 export default class extends Command {
   constructor() {
@@ -77,8 +78,7 @@ export default class extends Command {
             return msg.edit({
               content: null,
               embeds: [
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
+                new KRBSEmbed()
                   .setTitle("봇 투표순 리스트")
                   .setDescription(
                     res
@@ -124,8 +124,7 @@ export default class extends Command {
             return msg.edit({
               content: null,
               embeds: [
-                new MessageEmbed()
-                  .setColor(Colors.PRIMARY)
+                new KRBSEmbed()
                   .setTitle("신규 봇 리스트")
                   .setDescription(
                     res

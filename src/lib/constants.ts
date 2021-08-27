@@ -60,6 +60,7 @@ export const KoreanbotsEndPoints = {
     static submittedBot(id: string, date: number) {
       return `${KoreanbotsOrigin}/pendingBots/${id}/${date}`;
     }
+    static logo = `${KoreanbotsOrigin}/logo.png`;
   },
   API: class {
     static root = "/api/v2";

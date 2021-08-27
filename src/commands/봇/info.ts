@@ -18,7 +18,6 @@
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import {
-  MessageEmbed,
   User,
   Util,
   Message,
@@ -28,7 +27,6 @@ import {
 import moment from "moment-timezone";
 import { TIMEZONE } from "../../config";
 import {
-  Colors,
   DiscordEndPoints,
   KoreanbotsEndPoints,
   KoreanbotsOrigin
@@ -39,7 +37,8 @@ import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
-import listEmbed from "../../lib/utils/listEmbed";
+import KRBSEmbed from "../../lib/utils/KRBSEmbed";
+import KRBSPaginator from "../../lib/utils/KRBSPaginator";
 
 export default class extends Command {
   constructor() {
@@ -165,122 +164,120 @@ export default class extends Command {
         if (info === "now") {
           const flags = bot.flags.toArray();
 
-          const pages: MessageEmbed[] = [];
-
-          pages.push(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-              .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
-              .setThumbnail(
-                `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(bot.id, {
-                  format: "webp",
-                  size: 256
-                })}`
-              )
-              .setDescription(
-                `<@${bot.id}> | ${
-                  botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
-                }${
-                  bot.url
-                    ? ` | [초대 링크](${bot.url})`
-                    : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                        bot.id
-                      )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+          const paginator = new KRBSPaginator({
+            pages: [
+              {
+                embeds: [
+                  new KRBSEmbed()
+                    .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
+                    .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
+                    .setThumbnail(
+                      `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
                         bot.id,
-                        false
-                      )})`
-                }\n\n${bot.intro}`
-              )
-              .addField(
-                "관리자",
-                bot.owners
-                  .map(
-                    (owner) =>
-                      `[${owner.username}#${
-                        owner.tag
-                      }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@${
-                        owner.id
-                      }>)`
-                  )
-                  .join("\n")
-              )
-              .addField(
-                "카테고리",
-                bot.category.length < 1 ? "없음" : bot.category.join(", ")
-              )
-              .addField("Git", bot.git || "없음")
-              .addField("상태", bot.state, true)
-              .addField(
-                "디스코드",
-                bot.discord ? `https://discord.gg/${bot.discord}` : "없음",
-                true
-              )
-              .addField("라이브러리", bot.lib, true)
-              .addField("접두사", bot.prefix, true)
-              .addField(
-                "샤드 수",
-                bot.shards ? bot.shards.toString() : "N/A",
-                true
-              )
-              .addField(
-                "서버 수",
-                bot.servers ? bot.servers.toString() : "N/A",
-                true
-              )
-              .addField("투표 수", bot.votes.toString(), true)
-              .addField(
-                "플래그",
-                flags.length < 1
-                  ? "없음"
-                  : flags.map((flag) => BotFlagsEnum[flag]).join(", "),
-                true
-              )
-              .addField("웹페이지", bot.web || "없음")
-              .setImage(
-                KoreanbotsEndPoints.OG.bot(
-                  bot.id,
-                  bot.name,
-                  bot.intro,
-                  bot.category,
-                  [formatNumber(bot.votes), formatNumber(bot.servers)]
-                )
-              )
-          );
+                        {
+                          format: "webp",
+                          size: 256
+                        }
+                      )}`
+                    )
+                    .setDescription(
+                      `<@${bot.id}> | ${
+                        botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
+                      }${
+                        bot.url
+                          ? ` | [초대 링크](${bot.url})`
+                          : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
+                              bot.id
+                            )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+                              bot.id,
+                              false
+                            )})`
+                      }\n\n${bot.intro}`
+                    )
+                    .addField(
+                      "관리자",
+                      bot.owners
+                        .map(
+                          (owner) =>
+                            `[${owner.username}#${
+                              owner.tag
+                            }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@${
+                              owner.id
+                            }>)`
+                        )
+                        .join("\n")
+                    )
+                    .addField(
+                      "카테고리",
+                      bot.category.length < 1 ? "없음" : bot.category.join(", ")
+                    )
+                    .addField("Git", bot.git || "없음")
+                    .addField("상태", bot.state, true)
+                    .addField(
+                      "디스코드",
+                      bot.discord
+                        ? `https://discord.gg/${bot.discord}`
+                        : "없음",
+                      true
+                    )
+                    .addField("라이브러리", bot.lib, true)
+                    .addField("접두사", bot.prefix, true)
+                    .addField(
+                      "샤드 수",
+                      bot.shards ? bot.shards.toString() : "N/A",
+                      true
+                    )
+                    .addField(
+                      "서버 수",
+                      bot.servers ? bot.servers.toString() : "N/A",
+                      true
+                    )
+                    .addField("투표 수", bot.votes.toString(), true)
+                    .addField(
+                      "플래그",
+                      flags.length < 1
+                        ? "없음"
+                        : flags.map((flag) => BotFlagsEnum[flag]).join(", "),
+                      true
+                    )
+                    .addField("웹페이지", bot.web || "없음")
+                    .setImage(
+                      KoreanbotsEndPoints.OG.bot(
+                        bot.id,
+                        bot.name,
+                        bot.intro,
+                        bot.category,
+                        [formatNumber(bot.votes), formatNumber(bot.servers)]
+                      )
+                    )
+                ]
+              }
+            ]
+          });
 
-          const desc = filterDesc(bot.desc);
-          pages.push(
-            new MessageEmbed()
-              .setColor(Colors.PRIMARY)
-              .setTitle("봇 설명")
-              .setDescription(desc.res)
-          );
+          const desc = await filterDesc(bot.desc);
+          paginator.addPage({
+            embeds: [
+              new KRBSEmbed().setTitle("봇 설명").setDescription(desc.res)
+            ]
+          });
 
           for (let i = 0; i < desc.images.length; i++)
-            pages.push(
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle(`봇 설명 이미지 #${i + 1}`)
-                .setURL(desc.images[i])
-                .setImage(desc.images[i])
-            );
+            paginator.addPage({
+              content: `봇 설명 이미지 #${i + 1}`,
+              files: [new MessageAttachment(desc.images[i].buffer)]
+            });
 
           if (bot.banner)
-            pages.push(
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle("봇 배너")
-                .setImage(bot.banner)
-            );
+            paginator.addPage({
+              embeds: [new KRBSEmbed().setTitle("봇 배너").setImage(bot.banner)]
+            });
           if (bot.bg)
-            pages.push(
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
-                .setTitle("봇 배경")
-                .setImage(bot.bg)
-            );
+            paginator.addPage({
+              embeds: [new KRBSEmbed().setTitle("봇 배경").setImage(bot.bg)]
+            });
 
-          return listEmbed(message, pages, { message: msg });
+          return paginator.run(message, msg);
         } else if (info === "status") {
           if (stats.length < 1)
             return msg.edit(
@@ -374,8 +371,7 @@ export default class extends Command {
           return msg.edit({
             content: null,
             embeds: [
-              new MessageEmbed()
-                .setColor(Colors.PRIMARY)
+              new KRBSEmbed()
                 .setTitle(`${bot.name} 검색 키워드`)
                 .setDescription(
                   [...botDB.keywords.keys()]
@@ -469,8 +465,7 @@ export default class extends Command {
             const user = convert.user(data.data);
             const flags = user.flags.toArray();
 
-            const infoEmbed = new MessageEmbed()
-              .setColor(Colors.PRIMARY)
+            const infoEmbed = new KRBSEmbed()
               .setTitle(`${user.username}#${user.tag}`)
               .setURL(KoreanbotsEndPoints.URL.user(user.id))
               .setThumbnail(
@@ -500,39 +495,41 @@ export default class extends Command {
             if (user.bots.length < 1)
               return msg.edit({ content: null, embeds: [infoEmbed] });
             else {
-              const pages: MessageEmbed[] = [];
-              pages.push(infoEmbed);
+              const paginator = new KRBSPaginator({
+                pages: [{ embeds: [infoEmbed] }]
+              });
 
               for await (const bot of user.bots)
-                pages.push(
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-                    .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
-                    .setDescription(
-                      `<@${bot.id}>${
-                        bot.url
-                          ? ` | [초대 링크](${bot.url})`
-                          : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id
-                            )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id,
-                              false
-                            )})`
-                      }`
-                    )
-                    .setImage(
-                      KoreanbotsEndPoints.OG.bot(
-                        bot.id,
-                        bot.name,
-                        bot.intro,
-                        bot.category,
-                        [formatNumber(bot.votes), formatNumber(bot.servers)]
+                paginator.addPage({
+                  embeds: [
+                    new KRBSEmbed()
+                      .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
+                      .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
+                      .setDescription(
+                        `<@${bot.id}>${
+                          bot.url
+                            ? ` | [초대 링크](${bot.url})`
+                            : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
+                                bot.id
+                              )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+                                bot.id,
+                                false
+                              )})`
+                        }`
                       )
-                    )
-                );
+                      .setImage(
+                        KoreanbotsEndPoints.OG.bot(
+                          bot.id,
+                          bot.name,
+                          bot.intro,
+                          bot.category,
+                          [formatNumber(bot.votes), formatNumber(bot.servers)]
+                        )
+                      )
+                  ]
+                });
 
-              return listEmbed(message, pages, { message: msg });
+              return paginator.run(message, msg);
             }
           })
           .catch((e) => {
@@ -542,13 +539,11 @@ export default class extends Command {
                   return msg.edit({
                     content: null,
                     embeds: [
-                      new MessageEmbed()
-                        .setColor(Colors.PRIMARY)
-                        .setDescription(
-                          `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                            userOrId.toString()
-                          )}\`)\n${e}`
-                        )
+                      new KRBSEmbed().setDescription(
+                        `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)\n${e}`
+                      )
                     ]
                   });
 
@@ -556,13 +551,11 @@ export default class extends Command {
                   return msg.edit({
                     content: null,
                     embeds: [
-                      new MessageEmbed()
-                        .setColor(Colors.PRIMARY)
-                        .setDescription(
-                          `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                            userOrId.toString()
-                          )}\`)\n${e}`
-                        )
+                      new KRBSEmbed().setDescription(
+                        `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)\n${e}`
+                      )
                     ]
                   });
 
@@ -573,13 +566,11 @@ export default class extends Command {
                   return msg.edit({
                     content: null,
                     embeds: [
-                      new MessageEmbed()
-                        .setColor(Colors.PRIMARY)
-                        .setDescription(
-                          `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                            userOrId.toString()
-                          )}\`)\n${e}`
-                        )
+                      new KRBSEmbed().setDescription(
+                        `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                          userOrId.toString()
+                        )}\`)\n${e}`
+                      )
                     ]
                   });
               }
@@ -590,13 +581,11 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new MessageEmbed()
-                    .setColor(Colors.PRIMARY)
-                    .setDescription(
-                      `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                        userOrId.toString()
-                      )}\`)\n${e}`
-                    )
+                  new KRBSEmbed().setDescription(
+                    `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
                 ]
               });
             }
