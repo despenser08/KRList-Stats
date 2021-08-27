@@ -167,7 +167,6 @@ export default class extends Command {
           const paginator = new KRBSPaginator({
             pages: [
               {
-                content: null,
                 embeds: [
                   new KRBSEmbed()
                     .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
@@ -258,7 +257,6 @@ export default class extends Command {
 
           const desc = await filterDesc(bot.desc);
           paginator.addPage({
-            content: null,
             embeds: [
               new KRBSEmbed().setTitle("봇 설명").setDescription(desc.res)
             ]
@@ -272,12 +270,10 @@ export default class extends Command {
 
           if (bot.banner)
             paginator.addPage({
-              content: null,
               embeds: [new KRBSEmbed().setTitle("봇 배너").setImage(bot.banner)]
             });
           if (bot.bg)
             paginator.addPage({
-              content: null,
               embeds: [new KRBSEmbed().setTitle("봇 배경").setImage(bot.bg)]
             });
 
