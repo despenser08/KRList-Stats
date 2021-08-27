@@ -44,15 +44,13 @@ export function formatNumber(value?: number) {
 }
 
 export function filterDesc(text: string) {
+  const imageRegex = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/g;
   const images: string[] = [];
 
   const res = text
     .replace(/<[^>]*>/g, "")
-    .replace(/!\[(.*?)\][[(].*?[\])]/g, (image) => {
-      const url = image.replace(
-        /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/g,
-        "$1"
-      );
+    .replace(imageRegex, (image) => {
+      const url = image.replace(imageRegex, "$1");
       images.push(url);
 
       return `[[봇 설명 이미지 #${images.length}]](${url})`;
