@@ -3,7 +3,6 @@ FROM node:16 as base
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
   libjpeg-dev libgif-dev librsvg2-dev \
-  libc6 musl libvips \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
