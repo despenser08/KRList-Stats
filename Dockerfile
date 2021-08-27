@@ -1,4 +1,4 @@
-FROM node:16-bullseye as base
+FROM node:16 as base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
