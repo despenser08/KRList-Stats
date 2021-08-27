@@ -85,6 +85,6 @@ async function urlToBuffer(url: string) {
   const sharpBuffer = sharp(buffer);
   const metadata = await sharpBuffer.metadata();
 
-  if (metadata.format === "gif") return sharpBuffer.toBuffer();
+  if (metadata.format === "gif") return sharpBuffer.gif().toBuffer();
   else return sharpBuffer.png().toBuffer();
 }
