@@ -15,11 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from "axios";
 import moment from "moment-timezone";
-import sharp from "sharp";
 import { TIMEZONE } from "../../config";
-import { KoreanbotsEndPoints } from "../constants";
 
 export function formatTime({
   date = null,
@@ -46,17 +43,17 @@ export function formatNumber(value?: number) {
   return shortValue + suffixes[suffixNum];
 }
 
-export async function filterDesc(text: string) {
+export function filterDesc(text: string) {
   const imageRegex = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/g;
-  const imageUrls: string[] = [];
+  const images: string[] = [];
 
   const res = text
     .replace(/<[^>]*>/g, "")
     .replace(imageRegex, (image) => {
       const url = image.replace(imageRegex, "$1");
-      imageUrls.push(url);
+      images.push(url);
 
-      return `[[봇 설명 이미지 #${imageUrls.length}]](${url})`;
+      return `[[봇 설명 이미지 #${images.length}]](${url})`;
     })
     .replace(
       /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
@@ -64,27 +61,5 @@ export async function filterDesc(text: string) {
     )
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
 
-  const images: { url: string; buffer: Buffer }[] = [];
-  for await (const imageUrl of imageUrls)
-    images.push({ url: imageUrl, buffer: await urlToBuffer(imageUrl) });
-
   return { res, images };
-}
-
-async function urlToBuffer(url: string) {
-  const buffer = await axios
-    .get(url, { responseType: "arraybuffer" })
-    .then((res) => Buffer.from(res.data, "binary"))
-    .catch(
-      async () =>
-        await axios
-          .get(KoreanbotsEndPoints.URL.logo, { responseType: "arraybuffer" })
-          .then((res2) => Buffer.from(res2.data, "binary"))
-    );
-
-  const sharpBuffer = sharp(buffer);
-  const metadata = await sharpBuffer.metadata();
-
-  if (metadata.format === "gif") return sharpBuffer.gif().toBuffer();
-  else return sharpBuffer.png().toBuffer();
 }

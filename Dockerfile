@@ -2,7 +2,7 @@ FROM node:16-bullseye as base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential libcairo2-dev libpango1.0-dev \
-  libjpeg-dev libgif-dev librsvg2-dev libvips \
+  libjpeg-dev libgif-dev librsvg2-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

@@ -255,7 +255,7 @@ export default class extends Command {
             ]
           });
 
-          const desc = await filterDesc(bot.desc);
+          const desc = filterDesc(bot.desc);
           paginator.addPage({
             embeds: [
               new KRBSEmbed().setTitle("봇 설명").setDescription(desc.res)
@@ -264,8 +264,12 @@ export default class extends Command {
 
           for (let i = 0; i < desc.images.length; i++)
             paginator.addPage({
-              content: `봇 설명 이미지 #${i + 1}`,
-              files: [new MessageAttachment(desc.images[i].buffer)]
+              embeds: [
+                new KRBSEmbed()
+                  .setTitle(`봇 설명 이미지 #${i + 1}`)
+                  .setURL(desc.images[i])
+                  .setImage(desc.images[i])
+              ]
             });
 
           if (bot.banner)
