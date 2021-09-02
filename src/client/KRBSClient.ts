@@ -21,6 +21,7 @@ import Dokdo from "dokdo";
 import path from "path";
 import { Logger as WinstonLogger } from "winston";
 import { OWNERS } from "../config";
+import { CommandBlocked } from "../lib/constants";
 import connect from "../lib/database/connect";
 import Logger from "./Logger";
 
@@ -93,7 +94,7 @@ export default class KRBSClient extends AkairoClient {
       "실행"
     ],
     owners: OWNERS,
-    noPerm: (message) => message.reply("봇 관리자 전용 명령어입니다.")
+    noPerm: (message) => message.reply(CommandBlocked.owner)
   });
 
   constructor() {

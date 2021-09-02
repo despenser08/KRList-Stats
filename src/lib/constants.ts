@@ -118,3 +118,9 @@ export const DiscordEndPoints = {
     }
   }
 };
+
+export enum CommandBlocked {
+  owner = "봇 관리자 전용 명령어입니다.",
+  guild = "서버 전용 명령어입니다.",
+  dm = "DM 전용 명령어입니다."
+}
