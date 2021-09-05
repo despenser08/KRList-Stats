@@ -94,6 +94,13 @@ export default class KRBSClient extends AkairoClient {
       "실행"
     ],
     owners: OWNERS,
+    secrets: [
+      process.env.DISCORD_TOKEN,
+      process.env.DB_USERNAME,
+      process.env.DB_PASSWORD,
+      process.env.DB_PORT,
+      process.env.KOREANBOTS_TOKEN
+    ],
     noPerm: (message) => message.reply(CommandBlocked.owner)
   });
 
