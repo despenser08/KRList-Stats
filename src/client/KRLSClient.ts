@@ -34,20 +34,6 @@ declare module "discord-akairo" {
     dokdo: Dokdo;
     cachedGuildCount: number;
   }
-
-  interface Command {
-    fullDescription: {
-      content: string;
-      usage?: string;
-    };
-  }
-
-  interface CommandOptions {
-    fullDescription: {
-      content: string;
-      usage?: string;
-    };
-  }
 }
 
 export default class KRLSClient extends AkairoClient {

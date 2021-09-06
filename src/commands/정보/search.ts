@@ -31,7 +31,7 @@ export default class extends Command {
   constructor() {
     super("검색", {
       aliases: ["검색", "search", "전체검색", "allsearch"],
-      fullDescription: {
+      description: {
         content: "검색으로 전체 리스트를 보여줍니다.",
         usage: '"<검색어>" [페이지 번호]'
       },

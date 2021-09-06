@@ -36,7 +36,7 @@ export default class extends Command {
         "커맨드"
       ],
       channel: "guild",
-      fullDescription: {
+      description: {
         content: "도움말을 보여줍니다.",
         usage: "[명령어 | 카테고리]"
       },
@@ -73,10 +73,10 @@ export default class extends Command {
                       .join(", ")
                   : "별칭 없음"
               }\n**설명**: ${
-                cmdOrCtgry.fullDescription.content || "설명 없음"
+                cmdOrCtgry.description.content || "설명 없음"
               }\n**사용법**: ${
                 `${message.util.parsed.prefix}${cmdOrCtgry} ${
-                  cmdOrCtgry.fullDescription.usage || ""
+                  cmdOrCtgry.description.usage || ""
                 }` || "사용법 없음"
               }`
             )

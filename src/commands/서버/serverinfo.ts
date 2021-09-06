@@ -50,7 +50,7 @@ export default class extends Command {
         "serverstatus",
         "서버상태"
       ],
-      fullDescription: {
+      description: {
         content: "해당 서버의 정보를 보여줍니다.",
         usage:
           '<서버 ["현재" | "키워드"] | ["투표" | "멤버" | "부스트" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'

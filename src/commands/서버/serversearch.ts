@@ -29,7 +29,7 @@ export default class extends Command {
   constructor() {
     super("서버검색", {
       aliases: ["서버검색", "serversearch"],
-      fullDescription: {
+      description: {
         content: "검색으로 서버 리스트를 보여줍니다.",
         usage: '"<검색어>" [페이지 번호]'
       },

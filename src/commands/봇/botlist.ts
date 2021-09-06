@@ -27,7 +27,7 @@ export default class extends Command {
   constructor() {
     super("봇리스트", {
       aliases: ["봇리스트", "botlist"],
-      fullDescription: {
+      description: {
         content: "카테고리로 봇 리스트를 보여줍니다.",
         usage: '<"하트" [페이지 번호]> | <"신규">'
       },
