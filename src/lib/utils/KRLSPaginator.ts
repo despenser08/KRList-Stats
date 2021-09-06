@@ -12,7 +12,7 @@ const defaultButton = {
   NEXT: PaginatorDefaultButton.NEXT.setLabel("다음")
 };
 
-export default class KRBSPaginator extends ButtonPaginator {
+export default class KRLSPaginator extends ButtonPaginator {
   constructor(options?: ButtonPaginatorOptions) {
     super(options);
 
@@ -23,9 +23,9 @@ export default class KRBSPaginator extends ButtonPaginator {
     this.actionRows.push(
       new MessageActionRow().addComponents(
         new MessageButton()
-          .setURL("https://github.com/despenser08/KRBots-Stats")
+          .setURL("https://github.com/despenser08/KRList-Stats")
           .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
-          .setLabel("KRBots-Stats GitHub")
+          .setLabel("KRList-Stats GitHub")
           .setStyle("LINK")
       )
     );

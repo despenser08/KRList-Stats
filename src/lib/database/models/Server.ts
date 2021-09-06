@@ -21,9 +21,8 @@ import {
   prop,
   Severity
 } from "@typegoose/typegoose";
-import { RawBotStatus } from "../../types";
 
-class BotStats {
+class ServerStats {
   @prop({ required: true })
   public updated!: Date;
 
@@ -31,14 +30,14 @@ class BotStats {
   public votes!: number;
 
   @prop()
-  public servers?: number;
+  public members?: number;
 
-  @prop({ required: true })
-  public status!: RawBotStatus;
+  @prop()
+  public boost?: number;
 }
 
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
-class Bot {
+class Server {
   @prop({ required: true, unique: true })
   public id!: string;
 
@@ -46,7 +45,7 @@ class Bot {
   public track!: boolean;
 
   @prop({ default: [] })
-  public stats: BotStats[];
+  public stats: ServerStats[];
 
   @prop({
     type: () => Number,
@@ -56,4 +55,4 @@ class Bot {
   public keywords!: Map<string, number>;
 }
 
-export default getModelForClass(Bot);
+export default getModelForClass(Server);

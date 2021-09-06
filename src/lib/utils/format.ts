@@ -17,6 +17,9 @@
 
 import moment from "moment-timezone";
 import { TIMEZONE } from "../../config";
+import { KoreanlistEndPoints } from "../constants";
+import { ImageOptions, BotOwner, User, ServerOwner } from "../types";
+import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatTime({
   date = null,
@@ -28,9 +31,8 @@ export function formatTime({
     : moment.tz(timezone).format(format);
 }
 
-export function formatNumber(value?: number) {
-  if (!value && value !== 0) return "N/A";
-
+export function formatNumber(value: number) {
+  if (!value) return "0";
   const suffixes = ["", "만", "억", "조", "해"];
   const suffixNum = Math.floor(("" + value).length / 4);
   let shortValue: string | number = parseFloat(
@@ -40,7 +42,57 @@ export function formatNumber(value?: number) {
     shortValue = shortValue.toFixed(1);
   }
   if (suffixNum === 1 && shortValue < 1) return Number(shortValue) * 10 + "천";
+  else if (shortValue === 1000) return "1천";
   return shortValue + suffixes[suffixNum];
+}
+
+export function makeImageURL(
+  root: string,
+  { format = "png", size = 256 }: ImageOptions
+): string {
+  return `${root}.${format}?size=${size}`;
+}
+
+export function makeBotURL({
+  id,
+  vanity,
+  flags = new BotFlags(0)
+}: {
+  id: string;
+  flags?: BotFlags;
+  vanity?: string;
+}) {
+  return `/bots/${
+    (flags.has("KOREANBOTS_VERIFIED") || flags.has("PARTNER")) && vanity
+      ? vanity
+      : id
+  }`;
+}
+
+export function makeServerURL({
+  id,
+  vanity,
+  flags = new ServerFlags(0)
+}: {
+  id: string;
+  flags?: ServerFlags;
+  vanity?: string;
+}) {
+  return `/servers/${
+    (flags.has("KOREANBOTS_VERIFIED") || flags.has("PARTNER")) && vanity
+      ? vanity
+      : id
+  }`;
+}
+
+export function makeUserURL({ id }: { id: string }) {
+  return `/users/${id}`;
+}
+
+export function lineUserText(user: User | BotOwner | ServerOwner) {
+  return `[${user.username}#${user.tag}](${KoreanlistEndPoints.URL.user({
+    id: user.id
+  })}) (<@${user.id}>)`;
 }
 
 export function filterDesc(text: string) {

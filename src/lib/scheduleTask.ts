@@ -20,8 +20,9 @@ import { AkairoClient } from "discord-akairo";
 import moment from "moment-timezone";
 import schedule from "node-schedule";
 import { TIMEZONE } from "../config";
-import { KoreanbotsEndPoints } from "./constants";
+import { KoreanlistEndPoints } from "./constants";
 import Bot from "./database/models/Bot";
+import Server from "./database/models/Server";
 import convert from "./utils/convertRawToType";
 
 let cachedGuildCount = 0;
@@ -32,24 +33,20 @@ export default async function (client: AkairoClient) {
 
     for (const bot of bots)
       await axios
-        .get(KoreanbotsEndPoints.API.bot(bot.id))
+        .get(KoreanlistEndPoints.API.bot(bot.id))
         .then(async ({ data }) => {
           const res = convert.bot(data.data);
 
-          await Bot.findOneAndUpdate(
-            { id: res.id },
-            {
-              $push: {
-                stats: {
-                  updated: moment(date).tz(TIMEZONE).toDate(),
-                  votes: res.votes,
-                  servers: res.servers,
-                  status: res.status.raw
-                }
+          await bot.updateOne({
+            $push: {
+              stats: {
+                updated: moment(date).tz(TIMEZONE).toDate(),
+                votes: res.votes,
+                servers: res.servers,
+                status: res.status.raw
               }
-            },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          );
+            }
+          });
         })
         .catch((e) => {
           client.logger.warn(
@@ -57,11 +54,31 @@ export default async function (client: AkairoClient) {
           );
         });
 
+    const servers = await Server.find({ track: true });
+
+    for (const server of servers)
+      await axios
+        .get(KoreanlistEndPoints.API.server(server.id))
+        .then(async ({ data }) => {
+          const res = convert.server(data);
+
+          await server.updateOne({
+            $push: {
+              stats: {
+                updated: moment(date).tz(TIMEZONE).toDate(),
+                votes: res.votes,
+                members: res.members,
+                boost: res.boostTier
+              }
+            }
+          });
+        });
+
     const guildCount = client.guilds.cache.size;
     if (guildCount !== cachedGuildCount)
       await axios
         .post(
-          KoreanbotsEndPoints.API.stats(client.user.id),
+          KoreanlistEndPoints.API.stats(client.user.id),
           { servers: guildCount },
           {
             headers: {

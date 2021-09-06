@@ -16,7 +16,7 @@
  */
 
 import { BitField } from "discord.js";
-import { BotFlagsString, UserFlagsString } from "../types";
+import { BotFlagsString, ServerFlagsString, UserFlagsString } from "../types";
 
 export class BotFlags extends BitField<BotFlagsString> {
   static FLAGS = {
@@ -26,6 +26,16 @@ export class BotFlags extends BitField<BotFlagsString> {
     DISCORD_VERIFIED: 1 << 4,
     PREMIUM: 1 << 5,
     FIRST_KOREANBOTS_HACKATHON_WINNER: 1 << 6
+  };
+}
+
+export class ServerFlags extends BitField<ServerFlagsString> {
+  static FLAGS = {
+    OFFICIAL: 1 << 0,
+    KOREANBOTS_VERIFIED: 1 << 2,
+    PARTNER: 1 << 3,
+    DISCORD_VERIFIED: 1 << 4,
+    DISCORD_PARTNERED: 1 << 5
   };
 }
 

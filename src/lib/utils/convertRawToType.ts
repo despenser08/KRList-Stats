@@ -17,28 +17,45 @@
 
 import {
   Bot,
-  Owner,
+  BotOwner,
   RawBot,
-  RawOwner,
+  RawBotOwner,
   RawUser,
-  State,
-  StatusEmojiEnum,
-  StatusEnum,
-  User
+  BotState,
+  BotStatusEmojiEnum,
+  BotStatusEnum,
+  User,
+  RawServer,
+  Server,
+  ServerState,
+  RawServerOwner,
+  ServerOwner,
+  RawServerBot,
+  ServerBot
 } from "../types";
-import { BotFlags, UserFlags } from "./Flags";
+import { BotFlags, ServerFlags, UserFlags } from "./Flags";
 
 function bot(bot: RawBot): Bot {
   return {
     ...bot,
-    owners: bot.owners.map((raw) => owner(raw)),
+    owners: bot.owners.map((raw) => botOwner(raw)),
     flags: new BotFlags(bot.flags),
     status: {
       raw: bot.status,
-      text: StatusEnum[bot.status],
-      emoji: StatusEmojiEnum[bot.status]
+      text: BotStatusEnum[bot.status],
+      emoji: BotStatusEmojiEnum[bot.status]
     },
-    state: State[bot.state]
+    state: BotState[bot.state]
+  };
+}
+
+function server(server: RawServer): Server {
+  return {
+    ...server,
+    flags: new ServerFlags(server.flags),
+    owner: serverOwner(server.owner),
+    bots: server.bots.map((raw) => serverBot(raw)),
+    state: ServerState[server.state]
   };
 }
 
@@ -46,18 +63,37 @@ function user(user: RawUser): User {
   return {
     ...user,
     flags: new UserFlags(user.flags),
-    bots: user.bots.map((raw) => bot(raw))
+    bots: user.bots.map((raw) => bot(raw)),
+    servers: user.servers.map((raw) => server(raw))
   };
 }
 
-function owner(owner: RawOwner): Owner {
-  return { ...owner, flags: new UserFlags(owner.flags) };
+function botOwner(botOwner: RawBotOwner): BotOwner {
+  return { ...botOwner, flags: new ServerFlags(botOwner.flags) };
+}
+
+function serverOwner(serverOwner: RawServerOwner): ServerOwner {
+  return { ...serverOwner, flags: new UserFlags(serverOwner.flags) };
+}
+
+function serverBot(serverBot: RawServerBot): ServerBot {
+  return {
+    ...serverBot,
+    flags: new BotFlags(serverBot.flags),
+    status: {
+      raw: serverBot.status,
+      text: BotStatusEnum[serverBot.status],
+      emoji: BotStatusEmojiEnum[serverBot.status]
+    },
+    state: BotState[serverBot.state]
+  };
 }
 
 const convert = {
   bot,
+  server,
   user,
-  owner
+  owner: botOwner
 };
 
 export default convert;

@@ -38,7 +38,7 @@ export default function Logger(label: string) {
         level: "debug"
       }),
       new DailyRotateFile({
-        filename: path.join(__dirname, "..", "..", "logs", "KRBS-%DATE%.log"),
+        filename: path.join(__dirname, "..", "..", "logs", "KRLS-%DATE%.log"),
         level: "debug"
       })
     ]

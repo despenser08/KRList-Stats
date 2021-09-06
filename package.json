@@ -1,5 +1,5 @@
 {
-  "name": "krbots-stats",
+  "name": "krlist-stats",
   "version": "0.0.1",
   "description": "Discord Bot that show Koreanbots stats",
   "main": "dist/index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/despenser08/KRBots-Stats.git"
+    "url": "git+https://github.com/despenser08/KRList-Stats.git"
   },
   "author": "despenser08",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/despenser08/KRBots-Stats/issues"
+    "url": "https://github.com/despenser08/KRList-Stats/issues"
   },
-  "homepage": "https://github.com/despenser08/KRBots-Stats#readme",
+  "homepage": "https://github.com/despenser08/KRList-Stats#readme",
   "dependencies": {
     "@typegoose/typegoose": "^8.2.0",
     "axios": "^0.21.3",
