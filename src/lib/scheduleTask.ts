@@ -67,8 +67,7 @@ export default async function (client: AkairoClient) {
               stats: {
                 updated: moment(date).tz(TIMEZONE).toDate(),
                 votes: res.votes,
-                members: res.members,
-                boost: res.boostTier
+                members: res.members
               }
             }
           });
