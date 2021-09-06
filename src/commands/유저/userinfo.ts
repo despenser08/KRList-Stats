@@ -28,7 +28,7 @@ export default class extends Command {
         "userstatus",
         "유저상태"
       ],
-      fullDescription: {
+      description: {
         content: "해당 유저의 정보를 보여줍니다.",
         usage: "<유저>"
       },

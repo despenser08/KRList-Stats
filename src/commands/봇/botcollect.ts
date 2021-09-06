@@ -35,7 +35,7 @@ export default class extends Command {
         "bottrack",
         "봇추적"
       ],
-      fullDescription: {
+      description: {
         content: "해당 봇의 정보를 수집합니다.",
         usage: "<봇>"
       },

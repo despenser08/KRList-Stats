@@ -5,7 +5,7 @@ export default class extends Command {
   constructor() {
     super("hellothisisverification", {
       aliases: ["hellothisisverification"],
-      fullDescription: {
+      description: {
         content: "한국 디스코드 리스트 인증을 위한 명령어입니다."
       }
     });

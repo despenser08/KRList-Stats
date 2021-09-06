@@ -29,7 +29,7 @@ export default class extends Command {
   constructor() {
     super("봇검색", {
       aliases: ["봇검색", "botsearch"],
-      fullDescription: {
+      description: {
         content: "검색으로 봇 리스트를 보여줍니다.",
         usage: '"<검색어>" [페이지 번호]'
       },

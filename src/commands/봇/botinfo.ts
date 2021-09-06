@@ -60,7 +60,7 @@ export default class extends Command {
         "botstatus",
         "봇상태"
       ],
-      fullDescription: {
+      description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
           '<봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'

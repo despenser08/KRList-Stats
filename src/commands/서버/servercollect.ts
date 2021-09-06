@@ -35,7 +35,7 @@ export default class extends Command {
         "servertrack",
         "서버추적"
       ],
-      fullDescription: {
+      description: {
         content: "해당 서버의 정보를 수집합니다.",
         usage: "<서버>"
       },
