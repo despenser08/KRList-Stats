@@ -17,26 +17,33 @@
 
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, User, Util } from "discord.js";
-import { KoreanbotsEndPoints } from "../../lib/constants";
-import Bot from "../../lib/database/models/Bot";
+import { Guild, Message, Util } from "discord.js";
+import { KoreanlistEndPoints } from "../../lib/constants";
+import Server from "../../lib/database/models/Server";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class extends Command {
   constructor() {
-    super("수집", {
-      aliases: ["수집", "collect", "track", "추적"],
+    super("서버수집", {
+      aliases: [
+        "서버수집",
+        "servercollect",
+        "collectserver",
+        "수집서버",
+        "servertrack",
+        "서버추적"
+      ],
       fullDescription: {
-        content: "해당 봇의 정보를 수집합니다.",
-        usage: "<봇>"
+        content: "해당 서버의 정보를 수집합니다.",
+        usage: "<서버>"
       },
       args: [
         {
-          id: "userOrId",
-          type: Argument.union("user", "member", "string"),
-          prompt: { start: "봇을 입력해 주세요." }
+          id: "guildOrId",
+          type: Argument.union("guild", "string"),
+          prompt: { start: "서버를 입력해 주세요." }
         }
       ]
     });
@@ -44,42 +51,34 @@ export default class extends Command {
 
   public async exec(
     message: Message,
-    { userOrId }: { userOrId: string | User | GuildMember }
+    { guildOrId }: { guildOrId: Guild | string }
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
-    const id =
-      userOrId instanceof User || userOrId instanceof GuildMember
-        ? userOrId.id
-        : userOrId;
+    const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
 
     await axios
-      .get(KoreanbotsEndPoints.API.bot(id))
+      .get(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
-        const bot = convert.bot(data.data);
+        const server = convert.server(data.data);
 
-        if (!bot.owners.map((owner) => owner.id).includes(message.author.id))
-          return msg.edit(
-            `**${Util.escapeBold(bot.name)}** 관리자만 수집 요청이 가능합니다.`
-          );
-
-        const botDB = await Bot.findOneAndUpdate(
-          { id: bot.id },
+        const serverDB = await Server.findOneAndUpdate(
+          { id: server.id },
           {},
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
 
-        if (botDB.track)
+        if (serverDB.track)
           return msg.edit(
             `**${Util.escapeBold(
-              bot.name
+              server.name
             )}** 수집은 이미 시작되었습니다. 새로 등록하셨다면 1분을 기다려주세요.`
           );
 
-        await botDB.updateOne({ track: true });
+        await serverDB.updateOne({ track: true });
 
         return msg.edit(
-          `1분마다 **${Util.escapeBold(bot.name)}** 수집이 시작됩니다.`
+          `1분마다 **${Util.escapeBold(server.name)}** 수집이 시작됩니다.`
         );
       })
       .catch((e) => {
@@ -89,9 +88,9 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                  new KRLSEmbed().setDescription(
+                    `해당 서버를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                      guildOrId.toString()
                     )}\`)\n${e}`
                   )
                 ]
@@ -101,9 +100,9 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
+                  new KRLSEmbed().setDescription(
                     `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      guildOrId.toString()
                     )}\`)\n${e}`
                   )
                 ]
@@ -111,14 +110,14 @@ export default class extends Command {
 
             default:
               this.client.logger.warn(
-                `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
+                `FetchError: Error occurred while fetching server ${id}:\n${e.message}\n${e.stack}`
               );
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                  new KRLSEmbed().setDescription(
+                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      guildOrId.toString()
                     )}\`)\n${e}`
                   )
                 ]
@@ -131,9 +130,9 @@ export default class extends Command {
           return msg.edit({
             content: null,
             embeds: [
-              new KRBSEmbed().setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  userOrId.toString()
+              new KRLSEmbed().setDescription(
+                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  guildOrId.toString()
                 )}\`)\n${e}`
               )
             ]

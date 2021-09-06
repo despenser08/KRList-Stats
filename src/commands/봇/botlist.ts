@@ -18,15 +18,15 @@
 import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { KoreanbotsEndPoints } from "../../lib/constants";
+import { KoreanlistEndPoints } from "../../lib/constants";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class extends Command {
   constructor() {
-    super("리스트", {
-      aliases: ["리스트", "list"],
+    super("봇리스트", {
+      aliases: ["봇리스트", "botlist"],
       fullDescription: {
         content: "카테고리로 봇 리스트를 보여줍니다.",
         usage: '<"하트" [페이지 번호]> | <"신규">'
@@ -64,7 +64,7 @@ export default class extends Command {
 
     if (category === "votes") {
       await axios
-        .get(KoreanbotsEndPoints.API.voteList(page))
+        .get(KoreanlistEndPoints.API.voteList(page))
         .then(
           async ({
             data: {
@@ -78,7 +78,7 @@ export default class extends Command {
             return msg.edit({
               content: null,
               embeds: [
-                new KRBSEmbed()
+                new KRLSEmbed()
                   .setTitle("봇 투표순 리스트")
                   .setDescription(
                     res
@@ -86,9 +86,11 @@ export default class extends Command {
                         (bot, index) =>
                           `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
                             bot.tag
-                          }](${KoreanbotsEndPoints.URL.bot(
-                            bot.vanity || bot.id
-                          )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
+                          }](${KoreanlistEndPoints.URL.bot({
+                            id: bot.id,
+                            flags: bot.flags,
+                            vanity: bot.vanity
+                          })}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }] - ❤️${bot.votes}`
                       )
@@ -110,7 +112,7 @@ export default class extends Command {
         });
     } else {
       await axios
-        .get(KoreanbotsEndPoints.API.newList())
+        .get(KoreanlistEndPoints.API.newList())
         .then(
           async ({
             data: {
@@ -124,7 +126,7 @@ export default class extends Command {
             return msg.edit({
               content: null,
               embeds: [
-                new KRBSEmbed()
+                new KRLSEmbed()
                   .setTitle("신규 봇 리스트")
                   .setDescription(
                     res
@@ -132,9 +134,11 @@ export default class extends Command {
                         (bot, index) =>
                           `**${index + 1}.** [${bot.name}#${
                             bot.tag
-                          }](${KoreanbotsEndPoints.URL.bot(
-                            bot.vanity || bot.id
-                          )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
+                          }](${KoreanlistEndPoints.URL.bot({
+                            id: bot.id,
+                            flags: bot.flags,
+                            vanity: bot.vanity
+                          })}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }]`
                       )

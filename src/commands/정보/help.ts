@@ -17,8 +17,8 @@
 
 import { Argument, Command, Category } from "discord-akairo";
 import { Message, Util } from "discord.js";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
-import KRBSPaginator from "../../lib/utils/KRBSPaginator";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
   public constructor() {
@@ -63,7 +63,7 @@ export default class extends Command {
     if (cmdOrCtgry instanceof Command) {
       return message.reply({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
             .setDescription(
               `**별칭**: ${
@@ -85,7 +85,7 @@ export default class extends Command {
     } else if (cmdOrCtgry instanceof Category) {
       return message.reply({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
             .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
             .setDescription(
@@ -98,12 +98,12 @@ export default class extends Command {
       });
     }
 
-    const paginator = new KRBSPaginator();
+    const paginator = new KRLSPaginator();
 
     for (const category of this.handler.categories.values())
       paginator.addPage({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle("도움말")
             .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
             .addField(

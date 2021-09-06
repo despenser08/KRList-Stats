@@ -1,0 +1,437 @@
+/**
+ * Copyright (C) 2021 despenser08
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import axios, { AxiosError } from "axios";
+import { Argument, Command } from "discord-akairo";
+import { Util, Message, MessageAttachment, Guild } from "discord.js";
+import moment from "moment-timezone";
+import { TIMEZONE } from "../../config";
+import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
+import ServerDB from "../../lib/database/models/Server";
+import { ServerFlagsEnum } from "../../lib/types";
+import convert from "../../lib/utils/convertRawToType";
+import createChart from "../../lib/utils/createChart";
+import {
+  filterDesc,
+  formatNumber,
+  formatTime,
+  lineUserText
+} from "../../lib/utils/format";
+import isInterface from "../../lib/utils/isInterface";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
+
+export default class extends Command {
+  constructor() {
+    super("서버정보", {
+      aliases: [
+        "서버정보",
+        "serverinformation",
+        "serverinfo",
+        "serverdata",
+        "서버데이터",
+        "serverstat",
+        "serverstats",
+        "서버스텟",
+        "serverstatus",
+        "서버상태"
+      ],
+      fullDescription: {
+        content: "해당 서버의 정보를 보여줍니다.",
+        usage:
+          '<서버 ["현재" | "키워드"] | ["투표" | "멤버" | "부스트" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+      },
+      args: [
+        {
+          id: "guildOrId",
+          type: Argument.union("guild", "string"),
+          prompt: {
+            start: "서버를 입력해 주세요."
+          }
+        },
+        {
+          id: "info",
+          type: [
+            ["now", "현재", "current"],
+            ["votes", "투표", "vote", "heart", "hearts", "하트"],
+            ["members", "멤버", "member", "user", "users", "유저"],
+            ["boost", "부스트"],
+            ["keyword", "키워드", "keywords"]
+          ],
+          prompt: {
+            optional: true,
+            retry:
+              '"현재" | "투표" | "멤버" | "부스트" | "키워드"를 입력해 주세요.'
+          },
+          default: "now"
+        },
+        {
+          id: "limit",
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", [
+            "all",
+            "전체"
+          ]),
+          prompt: {
+            optional: true,
+            retry: '"전체" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
+          },
+          default: "all"
+        },
+        {
+          id: "endOfDate",
+          type: "date",
+          prompt: {
+            optional: true,
+            retry: "날짜를 입력해 주세요."
+          }
+        }
+      ]
+    });
+  }
+
+  public async exec(
+    message: Message,
+    {
+      guildOrId,
+      info,
+      limit,
+      endOfDate
+    }: {
+      guildOrId: Guild | string;
+      info: "now" | "votes" | "members" | "boost" | "keyword";
+      limit: "all" | number | Date;
+      endOfDate?: Date;
+    }
+  ) {
+    const msg = await message.reply("잠시만 기다려주세요...");
+
+    const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
+
+    return axios
+      .get(KoreanlistEndPoints.API.server(id))
+      .then(async ({ data }) => {
+        const server = convert.server(data.data);
+
+        const serverDB = await ServerDB.findOneAndUpdate(
+          { id: server.id },
+          {},
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+
+        let stats = serverDB.stats;
+        if (limit instanceof Date) {
+          const date = moment(limit).tz(TIMEZONE).startOf("day");
+          const nextDate = endOfDate
+            ? moment(endOfDate).tz(TIMEZONE).endOf("day")
+            : moment(limit).tz(TIMEZONE).endOf("day");
+
+          stats = stats.filter(
+            (stat) =>
+              stat.updated >= date.toDate() && stat.updated <= nextDate.toDate()
+          );
+        } else if (
+          typeof limit === "number" &&
+          Number.isInteger(limit) &&
+          stats.length > limit
+        ) {
+          stats.reverse();
+          stats.splice(limit);
+          stats.reverse();
+        }
+
+        if (info === "now") {
+          const flags = server.flags.toArray();
+
+          const paginator = new KRLSPaginator({
+            pages: [
+              {
+                embeds: [
+                  new KRLSEmbed()
+                    .setTitle(server.name)
+                    .setURL(
+                      KoreanlistEndPoints.URL.server({
+                        id: server.id,
+                        flags: server.flags,
+                        vanity: server.vanity
+                      })
+                    )
+                    .setThumbnail(
+                      `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(
+                        server.id,
+                        {
+                          format: "webp",
+                          size: 256
+                        }
+                      )}`
+                    )
+                    .setDescription(
+                      `https://discord.gg/${server.invite} | ${
+                        serverDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
+                      }\n\n${server.intro}`
+                    )
+                    .addField("소유자", lineUserText(server.owner))
+                    .addField(
+                      "카테고리",
+                      server.category.length < 1
+                        ? "없음"
+                        : server.category.join(", ")
+                    )
+                    .addField(
+                      "부스트 티어",
+                      (server.boostTier ?? 0) + "레벨",
+                      true
+                    )
+                    .addField("상태", server.state, true)
+                    .addField("이모지", `${server.emojis.length}개`, true)
+                    .addField("봇", `${server.bots.length}개`, true)
+                    .addField(
+                      "멤버 수",
+                      server.members ? server.members.toString() : "N/A",
+                      true
+                    )
+                    .addField("투표 수", server.votes.toString(), true)
+                    .addField(
+                      "플래그",
+                      flags.length < 1
+                        ? "없음"
+                        : flags.map((flag) => ServerFlagsEnum[flag]).join(", "),
+                      true
+                    )
+                    .setImage(
+                      KoreanlistEndPoints.OG.server(
+                        server.id,
+                        server.name,
+                        server.intro,
+                        server.category,
+                        [
+                          formatNumber(server.votes),
+                          formatNumber(server.members)
+                        ]
+                      )
+                    )
+                ]
+              }
+            ]
+          });
+
+          const desc = filterDesc(server.desc);
+          paginator.addPage({
+            embeds: [
+              new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)
+            ]
+          });
+
+          for (let i = 0; i < desc.images.length; i++)
+            paginator.addPage({
+              embeds: [
+                new KRLSEmbed()
+                  .setTitle(`서버 설명 이미지 #${i + 1}`)
+                  .setURL(desc.images[i])
+                  .setImage(desc.images[i])
+              ]
+            });
+
+          if (server.banner)
+            paginator.addPage({
+              embeds: [
+                new KRLSEmbed().setTitle("서버 배너").setImage(server.banner)
+              ]
+            });
+          if (server.bg)
+            paginator.addPage({
+              embeds: [
+                new KRLSEmbed().setTitle("서버 배경").setImage(server.bg)
+              ]
+            });
+
+          return paginator.run(message, msg);
+        } else if (info === "keyword") {
+          if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }수집을 사용하여 봇 수집을 시작하세요.`
+            );
+
+          if (!serverDB.keywords || serverDB.keywords.size < 1)
+            return msg.edit(
+              `서버에서 검색한 결과 중에 **${Util.escapeBold(
+                server.name
+              )}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
+            );
+
+          return msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle(`${server.name} 검색 키워드`)
+                .setDescription(
+                  [...serverDB.keywords.keys()]
+                    .sort(
+                      (a, b) =>
+                        serverDB.keywords.get(b) - serverDB.keywords.get(a)
+                    )
+                    .map(
+                      (key, index) =>
+                        `**${index + 1}.** ${key} - ${serverDB.keywords.get(
+                          key
+                        )}`
+                    )
+                    .join("\n")
+                )
+            ]
+          });
+        } else {
+          if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }수집을 사용하여 봇 수집을 시작하세요.`
+            );
+
+          const datas: number[] = [];
+          const dates: string[] = [];
+
+          for await (const stat of stats) {
+            datas.push(stat[info]);
+            dates.push(
+              formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
+            );
+          }
+
+          const color =
+            info === "members"
+              ? "rgb(51, 102, 255)"
+              : info === "boost"
+              ? "rgb(255, 115, 250)"
+              : "rgb(255, 0, 0)";
+
+          const chart = await createChart(1920, 1080, {
+            type: "line",
+            data: {
+              labels: dates,
+              datasets: [
+                {
+                  label: `${
+                    info === "members"
+                      ? "멤버"
+                      : info === "boost"
+                      ? "부스트"
+                      : "투표"
+                  } 수`,
+                  data: datas,
+                  backgroundColor: [color],
+                  borderColor: [color],
+                  borderWidth: 5,
+                  pointRadius: 0,
+                  tension: 0.1
+                }
+              ]
+            },
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `${server.name} ${
+                    info === "members"
+                      ? "멤버"
+                      : info === "boost"
+                      ? "부스트"
+                      : "투표"
+                  } 수`,
+                  font: { size: 40 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
+                },
+                datalabels: { display: false }
+              },
+              scales: { yAxes: { ticks: { precision: 0 } } }
+            }
+          });
+
+          return msg.edit({
+            content: `**${Util.escapeBold(server.name)}** 차트입니다.`,
+            files: [new MessageAttachment(chart, "chart.png")]
+          });
+        }
+      })
+      .catch(async (e) => {
+        if (isInterface<AxiosError>(e, "response")) {
+          switch (e.response.status) {
+            case 404:
+              return msg.edit({
+                content: null,
+                embeds: [
+                  new KRLSEmbed().setDescription(
+                    `해당 서버를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
+                      guildOrId.toString()
+                    )}\`)\n${e}`
+                  )
+                ]
+              });
+
+            case 400:
+              return msg.edit({
+                content: null,
+                embeds: [
+                  new KRLSEmbed().setDescription(
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                      guildOrId.toString()
+                    )}\`)\n${e}`
+                  )
+                ]
+              });
+
+            default:
+              this.client.logger.warn(
+                `FetchError: Error occurred while fetching server ${id}:\n${e.message}\n${e.stack}`
+              );
+              return msg.edit({
+                content: null,
+                embeds: [
+                  new KRLSEmbed().setDescription(
+                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      guildOrId.toString()
+                    )}\`)\n${e}`
+                  )
+                ]
+              });
+          }
+        } else {
+          this.client.logger.warn(
+            `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
+          );
+          return msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed().setDescription(
+                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  guildOrId.toString()
+                )}\`)\n${e}`
+              )
+            ]
+          });
+        }
+      });
+  }
+}

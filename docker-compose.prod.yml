@@ -2,7 +2,7 @@ version: "3"
 
 services:
   bot:
-    image: ghcr.io/despenser08/krbots-stats:latest
+    image: ghcr.io/despenser08/krlist-stats:latest
     restart: unless-stopped
     env_file: .env
     environment:

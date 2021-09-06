@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import KRBSClient from "./client/KRBSClient";
+import KRLSClient from "./client/KRLSClient";
 
-const client = new KRBSClient();
+const client = new KRLSClient();
 
 client.start();

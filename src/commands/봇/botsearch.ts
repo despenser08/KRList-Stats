@@ -18,17 +18,17 @@
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
-import { KoreanbotsEndPoints } from "../../lib/constants";
+import { KoreanlistEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class extends Command {
   constructor() {
-    super("검색", {
-      aliases: ["검색", "search"],
+    super("봇검색", {
+      aliases: ["봇검색", "botsearch"],
       fullDescription: {
         content: "검색으로 봇 리스트를 보여줍니다.",
         usage: '"<검색어>" [페이지 번호]'
@@ -60,7 +60,7 @@ export default class extends Command {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get(KoreanbotsEndPoints.API.search(query, page))
+      .get(KoreanlistEndPoints.API.searchBot(query, page))
       .then(
         async ({
           data: {
@@ -72,22 +72,24 @@ export default class extends Command {
           const res = data.map((rawBot) => convert.bot(rawBot));
 
           if (res.length < 1)
-            return msg.edit(`"${query}"에 대한 검색 결과가 없습니다.`);
+            return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
           else {
             msg.edit({
               content: null,
               embeds: [
-                new KRBSEmbed()
-                  .setTitle(`"${query}"에 대한 검색 결과입니다.`)
+                new KRLSEmbed()
+                  .setTitle(`"${query}"에 대한 봇 검색 결과입니다.`)
                   .setDescription(
                     res
                       .map(
                         (bot, index) =>
                           `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
                             bot.tag
-                          }](${KoreanbotsEndPoints.URL.bot(
-                            bot.vanity || bot.id
-                          )}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
+                          }](${KoreanlistEndPoints.URL.bot({
+                            id: bot.id,
+                            flags: bot.flags,
+                            vanity: bot.vanity
+                          })}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }] - ❤️${bot.votes}`
                       )
@@ -115,7 +117,7 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
+                  new KRLSEmbed().setDescription(
                     `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
                       query
                     )}\`)\n${e}`
@@ -127,7 +129,7 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
+                  new KRLSEmbed().setDescription(
                     `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
                       query
                     )}\`)\n${e}`
@@ -142,8 +144,8 @@ export default class extends Command {
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
-                    `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  new KRLSEmbed().setDescription(
+                    `봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
                       query
                     )}\`)\n${e}`
                   )
@@ -157,8 +159,8 @@ export default class extends Command {
           return msg.edit({
             content: null,
             embeds: [
-              new KRBSEmbed().setDescription(
-                `검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+              new KRLSEmbed().setDescription(
+                `봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
                   query
                 )}\`)\n${e}`
               )

@@ -28,37 +28,42 @@ import moment from "moment-timezone";
 import { TIMEZONE } from "../../config";
 import {
   DiscordEndPoints,
-  KoreanbotsEndPoints,
-  KoreanbotsOrigin
+  KoreanlistEndPoints,
+  KoreanlistOrigin
 } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
+import { BotFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
-import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
+import {
+  filterDesc,
+  formatNumber,
+  formatTime,
+  lineUserText
+} from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
-import KRBSPaginator from "../../lib/utils/KRBSPaginator";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
   constructor() {
-    super("정보", {
+    super("봇정보", {
       aliases: [
-        "정보",
-        "information",
-        "info",
-        "data",
-        "데이터",
-        "stat",
-        "stats",
-        "스텟",
-        "status",
-        "상태"
+        "봇정보",
+        "botinformation",
+        "botinfo",
+        "botdata",
+        "봇데이터",
+        "botstat",
+        "botstats",
+        "봇스텟",
+        "botstatus",
+        "봇상태"
       ],
       fullDescription: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<유저> | <봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+          '<봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -116,7 +121,7 @@ export default class extends Command {
       limit,
       endOfDate
     }: {
-      userOrId: string | User | GuildMember;
+      userOrId: User | GuildMember | string;
       info: "now" | "votes" | "servers" | "status" | "keyword";
       limit: "all" | number | Date;
       endOfDate?: Date;
@@ -130,7 +135,7 @@ export default class extends Command {
         : userOrId;
 
     return axios
-      .get(KoreanbotsEndPoints.API.bot(id))
+      .get(KoreanlistEndPoints.API.bot(id))
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 
@@ -164,15 +169,21 @@ export default class extends Command {
         if (info === "now") {
           const flags = bot.flags.toArray();
 
-          const paginator = new KRBSPaginator({
+          const paginator = new KRLSPaginator({
             pages: [
               {
                 embeds: [
-                  new KRBSEmbed()
+                  new KRLSEmbed()
                     .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-                    .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
+                    .setURL(
+                      KoreanlistEndPoints.URL.bot({
+                        id: bot.id,
+                        flags: bot.flags,
+                        vanity: bot.vanity
+                      })
+                    )
                     .setThumbnail(
-                      `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(
+                      `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(
                         bot.id,
                         {
                           format: "webp",
@@ -196,16 +207,7 @@ export default class extends Command {
                     )
                     .addField(
                       "관리자",
-                      bot.owners
-                        .map(
-                          (owner) =>
-                            `[${owner.username}#${
-                              owner.tag
-                            }](${KoreanbotsEndPoints.URL.user(owner.id)}) (<@${
-                              owner.id
-                            }>)`
-                        )
-                        .join("\n")
+                      bot.owners.map((owner) => lineUserText(owner)).join("\n")
                     )
                     .addField(
                       "카테고리",
@@ -242,7 +244,7 @@ export default class extends Command {
                     )
                     .addField("웹페이지", bot.web || "없음")
                     .setImage(
-                      KoreanbotsEndPoints.OG.bot(
+                      KoreanlistEndPoints.OG.bot(
                         bot.id,
                         bot.name,
                         bot.intro,
@@ -258,14 +260,14 @@ export default class extends Command {
           const desc = filterDesc(bot.desc);
           paginator.addPage({
             embeds: [
-              new KRBSEmbed().setTitle("봇 설명").setDescription(desc.res)
+              new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)
             ]
           });
 
           for (let i = 0; i < desc.images.length; i++)
             paginator.addPage({
               embeds: [
-                new KRBSEmbed()
+                new KRLSEmbed()
                   .setTitle(`봇 설명 이미지 #${i + 1}`)
                   .setURL(desc.images[i])
                   .setImage(desc.images[i])
@@ -274,11 +276,11 @@ export default class extends Command {
 
           if (bot.banner)
             paginator.addPage({
-              embeds: [new KRBSEmbed().setTitle("봇 배너").setImage(bot.banner)]
+              embeds: [new KRLSEmbed().setTitle("봇 배너").setImage(bot.banner)]
             });
           if (bot.bg)
             paginator.addPage({
-              embeds: [new KRBSEmbed().setTitle("봇 배경").setImage(bot.bg)]
+              embeds: [new KRLSEmbed().setTitle("봇 배경").setImage(bot.bg)]
             });
 
           return paginator.run(message, msg);
@@ -375,7 +377,7 @@ export default class extends Command {
           return msg.edit({
             content: null,
             embeds: [
-              new KRBSEmbed()
+              new KRLSEmbed()
                 .setTitle(`${bot.name} 검색 키워드`)
                 .setDescription(
                   [...botDB.keywords.keys()]
@@ -454,146 +456,61 @@ export default class extends Command {
       })
       .catch(async (e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          if (e.response.status < 400 || e.response.status > 499)
-            this.client.logger.warn(
-              `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-            );
-        } else
-          this.client.logger.warn(
-            `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-          );
-
-        return axios
-          .get(KoreanbotsEndPoints.API.user(id))
-          .then(async ({ data }) => {
-            const user = convert.user(data.data);
-            const flags = user.flags.toArray();
-
-            const infoEmbed = new KRBSEmbed()
-              .setTitle(`${user.username}#${user.tag}`)
-              .setURL(KoreanbotsEndPoints.URL.user(user.id))
-              .setThumbnail(
-                `${KoreanbotsOrigin}${KoreanbotsEndPoints.CDN.avatar(user.id, {
-                  format: "webp",
-                  size: 256
-                })}`
-              )
-              .setDescription(`<@${user.id}>`)
-              .addField(
-                "봇",
-                user.bots.length > 0 ? `${user.bots.length}개` : "없음"
-              )
-              .addField(
-                "플래그",
-                flags.length < 1
-                  ? "없음"
-                  : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
-                true
-              )
-              .addField(
-                "GitHub",
-                user.github ? `https://github.com/${user.github}` : "없음",
-                true
-              );
-
-            if (user.bots.length < 1)
-              return msg.edit({ content: null, embeds: [infoEmbed] });
-            else {
-              const paginator = new KRBSPaginator({
-                pages: [{ embeds: [infoEmbed] }]
-              });
-
-              for await (const bot of user.bots)
-                paginator.addPage({
-                  embeds: [
-                    new KRBSEmbed()
-                      .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-                      .setURL(KoreanbotsEndPoints.URL.bot(bot.vanity || bot.id))
-                      .setDescription(
-                        `<@${bot.id}>${
-                          bot.url
-                            ? ` | [초대 링크](${bot.url})`
-                            : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                                bot.id
-                              )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
-                                bot.id,
-                                false
-                              )})`
-                        }`
-                      )
-                      .setImage(
-                        KoreanbotsEndPoints.OG.bot(
-                          bot.id,
-                          bot.name,
-                          bot.intro,
-                          bot.category,
-                          [formatNumber(bot.votes), formatNumber(bot.servers)]
-                        )
-                      )
-                  ]
-                });
-
-              return paginator.run(message, msg);
-            }
-          })
-          .catch((e) => {
-            if (isInterface<AxiosError>(e, "response")) {
-              switch (e.response.status) {
-                case 404:
-                  return msg.edit({
-                    content: null,
-                    embeds: [
-                      new KRBSEmbed().setDescription(
-                        `해당 봇 또는 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)\n${e}`
-                      )
-                    ]
-                  });
-
-                case 400:
-                  return msg.edit({
-                    content: null,
-                    embeds: [
-                      new KRBSEmbed().setDescription(
-                        `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)\n${e}`
-                      )
-                    ]
-                  });
-
-                default:
-                  this.client.logger.warn(
-                    `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-                  );
-                  return msg.edit({
-                    content: null,
-                    embeds: [
-                      new KRBSEmbed().setDescription(
-                        `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                          userOrId.toString()
-                        )}\`)\n${e}`
-                      )
-                    ]
-                  });
-              }
-            } else {
-              this.client.logger.warn(
-                `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-              );
+          switch (e.response.status) {
+            case 404:
               return msg.edit({
                 content: null,
                 embeds: [
-                  new KRBSEmbed().setDescription(
-                    `해당 봇 또는 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  new KRLSEmbed().setDescription(
+                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
                       userOrId.toString()
                     )}\`)\n${e}`
                   )
                 ]
               });
-            }
+
+            case 400:
+              return msg.edit({
+                content: null,
+                embeds: [
+                  new KRLSEmbed().setDescription(
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
+                ]
+              });
+
+            default:
+              this.client.logger.warn(
+                `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
+              );
+              return msg.edit({
+                content: null,
+                embeds: [
+                  new KRLSEmbed().setDescription(
+                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                      userOrId.toString()
+                    )}\`)\n${e}`
+                  )
+                ]
+              });
+          }
+        } else {
+          this.client.logger.warn(
+            `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
+          );
+          return msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed().setDescription(
+                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
+                  userOrId.toString()
+                )}\`)\n${e}`
+              )
+            ]
           });
+        }
       });
   }
 }

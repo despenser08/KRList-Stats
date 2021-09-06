@@ -1,7 +1,7 @@
 import { MessageEmbed, MessageEmbedOptions } from "discord.js";
 import { Colors } from "../constants";
 
-export default class KRBSEmbed extends MessageEmbed {
+export default class KRLSEmbed extends MessageEmbed {
   constructor(data?: MessageEmbed | MessageEmbedOptions) {
     super(data);
 

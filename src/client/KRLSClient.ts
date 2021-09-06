@@ -50,7 +50,7 @@ declare module "discord-akairo" {
   }
 }
 
-export default class KRBSClient extends AkairoClient {
+export default class KRLSClient extends AkairoClient {
   public listenerHandler: ListenerHandler = new ListenerHandler(this, {
     directory: path.join(__dirname, "..", "listeners"),
     automateCategories: true
