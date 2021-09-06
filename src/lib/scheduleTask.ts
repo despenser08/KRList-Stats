@@ -58,7 +58,7 @@ export default async function (client: AkairoClient) {
       await axios
         .get(KoreanlistEndPoints.API.server(server.id))
         .then(async ({ data }) => {
-          const res = convert.server(data);
+          const res = convert.server(data.data);
 
           await server.updateOne({
             $push: {
@@ -70,6 +70,11 @@ export default async function (client: AkairoClient) {
               }
             }
           });
+        })
+        .catch((e) => {
+          client.logger.warn(
+            `FetchError: Error occurred while fetching server ${server.id}:\n${e.message}\n${e.stack}`
+          );
         });
 
     const guildCount = client.guilds.cache.size;
