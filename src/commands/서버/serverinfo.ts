@@ -53,7 +53,7 @@ export default class extends Command {
       description: {
         content: "해당 서버의 정보를 보여줍니다.",
         usage:
-          '<서버 ["현재" | "키워드"] | ["투표" | "멤버" | "부스트" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+          '<서버 ["현재" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -69,7 +69,6 @@ export default class extends Command {
             ["now", "현재", "current"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["members", "멤버", "member", "user", "users", "유저"],
-            ["boost", "부스트"],
             ["keyword", "키워드", "keywords"]
           ],
           prompt: {
@@ -318,11 +317,7 @@ export default class extends Command {
           }
 
           const color =
-            info === "members"
-              ? "rgb(51, 102, 255)"
-              : info === "boost"
-              ? "rgb(255, 115, 250)"
-              : "rgb(255, 0, 0)";
+            info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
 
           const chart = await createChart(1920, 1080, {
             type: "line",
@@ -330,13 +325,7 @@ export default class extends Command {
               labels: dates,
               datasets: [
                 {
-                  label: `${
-                    info === "members"
-                      ? "멤버"
-                      : info === "boost"
-                      ? "부스트"
-                      : "투표"
-                  } 수`,
+                  label: `${info === "members" ? "멤버" : "투표"} 수`,
                   data: datas,
                   backgroundColor: [color],
                   borderColor: [color],
@@ -351,11 +340,7 @@ export default class extends Command {
                 title: {
                   display: true,
                   text: `${server.name} ${
-                    info === "members"
-                      ? "멤버"
-                      : info === "boost"
-                      ? "부스트"
-                      : "투표"
+                    info === "members" ? "멤버" : "투표"
                   } 수`,
                   font: { size: 40 }
                 },

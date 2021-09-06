@@ -31,9 +31,6 @@ class ServerStats {
 
   @prop()
   public members?: number;
-
-  @prop()
-  public boost?: number;
 }
 
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
