@@ -93,7 +93,9 @@ const convert = {
   bot,
   server,
   user,
-  owner: botOwner
+  botOwner,
+  serverOwner,
+  serverBot
 };
 
 export default convert;
