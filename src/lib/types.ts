@@ -32,43 +32,39 @@ export interface KoreanlistImageOptions {
 
 export type BotFlagsString =
   | "OFFICIAL"
-  | "KOREANBOTS_VERIFIED"
-  | "PARTNER"
-  | "DISCORD_VERIFIED"
+  | "TRUSTED"
+  | "PARTNERED"
+  | "VERIFIED"
   | "PREMIUM"
-  | "FIRST_KOREANBOTS_HACKATHON_WINNER";
+  | "HACKERTHON";
 export enum BotFlagsEnum {
   OFFICIAL = "공식",
-  KOREANBOTS_VERIFIED = "한국 디스코드 리스트 인증됨",
+  TRUSTED = "한국 디스코드 리스트 인증됨",
   PARTNER = "파트너",
-  DISCORD_VERIFIED = "디스코드 인증됨",
+  VERIFIED = "디스코드 인증됨",
   PREMIUM = "프리미엄",
-  FIRST_KOREANBOTS_HACKATHON_WINNER = "제1회 한국 디스코드봇 리스트 해커톤 우승자"
+  HACKERTHON = "제1회 한국 디스코드봇 리스트 해커톤 우승자"
 }
 
 export type ServerFlagsString =
   | "OFFICIAL"
-  | "KOREANBOTS_VERIFIED"
-  | "PARTNER"
-  | "DISCORD_VERIFIED"
+  | "TRUSTED"
+  | "PARTNERED"
+  | "VERIFIED"
   | "DISCORD_PARTNERED";
 export enum ServerFlagsEnum {
   OFFICIAL = "공식",
-  KOREANBOTS_VERIFIED = "한국 디스코드 리스트 인증됨",
-  PARTNER = "파트너",
-  DISCORD_VERIFIED = "디스코드 인증됨",
+  TRUSTED = "한국 디스코드 리스트 인증됨",
+  PARTNERED = "파트너",
+  VERIFIED = "디스코드 인증됨",
   DISCORD_PARTNERED = "디스코드 파트너"
 }
 
-export type UserFlagsString =
-  | "ADMINISTRATOR"
-  | "BUG_HUNTER"
-  | "BOT_REVIEWER"
-  | "PREMIUM";
+export type UserFlagsString = "STAFF" | "BUGHUNTER" | "BOTREVIEWER" | "PREMIUM";
 export enum UserFlagsEnum {
-  ADMINISTRATOR = "관리자",
-  BUG_HUNTER = "버그 헌터",
-  BOT_REVIEWER = "봇 리뷰어",
+  STAFF = "관리자",
+  BUGHUNTER = "버그 헌터",
+  BOTREVIEWER = "봇 리뷰어",
   PREMIUM = "프리미엄"
 }
 
