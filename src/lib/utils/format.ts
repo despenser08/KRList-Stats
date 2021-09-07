@@ -63,9 +63,7 @@ export function makeBotURL({
   vanity?: string;
 }) {
   return `/bots/${
-    (flags.has("KOREANBOTS_VERIFIED") || flags.has("PARTNER")) && vanity
-      ? vanity
-      : id
+    (flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id
   }`;
 }
 
@@ -79,9 +77,7 @@ export function makeServerURL({
   vanity?: string;
 }) {
   return `/servers/${
-    (flags.has("KOREANBOTS_VERIFIED") || flags.has("PARTNER")) && vanity
-      ? vanity
-      : id
+    (flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id
   }`;
 }
 
