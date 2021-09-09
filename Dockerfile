@@ -3,7 +3,8 @@ FROM node:16-slim as base
 ENV GIT_SSL_NO_VERIFY=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  git \
+  build-essential git libcairo2-dev \
+  libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
