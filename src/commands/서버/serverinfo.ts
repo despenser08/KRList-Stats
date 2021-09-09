@@ -73,8 +73,7 @@ export default class extends Command {
           ],
           prompt: {
             optional: true,
-            retry:
-              '"현재" | "투표" | "멤버" | "키워드"를 입력해 주세요.'
+            retry: '"현재" | "투표" | "멤버" | "키워드"를 입력해 주세요.'
           },
           default: "now"
         },
