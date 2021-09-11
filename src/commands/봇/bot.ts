@@ -64,7 +64,7 @@ export default class extends Command {
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<봇 ["현재" | "상태" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+          '<봇 ["현재" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -80,13 +80,13 @@ export default class extends Command {
             ["now", "현재", "current"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["servers", "서버", "server", "guild", "guilds", "길드"],
-            ["status", "상태"],
+            ["uptime", "업타임", "status", "상태"],
             ["keyword", "키워드", "keywords"]
           ],
           prompt: {
             optional: true,
             retry:
-              '"현재" | "투표" | "서버" | "상태" | "키워드"를 입력해 주세요.'
+              '"현재" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
           },
           default: "now"
         },
@@ -341,7 +341,7 @@ export default class extends Command {
                 },
                 title: {
                   display: true,
-                  text: `${bot.name} 상태`,
+                  text: `${bot.name} 업타임`,
                   font: { size: 40 }
                 },
                 legend: {
