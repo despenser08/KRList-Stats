@@ -654,10 +654,10 @@ discord.js@^13.1.0:
     node-fetch "^2.6.1"
     ws "^7.5.1"
 
-djs-interaction-util@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.6.tgz#be295dc06e98fbef0ca1a6b0ec0e763f932512fc"
-  integrity sha512-lZ7yvD6v0V6w1Hf+caF5KrS6GwSzlepXAvjWq8h4a5Ln7YZlylEu+7y7c1Q2dOuYfXu1IGKQuzXo8hJAgqk8/w==
+djs-interaction-util@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.7.tgz#71f5c5dafb4cd7b6401528c1455a909550f5c02d"
+  integrity sha512-uH3SiDBUE3JeC/w4j+CwZJxtuoZDjS1YraNmZeZmc8ELJVvgJFcqiItkPTq2pka+cGYJd+GGHVbTj5HAm4lExw==
 
 doctrine@^3.0.0:
   version "3.0.0"
