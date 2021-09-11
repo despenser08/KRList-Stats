@@ -37,8 +37,9 @@ import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
   constructor() {
-    super("서버정보", {
+    super("서버", {
       aliases: [
+        "서버",
         "서버정보",
         "serverinformation",
         "serverinfo",
@@ -169,11 +170,7 @@ export default class extends Command {
                     )
                     .setThumbnail(
                       `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(
-                        server.id,
-                        {
-                          format: "webp",
-                          size: 256
-                        }
+                        server.id
                       )}`
                     )
                     .setDescription(
@@ -264,7 +261,7 @@ export default class extends Command {
                 server.name
               )}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
-              }수집을 사용하여 봇 수집을 시작하세요.`
+              }서버수집을 사용하여 서버 수집을 시작하세요.`
             );
 
           if (!serverDB.keywords || serverDB.keywords.size < 1)
@@ -302,7 +299,7 @@ export default class extends Command {
                 server.name
               )}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
-              }수집을 사용하여 봇 수집을 시작하세요.`
+              }서버수집을 사용하여 서버 수집을 시작하세요.`
             );
 
           const datas: number[] = [];

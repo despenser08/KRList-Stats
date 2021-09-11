@@ -47,8 +47,9 @@ import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
   constructor() {
-    super("봇정보", {
+    super("봇", {
       aliases: [
+        "봇",
         "봇정보",
         "botinformation",
         "botinfo",
@@ -184,11 +185,7 @@ export default class extends Command {
                     )
                     .setThumbnail(
                       `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(
-                        bot.id,
-                        {
-                          format: "webp",
-                          size: 256
-                        }
+                        bot.id
                       )}`
                     )
                     .setDescription(
@@ -289,7 +286,7 @@ export default class extends Command {
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
-              }수집을 사용하여 봇 수집을 시작하세요.`
+              }봇수집을 사용하여 봇 수집을 시작하세요.`
             );
 
           const status: {
@@ -364,7 +361,7 @@ export default class extends Command {
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
-              }수집을 사용하여 봇 수집을 시작하세요.`
+              }봇수집을 사용하여 봇 수집을 시작하세요.`
             );
 
           if (!botDB.keywords || botDB.keywords.size < 1)
@@ -397,7 +394,7 @@ export default class extends Command {
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
-              }수집을 사용하여 봇 수집을 시작하세요.`
+              }봇수집을 사용하여 봇 수집을 시작하세요.`
             );
 
           const datas: number[] = [];
