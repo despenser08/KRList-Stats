@@ -6,7 +6,7 @@ import {
   KoreanlistEndPoints,
   KoreanlistOrigin
 } from "../../lib/constants";
-import { Bot, UserFlagsEnum } from "../../lib/types";
+import { UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { formatNumber } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
@@ -15,8 +15,9 @@ import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
   constructor() {
-    super("유저정보", {
+    super("유저", {
       aliases: [
+        "유저",
         "유저정보",
         "userinformation",
         "userinfo",
@@ -65,15 +66,22 @@ export default class extends Command {
           .setTitle(`${user.username}#${user.tag}`)
           .setURL(KoreanlistEndPoints.URL.user({ id: user.id }))
           .setThumbnail(
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id, {
-              format: "webp",
-              size: 256
-            })}`
+            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id)}`
           )
           .setDescription(`<@${user.id}>`)
           .addField(
             "봇",
-            user.bots.length > 0 ? `${user.bots.length}개` : "없음"
+            user.bots.length > 0 ? `${user.bots.length}개` : "없음",
+            true
+          )
+          .addField(
+            "서버",
+            user.servers.length > 0 ? `${user.servers.length}개` : "없음",
+            true
+          )
+          .addField(
+            "GitHub",
+            user.github ? `https://github.com/${user.github}` : "없음"
           )
           .addField(
             "플래그",
@@ -81,14 +89,9 @@ export default class extends Command {
               ? "없음"
               : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
             true
-          )
-          .addField(
-            "GitHub",
-            user.github ? `https://github.com/${user.github}` : "없음",
-            true
           );
 
-        if (user.bots.length < 1)
+        if (user.bots.length < 1 && user.servers.length < 1)
           return msg.edit({ content: null, embeds: [infoEmbed] });
         else {
           const paginator = new KRLSPaginator({
@@ -96,41 +99,65 @@ export default class extends Command {
           });
 
           for await (const bot of user.bots)
-            if (isInterface<Bot>(bot, "id"))
-              paginator.addPage({
-                embeds: [
-                  new KRLSEmbed()
-                    .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-                    .setURL(
-                      KoreanlistEndPoints.URL.bot({
-                        id: bot.id,
-                        flags: bot.flags,
-                        vanity: bot.vanity
-                      })
+            paginator.addPage({
+              embeds: [
+                new KRLSEmbed()
+                  .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji} (봇)`)
+                  .setURL(
+                    KoreanlistEndPoints.URL.bot({
+                      id: bot.id,
+                      flags: bot.flags,
+                      vanity: bot.vanity
+                    })
+                  )
+                  .setDescription(
+                    `<@${bot.id}>${
+                      bot.url
+                        ? ` | [초대 링크](${bot.url})`
+                        : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
+                            bot.id
+                          )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
+                            bot.id,
+                            false
+                          )})`
+                    }`
+                  )
+                  .setImage(
+                    KoreanlistEndPoints.OG.bot(
+                      bot.id,
+                      bot.name,
+                      bot.intro,
+                      bot.category,
+                      [formatNumber(bot.votes), formatNumber(bot.servers)]
                     )
-                    .setDescription(
-                      `<@${bot.id}>${
-                        bot.url
-                          ? ` | [초대 링크](${bot.url})`
-                          : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id
-                            )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id,
-                              false
-                            )})`
-                      }`
+                  )
+              ]
+            });
+
+          for await (const server of user.servers)
+            paginator.addPage({
+              embeds: [
+                new KRLSEmbed()
+                  .setTitle(`${server.name} (서버)`)
+                  .setURL(
+                    KoreanlistEndPoints.URL.server({
+                      id: server.id,
+                      flags: server.flags,
+                      vanity: server.vanity
+                    })
+                  )
+                  .setDescription(`https://discord.gg/${server.invite}`)
+                  .setImage(
+                    KoreanlistEndPoints.OG.server(
+                      server.id,
+                      server.name,
+                      server.intro,
+                      server.category,
+                      [formatNumber(server.votes), formatNumber(server.members)]
                     )
-                    .setImage(
-                      KoreanlistEndPoints.OG.bot(
-                        bot.id,
-                        bot.name,
-                        bot.intro,
-                        bot.category,
-                        [formatNumber(bot.votes), formatNumber(bot.servers)]
-                      )
-                    )
-                ]
-              });
+                  )
+              ]
+            });
 
           return paginator.run(message, msg);
         }

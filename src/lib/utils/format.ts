@@ -48,7 +48,7 @@ export function formatNumber(value: number) {
 
 export function makeImageURL(
   root: string,
-  { format = "png", size = 256 }: ImageOptions
+  { format = "gif", size = 512 }: ImageOptions = { format: "gif", size: 512 }
 ): string {
   return `${root}.${format}?size=${size}`;
 }
