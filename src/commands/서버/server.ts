@@ -40,9 +40,10 @@ export default class extends Command {
     super("서버", {
       aliases: [
         "서버",
-        "서버정보",
+        "server",
         "serverinformation",
         "serverinfo",
+        "서버정보",
         "serverdata",
         "서버데이터",
         "serverstat",

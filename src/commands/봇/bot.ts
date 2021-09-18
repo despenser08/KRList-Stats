@@ -50,9 +50,10 @@ export default class extends Command {
     super("봇", {
       aliases: [
         "봇",
-        "봇정보",
+        "bot",
         "botinformation",
         "botinfo",
+        "봇정보",
         "botdata",
         "봇데이터",
         "botstat",
