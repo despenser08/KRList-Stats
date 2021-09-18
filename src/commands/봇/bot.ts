@@ -208,7 +208,7 @@ export default class extends Command {
                     )
                     .addField(
                       "카테고리",
-                      bot.category.length < 1 ? "없음" : bot.category.join(", ")
+                      bot.category.length > 0 ? bot.category.join(", ") : "없음"
                     )
                     .addField("Git", bot.git || "없음")
                     .addField("상태", bot.state, true)
@@ -234,9 +234,9 @@ export default class extends Command {
                     .addField("투표 수", bot.votes.toString(), true)
                     .addField(
                       "플래그",
-                      flags.length < 1
-                        ? "없음"
-                        : flags.map((flag) => BotFlagsEnum[flag]).join(", "),
+                      flags.length > 0
+                        ? flags.map((flag) => BotFlagsEnum[flag]).join(", ")
+                        : "없음",
                       true
                     )
                     .addField("웹페이지", bot.web || "없음")
@@ -460,7 +460,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -472,7 +472,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -487,7 +487,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -502,7 +502,7 @@ export default class extends Command {
             embeds: [
               new KRLSEmbed().setDescription(
                 `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  userOrId.toString()
+                  id
                 )}\`)\n${e}`
               )
             ]

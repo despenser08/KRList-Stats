@@ -85,9 +85,9 @@ export default class extends Command {
           )
           .addField(
             "플래그",
-            flags.length < 1
-              ? "없음"
-              : flags.map((flag) => UserFlagsEnum[flag]).join(", "),
+            flags.length > 1
+              ? flags.map((flag) => UserFlagsEnum[flag]).join(", ")
+              : "없음",
             true
           );
 
@@ -171,7 +171,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -183,7 +183,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -198,7 +198,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      userOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -213,7 +213,7 @@ export default class extends Command {
             embeds: [
               new KRLSEmbed().setDescription(
                 `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  userOrId.toString()
+                  id
                 )}\`)\n${e}`
               )
             ]
