@@ -18,9 +18,10 @@ export default class extends Command {
     super("유저", {
       aliases: [
         "유저",
-        "유저정보",
+        "user",
         "userinformation",
         "userinfo",
+        "유저정보",
         "userdata",
         "유저데이터",
         "userstat",
