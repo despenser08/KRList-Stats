@@ -181,9 +181,9 @@ export default class extends Command {
                     .addField("소유자", lineUserText(server.owner))
                     .addField(
                       "카테고리",
-                      server.category.length < 1
-                        ? "없음"
-                        : server.category.join(", ")
+                      server.category.length > 0
+                        ? server.category.join(", ")
+                        : "없음"
                     )
                     .addField(
                       "부스트 티어",
@@ -191,8 +191,20 @@ export default class extends Command {
                       true
                     )
                     .addField("상태", server.state, true)
-                    .addField("이모지", `${server.emojis.length}개`, true)
-                    .addField("봇", `${server.bots.length}개`, true)
+                    .addField(
+                      "이모지",
+                      server.emojis.length > 0
+                        ? `${server.emojis.length}개`
+                        : "없음",
+                      true
+                    )
+                    .addField(
+                      "봇",
+                      server.bots.length > 0
+                        ? `${server.bots.length}개`
+                        : "없음",
+                      true
+                    )
                     .addField(
                       "멤버 수",
                       server.members ? server.members.toString() : "N/A",
@@ -201,9 +213,9 @@ export default class extends Command {
                     .addField("투표 수", server.votes.toString(), true)
                     .addField(
                       "플래그",
-                      flags.length < 1
-                        ? "없음"
-                        : flags.map((flag) => ServerFlagsEnum[flag]).join(", "),
+                      flags.length > 0
+                        ? flags.map((flag) => ServerFlagsEnum[flag]).join(", ")
+                        : "없음",
                       true
                     )
                     .setImage(
@@ -365,7 +377,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 서버를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      guildOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -377,7 +389,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      guildOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -392,7 +404,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed().setDescription(
                     `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      guildOrId.toString()
+                      id
                     )}\`)\n${e}`
                   )
                 ]
@@ -407,7 +419,7 @@ export default class extends Command {
             embeds: [
               new KRLSEmbed().setDescription(
                 `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  guildOrId.toString()
+                  id
                 )}\`)\n${e}`
               )
             ]
