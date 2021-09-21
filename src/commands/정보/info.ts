@@ -28,7 +28,10 @@ export default class extends Command {
             ["server", "서버"],
             ["user", "유저"]
           ],
-          prompt: { start: '"봇" | "서버" | "유저"를 입력해 주세요.' }
+          prompt: {
+            start: '"봇" | "서버" | "유저"를 입력해 주세요.',
+            retry: '"봇" | "서버" | "유저"를 입력해 주세요.'
+          }
         },
         {
           id: "rest",
