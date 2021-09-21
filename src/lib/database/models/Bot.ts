@@ -15,12 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  getModelForClass,
-  modelOptions,
-  prop,
-  Severity
-} from "@typegoose/typegoose";
+import { getModelForClass, prop } from "@typegoose/typegoose";
 import { RawBotStatus } from "../../types";
 
 class BotStats {
@@ -37,7 +32,6 @@ class BotStats {
   public status!: RawBotStatus;
 }
 
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 class Bot {
   @prop({ required: true, unique: true })
   public id!: string;
@@ -45,8 +39,8 @@ class Bot {
   @prop({ required: true, default: false })
   public track!: boolean;
 
-  @prop({ default: [] })
-  public stats: BotStats[];
+  @prop({ type: () => BotStats, required: true, default: [] })
+  public stats!: BotStats[];
 
   @prop({
     type: () => Number,

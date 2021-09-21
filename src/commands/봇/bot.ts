@@ -124,7 +124,7 @@ export default class extends Command {
       endOfDate
     }: {
       userOrId: User | GuildMember | string;
-      info: "now" | "votes" | "servers" | "status" | "keyword";
+      info: "now" | "votes" | "servers" | "uptime" | "keyword";
       limit: "all" | number | Date;
       endOfDate?: Date;
     }
@@ -282,7 +282,7 @@ export default class extends Command {
             });
 
           return paginator.run(message, msg);
-        } else if (info === "status") {
+        } else if (info === "uptime") {
           if (stats.length < 1)
             return msg.edit(
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
