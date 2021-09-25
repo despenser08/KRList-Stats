@@ -111,3 +111,10 @@ export function filterDesc(text: string) {
 
   return { res, images };
 }
+
+export function duration(
+  time: number,
+  unit: moment.unitOfTime.DurationConstructor
+) {
+  return moment.duration(time, unit).locale("ko-KR");
+}
