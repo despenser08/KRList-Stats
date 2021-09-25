@@ -90,7 +90,7 @@ export default class extends Command {
             retry:
               '"정보" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
           },
-          default: "now"
+          default: "info"
         },
         {
           id: "limit",
