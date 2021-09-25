@@ -65,7 +65,7 @@ export default class extends Command {
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
         usage:
-          '<봇 ["현재" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+          '<봇 ["정보" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -78,7 +78,7 @@ export default class extends Command {
         {
           id: "info",
           type: [
-            ["now", "현재", "current"],
+            ["info", "정보", "information"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["servers", "서버", "server", "guild", "guilds", "길드"],
             ["uptime", "업타임", "status", "상태"],
@@ -87,7 +87,7 @@ export default class extends Command {
           prompt: {
             optional: true,
             retry:
-              '"현재" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
+              '"정보" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
           },
           default: "now"
         },
@@ -124,7 +124,7 @@ export default class extends Command {
       endOfDate
     }: {
       userOrId: User | GuildMember | string;
-      info: "now" | "votes" | "servers" | "uptime" | "keyword";
+      info: "info" | "votes" | "servers" | "uptime" | "keyword";
       limit: "all" | number | Date;
       endOfDate?: Date;
     }
@@ -168,7 +168,7 @@ export default class extends Command {
           stats.reverse();
         }
 
-        if (info === "now") {
+        if (info === "info") {
           const flags = bot.flags.toArray();
 
           const paginator = new KRLSPaginator({
@@ -191,7 +191,11 @@ export default class extends Command {
                     )
                     .setDescription(
                       `<@${bot.id}> | ${
-                        botDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
+                        botDB.track
+                          ? botDB.stats.length > 0
+                            ? `${botDB.stats.length}분 수집됨`
+                            : "수집 대기중"
+                          : "수집되지 않음"
                       }${
                         bot.url
                           ? ` | [초대 링크](${bot.url})`
@@ -283,12 +287,22 @@ export default class extends Command {
 
           return paginator.run(message, msg);
         } else if (info === "uptime") {
-          if (stats.length < 1)
-            return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
+          if (stats.length < 1) {
+            if (botDB.track)
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              );
+            else
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 데이터가 수집되지 않았습니다. ${
+                  message.util.parsed.prefix
+                }봇수집을 사용하여 봇 수집을 시작하세요.`
+              );
+          }
 
           const status: {
             online: number;
@@ -358,12 +372,22 @@ export default class extends Command {
             files: [new MessageAttachment(chart, "chart.png")]
           });
         } else if (info === "keyword") {
-          if (stats.length < 1)
-            return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
+          if (stats.length < 1) {
+            if (botDB.track)
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              );
+            else
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 데이터가 수집되지 않았습니다. ${
+                  message.util.parsed.prefix
+                }봇수집을 사용하여 봇 수집을 시작하세요.`
+              );
+          }
 
           if (!botDB.keywords || botDB.keywords.size < 1)
             return msg.edit(
@@ -391,12 +415,22 @@ export default class extends Command {
             ]
           });
         } else {
-          if (stats.length < 1)
-            return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
+          if (stats.length < 1) {
+            if (botDB.track)
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              );
+            else
+              return msg.edit(
+                `**${Util.escapeBold(
+                  bot.name
+                )}** 데이터가 수집되지 않았습니다. ${
+                  message.util.parsed.prefix
+                }봇수집을 사용하여 봇 수집을 시작하세요.`
+              );
+          }
 
           const datas: number[] = [];
           const dates: string[] = [];

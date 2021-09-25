@@ -76,12 +76,18 @@ export default class extends Command {
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
 
-        if (botDB.track)
-          return msg.edit(
-            `**${Util.escapeBold(
-              bot.name
-            )}** 수집은 이미 시작되었습니다. 새로 등록하셨다면 1분을 기다려주세요.`
-          );
+        if (botDB.track) {
+          if (botDB.stats.length > 0)
+            return msg.edit(
+              `**${Util.escapeBold(bot.name)}** 수집은 이미 시작되었습니다.`
+            );
+          else
+            return msg.edit(
+              `**${Util.escapeBold(
+                bot.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
+        }
 
         await botDB.updateOne({ track: true });
 

@@ -55,7 +55,7 @@ export default class extends Command {
       description: {
         content: "해당 서버의 정보를 보여줍니다.",
         usage:
-          '<서버 ["현재" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+          '<서버 ["정보" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -68,14 +68,14 @@ export default class extends Command {
         {
           id: "info",
           type: [
-            ["now", "현재", "current"],
+            ["info", "정보", "information"],
             ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["members", "멤버", "member", "user", "users", "유저"],
             ["keyword", "키워드", "keywords"]
           ],
           prompt: {
             optional: true,
-            retry: '"현재" | "투표" | "멤버" | "키워드"를 입력해 주세요.'
+            retry: '"정보" | "투표" | "멤버" | "키워드"를 입력해 주세요.'
           },
           default: "now"
         },
@@ -112,7 +112,7 @@ export default class extends Command {
       endOfDate
     }: {
       guildOrId: Guild | string;
-      info: "now" | "votes" | "members" | "boost" | "keyword";
+      info: "info" | "votes" | "members" | "keyword";
       limit: "all" | number | Date;
       endOfDate?: Date;
     }
@@ -153,7 +153,7 @@ export default class extends Command {
           stats.reverse();
         }
 
-        if (info === "now") {
+        if (info === "info") {
           const flags = server.flags.toArray();
 
           const paginator = new KRLSPaginator({
@@ -176,7 +176,11 @@ export default class extends Command {
                     )
                     .setDescription(
                       `https://discord.gg/${server.invite} | ${
-                        serverDB.track ? "봇이 수집 중" : "봇한테 수집되지 않음"
+                        serverDB.track
+                          ? serverDB.stats.length > 0
+                            ? `${serverDB.stats.length}분 수집됨`
+                            : "수집 대기중"
+                          : "수집되지 않음"
                       }\n\n${server.intro}`
                     )
                     .addField("소유자", lineUserText(server.owner))
@@ -268,14 +272,22 @@ export default class extends Command {
 
           return paginator.run(message, msg);
         } else if (info === "keyword") {
-          if (stats.length < 1)
-            return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }서버수집을 사용하여 서버 수집을 시작하세요.`
-            );
+          if (stats.length < 1) {
+            if (serverDB.track)
+              return msg.edit(
+                `**${Util.escapeBold(
+                  server.name
+                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              );
+            else
+              return msg.edit(
+                `**${Util.escapeBold(
+                  server.name
+                )}** 데이터가 수집되지 않았습니다. ${
+                  message.util.parsed.prefix
+                }서버수집을 사용하여 서버 수집을 시작하세요.`
+              );
+          }
 
           if (!serverDB.keywords || serverDB.keywords.size < 1)
             return msg.edit(
@@ -306,14 +318,22 @@ export default class extends Command {
             ]
           });
         } else {
-          if (stats.length < 1)
-            return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }서버수집을 사용하여 서버 수집을 시작하세요.`
-            );
+          if (stats.length < 1) {
+            if (serverDB.track)
+              return msg.edit(
+                `**${Util.escapeBold(
+                  server.name
+                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              );
+            else
+              return msg.edit(
+                `**${Util.escapeBold(
+                  server.name
+                )}** 데이터가 수집되지 않았습니다. ${
+                  message.util.parsed.prefix
+                }서버수집을 사용하여 서버 수집을 시작하세요.`
+              );
+          }
 
           const datas: number[] = [];
           const dates: string[] = [];

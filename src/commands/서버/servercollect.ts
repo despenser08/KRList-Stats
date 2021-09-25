@@ -68,12 +68,18 @@ export default class extends Command {
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );
 
-        if (serverDB.track)
-          return msg.edit(
-            `**${Util.escapeBold(
-              server.name
-            )}** 수집은 이미 시작되었습니다. 새로 등록하셨다면 1분을 기다려주세요.`
-          );
+        if (serverDB.track) {
+          if (serverDB.stats.length > 0)
+            return msg.edit(
+              `**${Util.escapeBold(server.name)}** 수집은 이미 시작되었습니다.`
+            );
+          else
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
+        }
 
         await serverDB.updateOne({ track: true });
 
