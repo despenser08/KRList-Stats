@@ -1,7 +1,7 @@
 {
   "name": "krlist-stats",
   "version": "0.0.1",
-  "description": "Discord Bot that show Koreanbots stats",
+  "description": "Discord Bot that show Koreanlist stats",
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
