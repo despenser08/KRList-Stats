@@ -36,7 +36,6 @@ import { BotFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import {
-  duration,
   filterDesc,
   formatNumber,
   formatTime,
@@ -194,10 +193,9 @@ export default class extends Command {
                       `<@${bot.id}> | ${
                         botDB.track
                           ? botDB.stats.length > 0
-                            ? `${duration(
-                                botDB.stats.length,
-                                "minutes"
-                              ).humanize()} 수집됨`
+                            ? `<t:${Math.trunc(
+                                botDB.stats[0].updated.getTime() / 1000
+                              )}:R> 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
                       }${

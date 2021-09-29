@@ -26,7 +26,6 @@ import { ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import {
-  duration,
   filterDesc,
   formatNumber,
   formatTime,
@@ -179,10 +178,9 @@ export default class extends Command {
                       `https://discord.gg/${server.invite} | ${
                         serverDB.track
                           ? serverDB.stats.length > 0
-                            ? `${duration(
-                                serverDB.stats.length,
-                                "minutes"
-                              ).humanize()} 수집됨`
+                            ? `<t:${Math.trunc(
+                                serverDB.stats[0].updated.getTime() / 1000
+                              )}:R> 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
                       }\n\n${server.intro}`
