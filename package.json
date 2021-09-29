@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/despenser08/KRList-Stats#readme",
   "dependencies": {
-    "@typegoose/typegoose": "^8.2.0",
-    "axios": "^0.21.4",
+    "@typegoose/typegoose": "^9.0.1",
+    "axios": "^0.21.3",
     "chart.js": "^3.5.1",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^2.0.0",
@@ -32,7 +32,7 @@
     "djs-interaction-util": "^0.1.8",
     "dokdo": "^0.5.0",
     "moment-timezone": "^0.5.33",
-    "mongoose": "^5.13.9",
+    "mongoose": "^6.0.8",
     "node-schedule": "^2.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"

@@ -18,11 +18,11 @@
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
 import { Intents } from "discord.js";
 import Dokdo from "dokdo";
+import { connect } from "mongoose";
 import path from "path";
 import { Logger as WinstonLogger } from "winston";
 import { OWNERS } from "../config";
 import { CommandBlocked } from "../lib/constants";
-import connect from "../lib/database/connect";
 import Logger from "./Logger";
 
 declare module "discord-akairo" {
@@ -111,7 +111,9 @@ export default class KRLSClient extends AkairoClient {
     this.listenerHandler.loadAll();
     this.commandHandler.loadAll();
 
-    connect()
+    connect(
+      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
+    )
       .then((m) => this.logger.info(`Database ${m.connection.host} connected.`))
       .catch((e) =>
         this.logger.error(`Database connect error: ${e.message}\n${e.stack}`)
