@@ -16,7 +16,10 @@ export default class extends Command {
             ["bot", "봇"],
             ["server", "서버"]
           ],
-          prompt: { start: '"봇" | "서버"를 입력해 주세요.' }
+          prompt: {
+            start: '"봇" | "서버"를 입력해 주세요.',
+            retry: '"봇" | "서버"를 입력해 주세요.'
+          }
         },
         {
           id: "rest",
