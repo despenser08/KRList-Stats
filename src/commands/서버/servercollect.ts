@@ -20,6 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import { Guild, Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import Server from "../../lib/database/models/Server";
+import { ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -61,6 +62,17 @@ export default class extends Command {
       .get(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
         const server = convert.server(data.data);
+
+        const owners = await axios
+          .get(KoreanlistEndPoints.API.serverOwners(id))
+          .then(({ data }) => data.data as ServerOwner[]);
+
+        if (!owners.map((owner) => owner.id).includes(message.author.id))
+          return msg.edit(
+            `**${Util.escapeBold(
+              server.name
+            )}** 관리자만 수집 요청이 가능합니다.`
+          );
 
         const serverDB = await Server.findOneAndUpdate(
           { id: server.id },
