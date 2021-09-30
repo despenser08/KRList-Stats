@@ -21,13 +21,13 @@ import moment from "moment-timezone";
 import schedule from "node-schedule";
 import { TIMEZONE } from "../config";
 import { KoreanlistEndPoints } from "./constants";
-import Bot from "./database/models/Bot";
-import Server from "./database/models/Server";
+import BotDB from "./database/models/Bot";
+import ServerDB from "./database/models/Server";
 import convert from "./utils/convertRawToType";
 
 export default async function (client: AkairoClient) {
   schedule.scheduleJob("*/1 * * * *", async (date) => {
-    const bots = await Bot.find({ track: true });
+    const bots = await BotDB.find({ track: true });
 
     for (const bot of bots)
       await axios
@@ -52,7 +52,7 @@ export default async function (client: AkairoClient) {
           );
         });
 
-    const servers = await Server.find({ track: true });
+    const servers = await ServerDB.find({ track: true });
 
     for (const server of servers)
       await axios

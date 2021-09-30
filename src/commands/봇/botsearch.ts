@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import Bot from "../../lib/database/models/Bot";
+import BotDB from "../../lib/database/models/Bot";
 import { RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -101,7 +101,7 @@ export default class extends Command {
             });
 
             for (let i = 0; i < res.length; i++) {
-              const botDB = await Bot.findOne({ id: res[i].id, track: true });
+              const botDB = await BotDB.findOne({ id: res[i].id, track: true });
               if (!botDB) continue;
 
               botDB.keywords.set(query, (botDB.keywords.get(query) || 0) + 1);

@@ -19,8 +19,8 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import Bot from "../../lib/database/models/Bot";
-import Server from "../../lib/database/models/Server";
+import BotDB from "../../lib/database/models/Bot";
+import ServerDB from "../../lib/database/models/Server";
 import { SearchAllResult } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -138,7 +138,7 @@ export default class extends Command {
           paginator.run(message, msg);
 
           for (let i = 0; i < botRes.length; i++) {
-            const botDB = await Bot.findOne({
+            const botDB = await BotDB.findOne({
               id: botRes[i].id,
               track: true
             });
@@ -149,7 +149,7 @@ export default class extends Command {
           }
 
           for (let i = 0; i < serverRes.length; i++) {
-            const serverDB = await Server.findOne({
+            const serverDB = await ServerDB.findOne({
               id: serverRes[i].id,
               track: true
             });

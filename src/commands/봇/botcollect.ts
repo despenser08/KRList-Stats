@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, User, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import Bot from "../../lib/database/models/Bot";
+import BotDB from "../../lib/database/models/Bot";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -70,7 +70,7 @@ export default class extends Command {
             `**${Util.escapeBold(bot.name)}** 관리자만 수집 요청이 가능합니다.`
           );
 
-        const botDB = await Bot.findOneAndUpdate(
+        const botDB = await BotDB.findOneAndUpdate(
           { id: bot.id },
           {},
           { upsert: true, new: true, setDefaultsOnInsert: true }

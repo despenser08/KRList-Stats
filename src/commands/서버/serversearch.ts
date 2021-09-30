@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import Server from "../../lib/database/models/Server";
+import ServerDB from "../../lib/database/models/Server";
 import { RawServer } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -101,7 +101,7 @@ export default class extends Command {
             });
 
             for (let i = 0; i < res.length; i++) {
-              const serverDB = await Server.findOne({
+              const serverDB = await ServerDB.findOne({
                 id: res[i].id,
                 track: true
               });
