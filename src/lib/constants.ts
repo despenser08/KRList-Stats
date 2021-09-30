@@ -110,6 +110,9 @@ export const KoreanlistEndPoints = {
     static server(id: string) {
       return `${this.base}/servers/${id}`;
     }
+    static serverOwners(id: string) {
+      return `${this.base}/servers/${id}/owners`;
+    }
     static searchAll(query: string, page = 1) {
       return `${this.base}/search/all?query=${encodeURIComponent(
         query

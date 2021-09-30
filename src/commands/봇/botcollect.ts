@@ -65,6 +65,11 @@ export default class extends Command {
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 
+        if (!bot.owners.map((owner) => owner.id).includes(message.author.id))
+          return msg.edit(
+            `**${Util.escapeBold(bot.name)}** 관리자만 수집 요청이 가능합니다.`
+          );
+
         const botDB = await Bot.findOneAndUpdate(
           { id: bot.id },
           {},
