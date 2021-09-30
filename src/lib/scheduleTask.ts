@@ -24,8 +24,6 @@ import { KoreanbotsEndPoints } from "./constants";
 import Bot from "./database/models/Bot";
 import convert from "./utils/convertRawToType";
 
-let cachedGuildCount = 0;
-
 export default async function (client: AkairoClient) {
   schedule.scheduleJob("*/1 * * * *", async (date) => {
     const bots = await Bot.find({ track: true });
@@ -58,7 +56,7 @@ export default async function (client: AkairoClient) {
         });
 
     const guildCount = client.guilds.cache.size;
-    if (guildCount !== cachedGuildCount)
+    if (guildCount !== client.cachedGuildCount)
       await axios
         .post(
           KoreanbotsEndPoints.API.stats(client.user.id),
@@ -76,7 +74,7 @@ export default async function (client: AkairoClient) {
               data
             )}`
           );
-          cachedGuildCount = guildCount;
+          client.cachedGuildCount = guildCount;
         })
         .catch((e) => {
           client.logger.warn(

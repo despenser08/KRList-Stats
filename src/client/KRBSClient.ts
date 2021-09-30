@@ -32,6 +32,7 @@ declare module "discord-akairo" {
     inhibitorHandler: InhibitorHandler;
     logger: WinstonLogger;
     dokdo: Dokdo;
+    cachedGuildCount: number;
   }
 
   interface Command {
@@ -103,6 +104,8 @@ export default class KRBSClient extends AkairoClient {
     ],
     noPerm: (message) => message.reply(CommandBlocked.owner)
   });
+
+  public cachedGuildCount = 0;
 
   constructor() {
     super({
