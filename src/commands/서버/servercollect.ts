@@ -19,7 +19,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Guild, Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import Server from "../../lib/database/models/Server";
+import ServerDB from "../../lib/database/models/Server";
 import { ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -74,7 +74,7 @@ export default class extends Command {
             )}** 관리자만 수집 요청이 가능합니다.`
           );
 
-        const serverDB = await Server.findOneAndUpdate(
+        const serverDB = await ServerDB.findOneAndUpdate(
           { id: server.id },
           {},
           { upsert: true, new: true, setDefaultsOnInsert: true }

@@ -32,6 +32,7 @@ declare module "discord-akairo" {
     inhibitorHandler: InhibitorHandler;
     logger: WinstonLogger;
     dokdo: Dokdo;
+    cachedGuildCount: number;
   }
 }
 
@@ -89,6 +90,8 @@ export default class KRLSClient extends AkairoClient {
     ],
     noPerm: (message) => message.reply(CommandBlocked.owner)
   });
+
+  public cachedGuildCount = 0;
 
   constructor() {
     super({
