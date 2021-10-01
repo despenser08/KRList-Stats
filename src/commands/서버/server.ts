@@ -274,22 +274,20 @@ export default class extends Command {
 
           return paginator.run(message, msg);
         } else if (info === "keyword") {
-          if (stats.length < 1) {
-            if (serverDB.track)
-              return msg.edit(
-                `**${Util.escapeBold(
-                  server.name
-                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
-              );
-            else
-              return msg.edit(
-                `**${Util.escapeBold(
-                  server.name
-                )}** 데이터가 수집되지 않았습니다. ${
-                  message.util.parsed.prefix
-                }서버수집을 사용하여 서버 수집을 시작하세요.`
-              );
-          }
+          if (!serverDB.track)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }서버수집을 사용하여 서버 수집을 시작하세요.`
+            );
+          else if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
 
           if (!serverDB.keywords || serverDB.keywords.size < 1)
             return msg.edit(
@@ -320,22 +318,20 @@ export default class extends Command {
             ]
           });
         } else {
-          if (stats.length < 1) {
-            if (serverDB.track)
-              return msg.edit(
-                `**${Util.escapeBold(
-                  server.name
-                )}** 수집 대기중입니다. 잠시만 기다려주세요.`
-              );
-            else
-              return msg.edit(
-                `**${Util.escapeBold(
-                  server.name
-                )}** 데이터가 수집되지 않았습니다. ${
-                  message.util.parsed.prefix
-                }서버수집을 사용하여 서버 수집을 시작하세요.`
-              );
-          }
+          if (!serverDB.track)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 데이터가 수집되지 않았습니다. ${
+                message.util.parsed.prefix
+              }서버수집을 사용하여 서버 수집을 시작하세요.`
+            );
+          else if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                server.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
 
           const datas: number[] = [];
           const dates: string[] = [];
