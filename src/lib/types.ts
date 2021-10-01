@@ -18,6 +18,20 @@
 import CustomEmoji from "./utils/CustomEmoji";
 import { BotFlags, ServerFlags, UserFlags } from "./utils/Flags";
 
+export interface FetchResponse<T> {
+  code: number;
+  data?: T;
+  message?: string;
+  version: number;
+}
+
+export interface FetchListResponse<T> {
+  code: number;
+  data?: { type: string; data: T[]; currentPage: number; totalPage: number };
+  message?: string;
+  version: number;
+}
+
 export type ImageFormat = "webp" | "png" | "jpg" | "gif";
 export type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 export interface ImageOptions {

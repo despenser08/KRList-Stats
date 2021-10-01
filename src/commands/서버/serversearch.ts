@@ -20,7 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
-import { RawServer } from "../../lib/types";
+import { FetchListResponse, RawServer } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -60,14 +60,14 @@ export default class extends Command {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get(KoreanlistEndPoints.API.searchServer(query, page))
+      .get<FetchListResponse<RawServer>>(
+        KoreanlistEndPoints.API.searchServer(query, page)
+      )
       .then(
         async ({
           data: {
             data: { data }
           }
-        }: {
-          data: { data: { data: RawServer[] } };
         }) => {
           const res = data.map((rawServer) => convert.server(rawServer));
 

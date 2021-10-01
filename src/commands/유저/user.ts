@@ -6,7 +6,7 @@ import {
   KoreanlistEndPoints,
   KoreanlistOrigin
 } from "../../lib/constants";
-import { UserFlagsEnum } from "../../lib/types";
+import { FetchResponse, RawUser, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { formatNumber } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
@@ -58,7 +58,7 @@ export default class extends Command {
         : userOrId;
 
     return axios
-      .get(KoreanlistEndPoints.API.user(id))
+      .get<FetchResponse<RawUser>>(KoreanlistEndPoints.API.user(id))
       .then(async ({ data }) => {
         const user = convert.user(data.data);
         const flags = user.flags.toArray();

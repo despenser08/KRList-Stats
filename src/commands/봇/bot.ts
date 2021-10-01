@@ -32,7 +32,7 @@ import {
   KoreanlistOrigin
 } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import { BotFlagsEnum } from "../../lib/types";
+import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import {
@@ -137,7 +137,7 @@ export default class extends Command {
         : userOrId;
 
     return axios
-      .get(KoreanlistEndPoints.API.bot(id))
+      .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(id))
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 

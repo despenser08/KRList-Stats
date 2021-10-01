@@ -21,7 +21,7 @@ import { Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import ServerDB from "../../lib/database/models/Server";
-import { SearchAllResult } from "../../lib/types";
+import { FetchResponse, SearchAllResult } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -62,8 +62,10 @@ export default class extends Command {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get(KoreanlistEndPoints.API.searchAll(query, page))
-      .then(async ({ data: { data } }: { data: { data: SearchAllResult } }) => {
+      .get<FetchResponse<SearchAllResult>>(
+        KoreanlistEndPoints.API.searchAll(query, page)
+      )
+      .then(async ({ data: { data } }) => {
         const serverRes = data.servers.map((rawServer) =>
           convert.server(rawServer)
         );

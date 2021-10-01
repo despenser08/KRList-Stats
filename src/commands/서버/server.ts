@@ -22,7 +22,7 @@ import moment from "moment-timezone";
 import { TIMEZONE } from "../../config";
 import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
-import { ServerFlagsEnum } from "../../lib/types";
+import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import {
@@ -122,7 +122,7 @@ export default class extends Command {
     const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
 
     return axios
-      .get(KoreanlistEndPoints.API.server(id))
+      .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
         const server = convert.server(data.data);
 

@@ -23,6 +23,7 @@ import { TIMEZONE } from "../config";
 import { KoreanlistEndPoints } from "./constants";
 import BotDB from "./database/models/Bot";
 import ServerDB from "./database/models/Server";
+import { FetchResponse, RawBot, RawServer } from "./types";
 import convert from "./utils/convertRawToType";
 
 export default async function (client: AkairoClient) {
@@ -31,7 +32,7 @@ export default async function (client: AkairoClient) {
 
     for (const bot of bots)
       await axios
-        .get(KoreanlistEndPoints.API.bot(bot.id))
+        .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
         .then(async ({ data }) => {
           const res = convert.bot(data.data);
 
@@ -56,7 +57,9 @@ export default async function (client: AkairoClient) {
 
     for (const server of servers)
       await axios
-        .get(KoreanlistEndPoints.API.server(server.id))
+        .get<FetchResponse<RawServer>>(
+          KoreanlistEndPoints.API.server(server.id)
+        )
         .then(async ({ data }) => {
           const res = convert.server(data.data);
 

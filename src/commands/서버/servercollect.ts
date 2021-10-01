@@ -20,7 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import { Guild, Message, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
-import { ServerOwner } from "../../lib/types";
+import { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -58,14 +58,17 @@ export default class extends Command {
 
     const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
 
-    await axios
-      .get(KoreanlistEndPoints.API.server(id))
+    (await axios.get)<FetchResponse<RawServer>>(
+      KoreanlistEndPoints.API.server(id)
+    )
       .then(async ({ data }) => {
         const server = convert.server(data.data);
 
         const owners = await axios
-          .get(KoreanlistEndPoints.API.serverOwners(id))
-          .then(({ data }) => data.data as ServerOwner[]);
+          .get<FetchResponse<ServerOwner[]>>(
+            KoreanlistEndPoints.API.serverOwners(id)
+          )
+          .then(({ data }) => data.data);
 
         if (!owners.map((owner) => owner.id).includes(message.author.id))
           return msg.edit(

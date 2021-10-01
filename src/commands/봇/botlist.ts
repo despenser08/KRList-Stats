@@ -19,7 +19,7 @@ import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import { RawBot } from "../../lib/types";
+import { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
@@ -64,14 +64,12 @@ export default class extends Command {
 
     if (category === "votes") {
       await axios
-        .get(KoreanlistEndPoints.API.voteList(page))
+        .get<FetchListResponse<RawBot>>(KoreanlistEndPoints.API.voteList(page))
         .then(
           async ({
             data: {
               data: { data }
             }
-          }: {
-            data: { data: { data: RawBot[] } };
           }) => {
             const res = data.map((rawBot) => convert.bot(rawBot));
 
@@ -112,14 +110,12 @@ export default class extends Command {
         });
     } else {
       await axios
-        .get(KoreanlistEndPoints.API.newList())
+        .get<FetchListResponse<RawBot>>(KoreanlistEndPoints.API.newList())
         .then(
           async ({
             data: {
               data: { data }
             }
-          }: {
-            data: { data: { data: RawBot[] } };
           }) => {
             const res = data.map((rawBot) => convert.bot(rawBot));
 

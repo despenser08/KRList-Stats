@@ -20,6 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, User, Util } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
+import { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -61,7 +62,7 @@ export default class extends Command {
         : userOrId;
 
     await axios
-      .get(KoreanlistEndPoints.API.bot(id))
+      .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(id))
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 
