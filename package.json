@@ -23,7 +23,7 @@
   "homepage": "https://github.com/despenser08/KRBots-Stats#readme",
   "dependencies": {
     "@typegoose/typegoose": "^8.2.0",
-    "axios": "^0.21.4",
+    "axios": "^0.22.0",
     "chart.js": "^3.5.1",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^2.0.0",
