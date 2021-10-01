@@ -96,7 +96,6 @@ export const KoreanlistEndPoints = {
     static user(options: { id: string }) {
       return `${KoreanlistOrigin}${makeUserURL(options)}`;
     }
-    static logo = `${KoreanlistOrigin}/logo.png`;
   },
   API: class {
     static root = "/api/v2";
