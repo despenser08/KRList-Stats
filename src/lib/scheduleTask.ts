@@ -22,6 +22,7 @@ import schedule from "node-schedule";
 import { TIMEZONE } from "../config";
 import { KoreanbotsEndPoints } from "./constants";
 import Bot from "./database/models/Bot";
+import { FetchResponse, RawBot } from "./types";
 import convert from "./utils/convertRawToType";
 
 export default async function (client: AkairoClient) {
@@ -30,7 +31,7 @@ export default async function (client: AkairoClient) {
 
     for (const bot of bots)
       await axios
-        .get(KoreanbotsEndPoints.API.bot(bot.id))
+        .get<FetchResponse<RawBot>>(KoreanbotsEndPoints.API.bot(bot.id))
         .then(async ({ data }) => {
           const res = convert.bot(data.data);
 

@@ -32,7 +32,13 @@ import {
   KoreanbotsOrigin
 } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import { BotFlagsEnum, UserFlagsEnum } from "../../lib/types";
+import {
+  BotFlagsEnum,
+  FetchResponse,
+  RawBot,
+  RawUser,
+  UserFlagsEnum
+} from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import { filterDesc, formatNumber, formatTime } from "../../lib/utils/format";
@@ -130,7 +136,7 @@ export default class extends Command {
         : userOrId;
 
     return axios
-      .get(KoreanbotsEndPoints.API.bot(id))
+      .get<FetchResponse<RawBot>>(KoreanbotsEndPoints.API.bot(id))
       .then(async ({ data }) => {
         const bot = convert.bot(data.data);
 
@@ -482,7 +488,7 @@ export default class extends Command {
           );
 
         return axios
-          .get(KoreanbotsEndPoints.API.user(id))
+          .get<FetchResponse<RawUser>>(KoreanbotsEndPoints.API.user(id))
           .then(async ({ data }) => {
             const user = convert.user(data.data);
             const flags = user.flags.toArray();

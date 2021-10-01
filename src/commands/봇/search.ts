@@ -20,7 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { KoreanbotsEndPoints } from "../../lib/constants";
 import Bot from "../../lib/database/models/Bot";
-import { RawBot } from "../../lib/types";
+import { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRBSEmbed from "../../lib/utils/KRBSEmbed";
@@ -60,14 +60,14 @@ export default class extends Command {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get(KoreanbotsEndPoints.API.search(query, page))
+      .get<FetchListResponse<RawBot>>(
+        KoreanbotsEndPoints.API.search(query, page)
+      )
       .then(
         async ({
           data: {
             data: { data }
           }
-        }: {
-          data: { data: { data: RawBot[] } };
         }) => {
           const res = data.map((rawBot) => convert.bot(rawBot));
 
