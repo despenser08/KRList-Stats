@@ -26,62 +26,62 @@ import ServerDB from "./database/models/Server";
 import { FetchResponse, RawBot, RawServer } from "./types";
 import convert from "./utils/convertRawToType";
 
-export default async function (client: AkairoClient) {
-  schedule.scheduleJob("*/1 * * * *", async (date) => {
-    const bots = await BotDB.find({ track: true });
+export default function (client: AkairoClient) {
+  return schedule.scheduleJob("* * * * *", (date) => {
+    BotDB.find({ track: true }).then((bots) => {
+      for (const bot of bots)
+        axios
+          .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
+          .then(({ data }) => {
+            const res = convert.bot(data.data);
 
-    for (const bot of bots)
-      await axios
-        .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
-        .then(async ({ data }) => {
-          const res = convert.bot(data.data);
-
-          await bot.updateOne({
-            $push: {
-              stats: {
-                updated: moment(date).tz(TIMEZONE).toDate(),
-                votes: res.votes,
-                servers: res.servers,
-                status: res.status.raw
+            bot.updateOne({
+              $push: {
+                stats: {
+                  updated: moment(date).tz(TIMEZONE).toDate(),
+                  votes: res.votes,
+                  servers: res.servers,
+                  status: res.status.raw
+                }
               }
-            }
+            });
+          })
+          .catch((e) => {
+            client.logger.warn(
+              `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
+            );
           });
-        })
-        .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
-          );
-        });
+    });
 
-    const servers = await ServerDB.find({ track: true });
+    ServerDB.find({ track: true }).then((servers) => {
+      for (const server of servers)
+        axios
+          .get<FetchResponse<RawServer>>(
+            KoreanlistEndPoints.API.server(server.id)
+          )
+          .then(({ data }) => {
+            const res = convert.server(data.data);
 
-    for (const server of servers)
-      await axios
-        .get<FetchResponse<RawServer>>(
-          KoreanlistEndPoints.API.server(server.id)
-        )
-        .then(async ({ data }) => {
-          const res = convert.server(data.data);
-
-          await server.updateOne({
-            $push: {
-              stats: {
-                updated: moment(date).tz(TIMEZONE).toDate(),
-                votes: res.votes,
-                members: res.members
+            server.updateOne({
+              $push: {
+                stats: {
+                  updated: moment(date).tz(TIMEZONE).toDate(),
+                  votes: res.votes,
+                  members: res.members
+                }
               }
-            }
+            });
+          })
+          .catch((e) => {
+            client.logger.warn(
+              `FetchError: Error occurred while fetching server ${server.id}:\n${e.message}\n${e.stack}`
+            );
           });
-        })
-        .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while fetching server ${server.id}:\n${e.message}\n${e.stack}`
-          );
-        });
+    });
 
     const guildCount = client.guilds.cache.size;
     if (guildCount !== client.cachedGuildCount)
-      await axios
+      axios
         .post(
           KoreanlistEndPoints.API.stats(client.user.id),
           { servers: guildCount },
