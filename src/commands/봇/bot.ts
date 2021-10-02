@@ -36,6 +36,7 @@ import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
 import {
+  duration,
   filterDesc,
   formatNumber,
   formatTime,
@@ -193,9 +194,9 @@ export default class extends Command {
                       `<@${bot.id}> | ${
                         botDB.track
                           ? botDB.stats.length > 0
-                            ? `<t:${Math.trunc(
-                                botDB.stats[0].updated.getTime() / 1000
-                              )}:R> 수집됨`
+                            ? `${duration(
+                                botDB.stats.length
+                              ).humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
                       }${
@@ -348,7 +349,9 @@ export default class extends Command {
                 datalabels: {
                   formatter: (value, ctx) =>
                     value !== 0
-                      ? `${ctx.chart.data.labels[ctx.dataIndex]}: ${value}분`
+                      ? `${ctx.chart.data.labels[ctx.dataIndex]}: ${duration(
+                          value
+                        ).humanize()} (${value}분)`
                       : "",
                   font: { size: 30 }
                 },
