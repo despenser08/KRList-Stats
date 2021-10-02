@@ -25,40 +25,40 @@ import Bot from "./database/models/Bot";
 import { FetchResponse, RawBot } from "./types";
 import convert from "./utils/convertRawToType";
 
-export default async function (client: AkairoClient) {
-  schedule.scheduleJob("*/1 * * * *", async (date) => {
-    const bots = await Bot.find({ track: true });
+export default function (client: AkairoClient) {
+  return schedule.scheduleJob("*/1 * * * *", (date) => {
+    Bot.find({ track: true }).then((bots) => {
+      for (const bot of bots)
+        axios
+          .get<FetchResponse<RawBot>>(KoreanbotsEndPoints.API.bot(bot.id))
+          .then(({ data }) => {
+            const res = convert.bot(data.data);
 
-    for (const bot of bots)
-      await axios
-        .get<FetchResponse<RawBot>>(KoreanbotsEndPoints.API.bot(bot.id))
-        .then(async ({ data }) => {
-          const res = convert.bot(data.data);
-
-          await Bot.findOneAndUpdate(
-            { id: res.id },
-            {
-              $push: {
-                stats: {
-                  updated: moment(date).tz(TIMEZONE).toDate(),
-                  votes: res.votes,
-                  servers: res.servers,
-                  status: res.status.raw
+            Bot.findOneAndUpdate(
+              { id: res.id },
+              {
+                $push: {
+                  stats: {
+                    updated: moment(date).tz(TIMEZONE).toDate(),
+                    votes: res.votes,
+                    servers: res.servers,
+                    status: res.status.raw
+                  }
                 }
-              }
-            },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-          );
-        })
-        .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
-          );
-        });
+              },
+              { upsert: true, new: true, setDefaultsOnInsert: true }
+            );
+          })
+          .catch((e) => {
+            client.logger.warn(
+              `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
+            );
+          });
+    });
 
     const guildCount = client.guilds.cache.size;
     if (guildCount !== client.cachedGuildCount)
-      await axios
+      axios
         .post(
           KoreanbotsEndPoints.API.stats(client.user.id),
           { servers: guildCount },
