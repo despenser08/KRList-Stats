@@ -254,7 +254,7 @@ export default class extends Command {
             paginator.addPage({
               embeds: [
                 new KRLSEmbed()
-                  .setTitle(`서버 설명 이미지 #${i + 1}`)
+                  .setTitle(`설명 이미지 #${i + 1}`)
                   .setURL(desc.images[i])
                   .setImage(desc.images[i])
               ]
