@@ -26,7 +26,7 @@ import { FetchResponse, RawBot } from "./types";
 import convert from "./utils/convertRawToType";
 
 export default function (client: AkairoClient) {
-  return schedule.scheduleJob("*/1 * * * *", (date) => {
+  return schedule.scheduleJob("* * * * *", (date) => {
     Bot.find({ track: true }).then((bots) => {
       for (const bot of bots)
         axios
@@ -34,20 +34,16 @@ export default function (client: AkairoClient) {
           .then(({ data }) => {
             const res = convert.bot(data.data);
 
-            Bot.findOneAndUpdate(
-              { id: res.id },
-              {
-                $push: {
-                  stats: {
-                    updated: moment(date).tz(TIMEZONE).toDate(),
-                    votes: res.votes,
-                    servers: res.servers,
-                    status: res.status.raw
-                  }
+            bot.updateOne({
+              $push: {
+                stats: {
+                  updated: moment(date).tz(TIMEZONE).toDate(),
+                  votes: res.votes,
+                  servers: res.servers,
+                  status: res.status.raw
                 }
-              },
-              { upsert: true, new: true, setDefaultsOnInsert: true }
-            );
+              }
+            });
           })
           .catch((e) => {
             client.logger.warn(
