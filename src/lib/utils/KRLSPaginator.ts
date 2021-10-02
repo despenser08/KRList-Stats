@@ -16,8 +16,16 @@ export default class KRLSPaginator extends ButtonPaginator {
   constructor(options?: ButtonPaginatorOptions) {
     super(options);
 
+    this.denied = {
+      content: { content: "요청한 사람만 조작할 수 있습니다." },
+      ephemeral: true
+    };
+
     if (!options) this.buttons = defaultButton;
-    else this.buttons = options.buttons ?? defaultButton;
+    else {
+      this.buttons = options.buttons ?? defaultButton;
+      this.denied = options.denied ?? this.denied;
+    }
 
     // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
     this.actionRows.push(
