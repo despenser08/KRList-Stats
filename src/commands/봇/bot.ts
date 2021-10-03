@@ -366,7 +366,7 @@ export default class extends Command {
                     ((stats.length - status.offline) / stats.length) *
                     100
                   ).toFixed(2)}%`,
-                  font: { size: 20 }
+                  font: { size: 30 }
                 },
                 legend: {
                   position: "bottom",
