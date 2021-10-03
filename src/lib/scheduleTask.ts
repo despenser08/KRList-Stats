@@ -32,10 +32,10 @@ export default function (client: AkairoClient) {
       for (const bot of bots)
         axios
           .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             const res = convert.bot(data.data);
 
-            bot.updateOne({
+            await bot.updateOne({
               $push: {
                 stats: {
                   updated: moment(date).tz(TIMEZONE).toDate(),
@@ -59,10 +59,10 @@ export default function (client: AkairoClient) {
           .get<FetchResponse<RawServer>>(
             KoreanlistEndPoints.API.server(server.id)
           )
-          .then(({ data }) => {
+          .then(async ({ data }) => {
             const res = convert.server(data.data);
 
-            server.updateOne({
+            await server.updateOne({
               $push: {
                 stats: {
                   updated: moment(date).tz(TIMEZONE).toDate(),
