@@ -51,7 +51,7 @@ export default class extends Command {
       return message.reply(CommandBlocked.owner);
 
     this.client.dokdo.options.prefix = message.util.parsed.prefix;
-    this.client.dokdo.options.owners = [message.author.id];
+    this.client.dokdo.owners = [message.author.id];
     return this.client.dokdo.run(message);
   }
 }

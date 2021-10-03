@@ -25,13 +25,17 @@ import { OWNERS } from "../config";
 import { CommandBlocked } from "../lib/constants";
 import Logger from "./Logger";
 
+class CustomDokdo extends Dokdo {
+  owners: string[];
+}
+
 declare module "discord-akairo" {
   interface AkairoClient {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
     logger: WinstonLogger;
-    dokdo: Dokdo;
+    dokdo: CustomDokdo;
     cachedGuildCount: number;
   }
 }
@@ -67,7 +71,7 @@ export default class KRLSClient extends AkairoClient {
 
   public logger = Logger("BOT");
 
-  public dokdo = new Dokdo(this, {
+  public dokdo = new CustomDokdo(this, {
     prefix: JSON.parse(process.env.PREFIX)[0],
     aliases: [
       "dokdo",
