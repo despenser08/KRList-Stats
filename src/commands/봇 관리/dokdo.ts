@@ -17,6 +17,8 @@
 
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { OWNERS } from "../../config";
+import { CommandBlocked } from "../../lib/constants";
 
 export default class extends Command {
   constructor() {
@@ -35,12 +37,21 @@ export default class extends Command {
       description: {
         content: "wonderlandpark님이 개발하신 디스코드 봇 디버깅 툴"
       },
-      ownerOnly: true
+      args: [
+        {
+          id: "args",
+          match: "rest"
+        }
+      ]
     });
   }
 
-  public async exec(message: Message) {
+  public async exec(message: Message, { args }: { args?: string }) {
+    if (args && !OWNERS.includes(message.author.id))
+      return message.reply(CommandBlocked.owner);
+
     this.client.dokdo.options.prefix = message.util.parsed.prefix;
+    this.client.dokdo.options.owners = [message.author.id];
     return this.client.dokdo.run(message);
   }
 }
