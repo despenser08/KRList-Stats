@@ -360,6 +360,14 @@ export default class extends Command {
                   text: `${bot.name} 업타임`,
                   font: { size: 40 }
                 },
+                subtitle: {
+                  display: true,
+                  text: `업타임: ${(
+                    ((stats.length - status.offline) / stats.length) *
+                    100
+                  ).toFixed(2)}%`,
+                  font: { size: 20 }
+                },
                 legend: {
                   position: "bottom",
                   labels: { boxHeight: 3, font: { size: 20 } }
