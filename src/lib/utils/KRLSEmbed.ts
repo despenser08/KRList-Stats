@@ -22,4 +22,11 @@ export default class KRLSEmbed extends MessageEmbed {
         );
     }
   }
+
+  public setFooter(text: string, iconURL?: string) {
+    return super.setFooter(
+      `${text} • 이 봇은 "한국 디스코드 리스트"의 공식 봇이 아닙니다.`,
+      iconURL
+    );
+  }
 }
