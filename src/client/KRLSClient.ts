@@ -90,7 +90,7 @@ export default class KRLSClient extends AkairoClient {
       process.env.DB_USERNAME,
       process.env.DB_PASSWORD,
       process.env.DB_PORT,
-      process.env.KOREANBOTS_TOKEN
+      process.env.KOREANLIST_TOKEN
     ],
     noPerm: (message) => message.reply(CommandBlocked.owner)
   });

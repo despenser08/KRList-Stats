@@ -87,14 +87,14 @@ export default function (client: AkairoClient) {
           { servers: guildCount },
           {
             headers: {
-              Authorization: process.env.KOREANBOTS_TOKEN,
+              Authorization: process.env.KOREANLIST_TOKEN,
               "Content-Type": "application/json"
             }
           }
         )
         .then(({ data }) => {
           client.logger.info(
-            `Bumped ${guildCount} guilds to koreanbots.dev | Response:\n${JSON.stringify(
+            `Bumped ${guildCount} guilds to koreanlist | Response:\n${JSON.stringify(
               data
             )}`
           );

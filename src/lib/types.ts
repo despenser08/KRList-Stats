@@ -57,7 +57,7 @@ export enum BotFlagsEnum {
   PARTNER = "파트너",
   VERIFIED = "디스코드 인증됨",
   PREMIUM = "프리미엄",
-  HACKERTHON = "제1회 한국 디스코드봇 리스트 해커톤 우승자"
+  HACKERTHON = "제1회 한국 디스코드 리스트 해커톤 우승자"
 }
 
 export type ServerFlagsString =

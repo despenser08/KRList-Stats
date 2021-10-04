@@ -6,6 +6,4 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/despenser08/krlist-stats/badge)](https://www.codefactor.io/repository/github/despenser08/krlist-stats)
 
-Discord Bot that show Koreanbots stats
-
-Most methods are ~~stolen~~ taken from [Koreanbots](https://github.com/koreanbots/core).
+Discord Bot that show Koreanlist stats
