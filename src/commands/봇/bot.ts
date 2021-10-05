@@ -302,6 +302,12 @@ export default class extends Command {
                 bot.name
               )}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
+          else if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                bot.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
 
           const status: {
             online: number;
@@ -393,6 +399,12 @@ export default class extends Command {
                 bot.name
               )}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
+          else if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                bot.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+            );
 
           if (!botDB.keywords || botDB.keywords.size < 1)
             return msg.edit(
@@ -425,6 +437,12 @@ export default class extends Command {
               `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
                 message.util.parsed.prefix
               }봇수집을 사용하여 봇 수집을 시작하세요.`
+            );
+          else if (stats.length < 1)
+            return msg.edit(
+              `**${Util.escapeBold(
+                bot.name
+              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
