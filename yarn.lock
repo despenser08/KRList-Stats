@@ -132,7 +132,7 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.2.0.tgz#667bfc6186ae7c9e0b45a08960c551437176e1ca"
   integrity sha512-VkE3KLBmJwcCaVARtQpfuKcKv8gcBmUubrfHGF84dXuuW6jgsRYxPtzcIhPyK9WAPpRt2/xY6zkD9MnRaJzSyw==
 
-"@typegoose/typegoose@^8.2.0":
+"@typegoose/typegoose@^8.3.0":
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-8.3.0.tgz#cdcec5afc8cc90bc719c57bb9729914ef628df76"
   integrity sha512-KlnVD8NE/n0fLI8Fv3+9Iu8N72NUbyFX61ejhTsPq6F+w0KAjRYVRECkorqiAeuL5qnyILlOgthjNjQOXOvONQ==
