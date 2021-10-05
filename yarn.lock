@@ -667,10 +667,10 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dokdo@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.5.0.tgz#a614cd9c80f8730660f0a1659b9b8abd28c3de6d"
-  integrity sha512-MG5QXy95ORQ+2fU5NbQ5HOELQHiwZfulj2fpwZI8mfEm9VIG2pWTiexXhIFjS5YPoQnWUm2q65cenOl0kaH5rQ==
+dokdo@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/dokdo/-/dokdo-0.5.1.tgz#5974ac32af31fce51935c8036de2667d98e22c9e"
+  integrity sha512-LzPgNtZOBjvDzTUAlRsZMGV/HeFYl8aODhEO6hkVrHBIy7ndZdIrLF0Px9GJ4XSJWp2rnYymJJ1hgHu0B6/4Fg==
   dependencies:
     node-fetch "^2.6.1"
 
