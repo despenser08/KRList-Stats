@@ -6,4 +6,4 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/despenser08/krlist-stats/badge)](https://www.codefactor.io/repository/github/despenser08/krlist-stats)
 
-Discord Bot that show Koreanlist stats
+Discord Bot that shows Koreanlist stats
