@@ -3,7 +3,6 @@
   "extends": ["config:base"],
   "rangeStrategy": "bump",
   "labels": ["dependencies"],
-  "schedule": ["before 8pm"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
