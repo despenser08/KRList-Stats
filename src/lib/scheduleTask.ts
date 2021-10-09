@@ -46,11 +46,9 @@ export default function (client: AkairoClient) {
               }
             });
           })
-          .catch((e) => {
-            client.logger.warn(
-              `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
-            );
-          });
+          .catch((e) =>
+            client.logger.warn(`FetchError: Bot - ${bot.id}:\n${e.stack}`)
+          );
     });
 
     ServerDB.find({ track: true }).then((servers) => {
@@ -72,11 +70,9 @@ export default function (client: AkairoClient) {
               }
             });
           })
-          .catch((e) => {
-            client.logger.warn(
-              `FetchError: Error occurred while fetching server ${server.id}:\n${e.message}\n${e.stack}`
-            );
-          });
+          .catch((e) =>
+            client.logger.warn(`FetchError: Server - ${server.id}:\n${e.stack}`)
+          );
     });
 
     const guildCount = client.guilds.cache.size;
@@ -94,15 +90,13 @@ export default function (client: AkairoClient) {
         )
         .then(({ data }) => {
           client.logger.info(
-            `Bumped ${guildCount} guilds to koreanlist | Response:\n${JSON.stringify(
-              data
-            )}`
+            `Success: Bump guilds - ${guildCount}:\n${JSON.stringify(data)}}`
           );
           client.cachedGuildCount = guildCount;
         })
         .catch((e) => {
           client.logger.warn(
-            `FetchError: Error occurred while updaing bot server count:\n${e.message}\n${e.stack}`
+            `FetchError: Bump guilds - ${guildCount}:\n${e.stack}`
           );
         });
   });

@@ -15,15 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Transaction } from "@sentry/types";
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
-import { Intents } from "discord.js";
+import { Collection, Intents } from "discord.js";
 import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
-import { Logger as WinstonLogger } from "winston";
+import winston from "winston";
 import { OWNERS } from "../config";
 import { CommandBlocked } from "../lib/constants";
-import Logger from "./Logger";
+import createLogger from "../lib/utils/createLogger";
 
 class CustomDokdo extends Dokdo {
   owners: string[];
@@ -34,9 +35,10 @@ declare module "discord-akairo" {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
-    logger: WinstonLogger;
+    logger: winston.Logger;
     dokdo: CustomDokdo;
     cachedGuildCount: number;
+    transactions: Collection<string, Transaction>;
   }
 }
 
@@ -69,7 +71,7 @@ export default class KRLSClient extends AkairoClient {
     ignorePermissions: OWNERS
   });
 
-  public logger = Logger("BOT");
+  public logger = createLogger("BOT");
 
   public dokdo = new CustomDokdo(this, {
     prefix: JSON.parse(process.env.PREFIX)[0],
@@ -97,6 +99,8 @@ export default class KRLSClient extends AkairoClient {
 
   public cachedGuildCount = 0;
 
+  public transactions = new Collection<string, Transaction>();
+
   constructor() {
     super({
       intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -119,9 +123,7 @@ export default class KRLSClient extends AkairoClient {
       `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
     )
       .then((m) => this.logger.info(`Database ${m.connection.host} connected.`))
-      .catch((e) =>
-        this.logger.error(`Database connect error: ${e.message}\n${e.stack}`)
-      );
+      .catch((e) => this.logger.error(`Database connect error: ${e.stack}`));
   }
 
   public async start(token?: string) {

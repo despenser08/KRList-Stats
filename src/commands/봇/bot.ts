@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import {
@@ -515,9 +516,7 @@ export default class extends Command {
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Bot - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
                 embeds: [
@@ -530,9 +529,8 @@ export default class extends Command {
               });
           }
         } else {
-          this.client.logger.warn(
-            `Error: Error occurred while fetching bot ${id}:\n${e.message}\n${e.stack}`
-          );
+          this.client.logger.error(`Error: Bot - ${id}:\n${e.stack}`);
+          Sentry.captureException(e);
           return msg.edit({
             content: null,
             embeds: [

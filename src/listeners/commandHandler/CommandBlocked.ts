@@ -20,7 +20,7 @@ import { Message } from "discord.js";
 import { CommandBlocked } from "../../lib/constants";
 
 export default class extends Listener {
-  public constructor() {
+  constructor() {
     super("commandBlocked", {
       emitter: "commandHandler",
       event: "commandBlocked"

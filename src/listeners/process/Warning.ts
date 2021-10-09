@@ -18,7 +18,7 @@
 import { Listener } from "discord-akairo";
 
 export default class extends Listener {
-  public constructor() {
+  constructor() {
     super("warning", {
       emitter: "process",
       event: "warning"
@@ -26,6 +26,6 @@ export default class extends Listener {
   }
 
   public async exec(warn: Error) {
-    this.client.logger.warn(`Warning: ${warn}\n${warn.stack}`);
+    this.client.logger.warn(`Warning: ${warn.stack}`);
   }
 }

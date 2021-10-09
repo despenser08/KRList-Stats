@@ -15,10 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Snowflake } from "discord-api-types";
-
 export default class CustomEmoji extends String {
-  public id: Snowflake;
+  public id: string;
   public name: string;
   public animated: boolean;
 

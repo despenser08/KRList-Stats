@@ -21,7 +21,7 @@ import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class extends Command {
-  public constructor() {
+  constructor() {
     super("도움말", {
       aliases: [
         "도움말",

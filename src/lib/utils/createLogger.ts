@@ -19,7 +19,7 @@ import path from "path";
 import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
-export default function Logger(label: string) {
+export default function createLogger(label: string) {
   return winston.createLogger({
     level: "info",
     format: winston.format.combine(

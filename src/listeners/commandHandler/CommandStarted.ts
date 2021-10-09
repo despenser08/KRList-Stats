@@ -15,34 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Tracing from "@sentry/tracing";
-import Sentry from "@sentry/node";
-import { Listener } from "discord-akairo";
-import scheduleFetch from "../../lib/scheduleTask";
+import * as Sentry from "@sentry/node";
+import { Command, Listener } from "discord-akairo";
+import { Message } from "discord.js";
 
 export default class extends Listener {
   constructor() {
-    super("ready", { emitter: "client", event: "ready" });
+    super("commandStarted", {
+      emitter: "commandHandler",
+      event: "commandStarted"
+    });
   }
 
-  public async exec() {
-    scheduleFetch(this.client);
-
-    this.client.user.setPresence({
-      status: "idle",
-      activities: [
-        {
-          name: `${this.client.commandHandler.prefix[0]}도움말`,
-          type: "PLAYING"
-        }
-      ]
-    });
-
-    Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })]
-    });
-
-    this.client.logger.info(`Ready: ${this.client.user.tag}`);
+  public async exec(message: Message, command: Command) {
+    return this.client.transactions.set(
+      message.id,
+      Sentry.startTransaction({
+        op: "command",
+        name: "Command",
+        data: { message, command }
+      })
+    );
   }
 }

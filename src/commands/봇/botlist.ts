@@ -15,12 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import axios from "axios";
+import * as Sentry from "@sentry/node";
+import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
+import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class extends Command {
@@ -101,12 +103,28 @@ export default class extends Command {
           }
         )
         .catch((e) => {
-          this.client.logger.warn(
-            `FetchError: Error occurred while fetching bot votes list:\n${e.message}\n${e.stack}`
-          );
-          return msg.edit(
-            `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-          );
+          if (isInterface<AxiosError>(e, "response")) {
+            this.client.logger.warn(`FetchError: Bot vote list:\n${e.stack}`);
+            return msg.edit({
+              content: null,
+              embeds: [
+                new KRLSEmbed().setDescription(
+                  `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
+                )
+              ]
+            });
+          } else {
+            this.client.logger.error(`Error: Bot vote list:\n${e.stack}`);
+            Sentry.captureException(e);
+            return msg.edit({
+              content: null,
+              embeds: [
+                new KRLSEmbed().setDescription(
+                  `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
+                )
+              ]
+            });
+          }
         });
     } else {
       await axios
@@ -146,12 +164,28 @@ export default class extends Command {
           }
         )
         .catch((e) => {
-          this.client.logger.warn(
-            `FetchError: Error occurred while fetching bot new list:\n${e.message}\n${e.stack}`
-          );
-          return msg.edit(
-            `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-          );
+          if (isInterface<AxiosError>(e, "response")) {
+            this.client.logger.warn(`FetchError: Bot new list:\n${e.stack}`);
+            return msg.edit({
+              content: null,
+              embeds: [
+                new KRLSEmbed().setDescription(
+                  `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
+                )
+              ]
+            });
+          } else {
+            this.client.logger.error(`Error: Bot new list:\n${e.stack}`);
+            Sentry.captureException(e);
+            return msg.edit({
+              content: null,
+              embeds: [
+                new KRLSEmbed().setDescription(
+                  `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
+                )
+              ]
+            });
+          }
         });
     }
   }

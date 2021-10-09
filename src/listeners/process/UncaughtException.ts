@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 
 export default class extends Listener {
-  public constructor() {
+  constructor() {
     super("uncaughtException", {
       emitter: "process",
       event: "uncaughtException"
@@ -26,6 +27,7 @@ export default class extends Listener {
   }
 
   public async exec(error: Error) {
-    this.client.logger.error(`Uncaught Exception: ${error}\n${error.stack}`);
+    this.client.logger.error(`UncaughtException: ${error.stack}`);
+    Sentry.captureException(error);
   }
 }

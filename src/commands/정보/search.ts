@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
@@ -194,7 +195,7 @@ export default class extends Command {
 
             default:
               this.client.logger.warn(
-                `FetchError: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
+                `FetchError: Search list - "${query}":\n${e.stack}`
               );
               return msg.edit({
                 content: null,
@@ -208,9 +209,10 @@ export default class extends Command {
               });
           }
         } else {
-          this.client.logger.warn(
-            `Error: Error occurred while fetching search list (input: "${query}"):\n${e.message}\n${e.stack}`
+          this.client.logger.error(
+            `Error: Search list - "${query}":\n${e.stack}`
           );
+          Sentry.captureException(e);
           return msg.edit({
             content: null,
             embeds: [
