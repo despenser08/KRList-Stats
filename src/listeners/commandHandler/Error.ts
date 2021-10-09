@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import { Command, Listener } from "discord-akairo";
 import { Message } from "discord.js";
 
@@ -30,7 +31,7 @@ export default class extends Listener {
     this.client.logger.error(
       `CommandError: Command - ${command} | Request - "${message.content}"\n${error.stack}`
     );
-    this.client.sentry.captureException(error);
+    Sentry.captureException(error);
 
     const transaction = this.client.transactions.get(message.id);
     if (transaction) {

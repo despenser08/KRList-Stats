@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
@@ -162,7 +163,7 @@ export default class extends Command {
           this.client.logger.error(
             `Error: Server search list - "${query}":\n${e.stack}`
           );
-          this.client.sentry.captureException(e);
+          Sentry.captureException(e);
           return msg.edit({
             content: null,
             embeds: [

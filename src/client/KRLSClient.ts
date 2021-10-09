@@ -41,7 +41,6 @@ declare module "discord-akairo" {
     dokdo: CustomDokdo;
     cachedGuildCount: number;
     transactions: Collection<string, Transaction>;
-    sentry: Sentry.NodeClient;
   }
 }
 
@@ -104,11 +103,6 @@ export default class KRLSClient extends AkairoClient {
 
   public transactions = new Collection<string, Transaction>();
 
-  public sentry = new Sentry.NodeClient({
-    integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
-    tracesSampleRate: 1
-  });
-
   constructor() {
     super({
       intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -134,6 +128,11 @@ export default class KRLSClient extends AkairoClient {
         this.logger.info(`Success: Connect database - ${m.connection.host}`)
       )
       .catch((e) => this.logger.error(`Error: Connect database\n${e.stack}`));
+
+    Sentry.init({
+      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
+      tracesSampleRate: 1
+    });
   }
 
   public async start(token?: string) {
