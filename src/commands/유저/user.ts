@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, User, Util } from "discord.js";
@@ -223,7 +222,7 @@ export default class extends Command {
           }
         } else {
           this.client.logger.error(`Error: User - ${id}:\n${e.stack}`);
-          Sentry.captureException(e);
+          this.client.sentry.captureException(e);
           return msg.edit({
             content: null,
             embeds: [

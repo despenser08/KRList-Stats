@@ -15,8 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Tracing from "@sentry/tracing";
-import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 import scheduleFetch from "../../lib/scheduleTask";
 
@@ -36,11 +34,6 @@ export default class extends Listener {
           type: "PLAYING"
         }
       ]
-    });
-
-    Sentry.init({
-      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
-      tracesSampleRate: 1
     });
 
     this.client.logger.info(`Ready: ${this.client.user.tag}`);

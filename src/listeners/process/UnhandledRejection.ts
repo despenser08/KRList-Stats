@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 
 export default class extends Listener {
@@ -28,6 +27,6 @@ export default class extends Listener {
 
   public async exec(error: Error) {
     this.client.logger.error(`UnhandledRejection: ${error.stack}`);
-    Sentry.captureException(error);
+    this.client.sentry.captureException(error);
   }
 }

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Tracing from "@sentry/tracing";
+import * as Sentry from "@sentry/node";
 import { Transaction } from "@sentry/types";
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
 import { Collection, Intents } from "discord.js";
@@ -39,6 +41,7 @@ declare module "discord-akairo" {
     dokdo: CustomDokdo;
     cachedGuildCount: number;
     transactions: Collection<string, Transaction>;
+    sentry: Sentry.NodeClient;
   }
 }
 
@@ -100,6 +103,11 @@ export default class KRLSClient extends AkairoClient {
   public cachedGuildCount = 0;
 
   public transactions = new Collection<string, Transaction>();
+
+  public sentry = new Sentry.NodeClient({
+    integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
+    tracesSampleRate: 1
+  });
 
   constructor() {
     super({

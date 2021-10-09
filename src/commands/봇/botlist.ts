@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
@@ -115,7 +114,7 @@ export default class extends Command {
             });
           } else {
             this.client.logger.error(`Error: Bot vote list:\n${e.stack}`);
-            Sentry.captureException(e);
+            this.client.sentry.captureException(e);
             return msg.edit({
               content: null,
               embeds: [
@@ -176,7 +175,7 @@ export default class extends Command {
             });
           } else {
             this.client.logger.error(`Error: Bot new list:\n${e.stack}`);
-            Sentry.captureException(e);
+            this.client.sentry.captureException(e);
             return msg.edit({
               content: null,
               embeds: [
