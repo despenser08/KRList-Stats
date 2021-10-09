@@ -35,6 +35,8 @@ export default class extends Listener {
 
     const transaction = this.client.transactions.get(message.id);
     if (transaction) {
+      transaction.setStatus("error");
+      transaction.setData("error", error);
       transaction.finish();
       this.client.transactions.delete(message.id);
     }

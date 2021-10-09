@@ -32,7 +32,7 @@ export default class extends Listener {
       message.id,
       Sentry.startTransaction({
         op: `command_${command.id}`,
-        name: command.id,
+        name: `명령어 - ${command.id}`,
         data: {
           message: message.content,
           author: message.author.id

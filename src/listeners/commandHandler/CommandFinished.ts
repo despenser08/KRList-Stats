@@ -29,6 +29,7 @@ export default class extends Listener {
   public async exec(message: Message) {
     const transaction = this.client.transactions.get(message.id);
     if (transaction) {
+      transaction.setStatus("success");
       transaction.finish();
       this.client.transactions.delete(message.id);
     }
