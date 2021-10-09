@@ -16,7 +16,7 @@
  */
 
 import Tracing from "@sentry/tracing";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 import scheduleFetch from "../../lib/scheduleTask";
 
