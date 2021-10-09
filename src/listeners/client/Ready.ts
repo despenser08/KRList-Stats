@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Tracing from "@sentry/tracing";
+import * as Tracing from "@sentry/tracing";
 import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 import scheduleFetch from "../../lib/scheduleTask";
