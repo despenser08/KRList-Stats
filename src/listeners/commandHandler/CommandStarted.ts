@@ -33,7 +33,11 @@ export default class extends Listener {
       Sentry.startTransaction({
         op: "command",
         name: "Command",
-        data: { message, command }
+        data: {
+          command: command.id,
+          message: message.content,
+          author: message.author.id
+        }
       })
     );
   }

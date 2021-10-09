@@ -39,7 +39,6 @@ export default class extends Listener {
     });
 
     Sentry.init({
-      debug: true,
       integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
       tracesSampleRate: 1
     });
