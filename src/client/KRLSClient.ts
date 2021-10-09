@@ -122,8 +122,10 @@ export default class KRLSClient extends AkairoClient {
     connect(
       `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
     )
-      .then((m) => this.logger.info(`Database ${m.connection.host} connected.`))
-      .catch((e) => this.logger.error(`Database connect error: ${e.stack}`));
+      .then((m) =>
+        this.logger.info(`Success: Connect database - ${m.connection.host}`)
+      )
+      .catch((e) => this.logger.error(`Error: Connect database\n${e.stack}`));
   }
 
   public async start(token?: string) {
