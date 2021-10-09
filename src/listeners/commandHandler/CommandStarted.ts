@@ -31,10 +31,9 @@ export default class extends Listener {
     return this.client.transactions.set(
       message.id,
       Sentry.startTransaction({
-        op: "command",
-        name: "Command",
+        op: `command_${command.id}`,
+        name: command.id,
         data: {
-          command: command.id,
           message: message.content,
           author: message.author.id
         }
