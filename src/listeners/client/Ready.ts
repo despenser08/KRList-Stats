@@ -39,8 +39,9 @@ export default class extends Listener {
     });
 
     Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })]
+      debug: true,
+      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
+      tracesSampleRate: 1
     });
 
     this.client.logger.info(`Ready: ${this.client.user.tag}`);
