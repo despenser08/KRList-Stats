@@ -348,12 +348,17 @@ export default class extends Command {
             options: {
               plugins: {
                 datalabels: {
-                  formatter: (value, ctx) =>
-                    value !== 0
-                      ? `${ctx.chart.data.labels[ctx.dataIndex]}: ${duration(
-                          value
-                        ).humanize()} (${value}분)`
-                      : "",
+                  formatter: (value, ctx) => {
+                    if (value !== 0) {
+                      const formattedTime = duration(value).humanize();
+                      const rawTime = `${value}분`;
+                      const label = ctx.chart.data.labels[ctx.dataIndex];
+
+                      return formattedTime !== rawTime
+                        ? `${label}: ${formattedTime} (${rawTime})`
+                        : `${label}: ${rawTime}`;
+                    } else return "";
+                  },
                   font: { size: 30 }
                 },
                 title: {

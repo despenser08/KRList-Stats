@@ -7,7 +7,7 @@
     "start": "node .",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write **/*.{ts,js,json,yml,yaml}",
+    "format": "prettier --write **/*.{ts,js,json,yml}",
     "build": "tsc",
     "build:check": "tsc --noEmit --incremental false"
   },
@@ -27,7 +27,7 @@
     "@typegoose/typegoose": "^9.0.1",
     "axios": "^0.22.0",
     "chart.js": "^3.5.1",
-    "chartjs-node-canvas": "^3.2.0",
+    "chartjs-node-canvas": "^4.0.1",
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "https://github.com/discord-akairo/discord-akairo#master",
     "discord.js": "^13.2.0",

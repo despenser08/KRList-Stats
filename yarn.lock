@@ -123,9 +123,9 @@
     fastq "^1.6.0"
 
 "@sapphire/async-queue@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.5.tgz#2a52774ad9c24b1e9be88f4a211e735419014e4e"
-  integrity sha512-NQ8GeTBeOkeAylVYTnO9zfEZO74iMNGCRrR3uIRnCrhkyPC+nsewyQtTamjSDWxXFTf+xGSJ9khiY2p56k/bMA==
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.6.tgz#785ea53b2b6b0a471cf03cf2e836f9f5b5139be2"
+  integrity sha512-M5CbgMgesemMUCQo5G/InGHvp+GZx6uuJNV1iwvSWD8EFNVrfxaTcqhcAXM3MPYkjlxvNnoDNk0R1lfzvca6LA==
 
 "@sentry/core@6.13.3":
   version "6.13.3"
@@ -224,9 +224,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "16.10.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.10.3.tgz#7a8f2838603ea314d1d22bb3171d899e15c57bd5"
-  integrity sha512-ho3Ruq+fFnBrZhUYI46n/bV2GjwzSkwuT4dTf0GkuNFmnb8nq4ny2z9JEVemFi6bdEJanHLlYfy9c6FN9B9McQ==
+  version "16.10.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.10.4.tgz#592f12b0b5f357533ddc3310b0176d42ea3e45d1"
+  integrity sha512-EITwVTX5B4nDjXjGeQAfXOrm+Jn+qNjDmyDRtWoD+wZsl/RDPRTFRKivs4Mt74iOFlLOrE5+Kf+p5yjyhm3+cA==
 
 "@types/node@16.10.2":
   version "16.10.2"
@@ -499,7 +499,7 @@ callsites@^3.0.0, callsites@^3.1.0:
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
-canvas@^2.6.1:
+canvas@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.8.0.tgz#f99ca7f25e6e26686661ffa4fec1239bbef74461"
   integrity sha512-gLTi17X8WY9Cf5GZ2Yns8T5lfBOcGgFehDFb+JQwDqdOoBOcECS9ZWMEAqMSVcMYwXD659J8NyzjRY/2aE+C2Q==
@@ -530,13 +530,13 @@ chart.js@^3.5.1:
   resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.5.1.tgz#73e24d23a4134a70ccdb5e79a917f156b6f3644a"
   integrity sha512-m5kzt72I1WQ9LILwQC4syla/LD/N413RYv2Dx2nnTkRS9iv/ey1xLTt0DnPc/eWV4zI+BgEgDYBIzbQhZHc/PQ==
 
-chartjs-node-canvas@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/chartjs-node-canvas/-/chartjs-node-canvas-3.2.0.tgz#876deff999e3be1a3c182b30c9bafd9dfdd00901"
-  integrity sha512-MT0K28VG8BXwCdh5BdRXNw4nzJWKzcN3t/xgTr8zJ8M6uOXl7hRdtIW8rEUcylkLED8LGsnJmSkcnqlhPy841g==
+chartjs-node-canvas@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/chartjs-node-canvas/-/chartjs-node-canvas-4.0.1.tgz#f35f3a8b1da7b6c21bf9965a60279525ae6d2eef"
+  integrity sha512-SwGD65bnvpkZ86dyC1NwLuj4n6T/WVsf5VlAUJB6WAZ5ac6/6Frbxw+U9f7QBhO6Uc1LMcyj1nUZ4AUh0OCShQ==
   dependencies:
-    canvas "^2.6.1"
-    tslib "^1.14.1"
+    canvas "^2.8.0"
+    tslib "^2.3.1"
 
 chartjs-plugin-datalabels@^2.0.0:
   version "2.0.0"
@@ -1975,7 +1975,7 @@ ts-mixer@^6.0.0:
   resolved "https://registry.yarnpkg.com/ts-mixer/-/ts-mixer-6.0.0.tgz#4e631d3a36e3fa9521b973b132e8353bc7267f9f"
   integrity sha512-nXIb1fvdY5CBSrDIblLn73NW0qRDk5yJ0Sk1qPBF560OdJfQp9jhl+0tzcY09OZ9U+6GpeoI9RjwoIKFIoB9MQ==
 
-tslib@^1.14.1, tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.8.1, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

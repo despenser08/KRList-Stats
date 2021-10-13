@@ -24,7 +24,6 @@ import {
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import "chartjs-plugin-datalabels";
 import path from "path";
-import freshRequire from "./freshRequire";
 
 export default function createChart(
   width: number,
@@ -38,9 +37,8 @@ export default function createChart(
   const chart = new ChartJSNodeCanvas({
     width,
     height,
+    plugins: { requireLegacy: ["chartjs-plugin-datalabels"] },
     chartCallback: (chart) => {
-      chart.register(freshRequire("chartjs-plugin-datalabels"));
-
       chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
     }
