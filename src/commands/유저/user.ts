@@ -26,7 +26,7 @@ import {
 } from "../../lib/constants";
 import { FetchResponse, RawUser, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
-import { formatNumber } from "../../lib/utils/format";
+import { formatNumber, getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
@@ -70,10 +70,7 @@ export default class extends Command {
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
-    const id =
-      userOrId instanceof User || userOrId instanceof GuildMember
-        ? userOrId.id
-        : userOrId;
+    const id = getId(userOrId);
 
     return axios
       .get<FetchResponse<RawUser>>(KoreanlistEndPoints.API.user(id))

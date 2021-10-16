@@ -23,6 +23,7 @@ import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
 import { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
+import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
@@ -57,11 +58,10 @@ export default class extends Command {
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
-    const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
+    const id = getId(guildOrId);
 
-    (await axios.get)<FetchResponse<RawServer>>(
-      KoreanlistEndPoints.API.server(id)
-    )
+    await axios
+      .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
         const server = convert.server(data.data);
 

@@ -22,6 +22,7 @@ import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
+import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
@@ -56,10 +57,7 @@ export default class extends Command {
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
-    const id =
-      userOrId instanceof User || userOrId instanceof GuildMember
-        ? userOrId.id
-        : userOrId;
+    const id = getId(userOrId);
 
     await axios
       .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(id))

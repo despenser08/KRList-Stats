@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Guild, GuildMember, User as DiscordUser } from "discord.js";
 import moment from "moment-timezone";
 import { TIMEZONE } from "../../config";
 import { KoreanlistEndPoints } from "../constants";
@@ -117,4 +118,10 @@ export function duration(
   unit: moment.unitOfTime.DurationConstructor = "minutes"
 ) {
   return moment.duration(time, unit).locale("ko-KR");
+}
+
+export function getId(data: DiscordUser | GuildMember | Guild | string) {
+  return encodeURIComponent(
+    typeof data === "object" && "id" in data ? data.id : data
+  );
 }

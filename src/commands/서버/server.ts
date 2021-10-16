@@ -31,6 +31,7 @@ import {
   filterDesc,
   formatNumber,
   formatTime,
+  getId,
   lineUserText
 } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
@@ -121,7 +122,7 @@ export default class extends Command {
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
-    const id = guildOrId instanceof Guild ? guildOrId.id : guildOrId;
+    const id = getId(guildOrId);
 
     return axios
       .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
