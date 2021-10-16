@@ -209,13 +209,6 @@ export default class extends Command {
                       true
                     )
                     .addField(
-                      "봇",
-                      server.bots.length > 0
-                        ? `${server.bots.length}개`
-                        : "없음",
-                      true
-                    )
-                    .addField(
                       "멤버 수",
                       server.members ? server.members.toString() : "N/A",
                       true
