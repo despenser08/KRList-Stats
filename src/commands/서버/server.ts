@@ -341,6 +341,7 @@ export default class extends Command {
 
           const color =
             info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
+          const statName = info === "members" ? "멤버" : "투표";
 
           const chart = await createChart(1920, 1080, {
             type: "line",
@@ -348,7 +349,7 @@ export default class extends Command {
               labels: dates,
               datasets: [
                 {
-                  label: `${info === "members" ? "멤버" : "투표"} 수`,
+                  label: `${statName} 수`,
                   data: datas,
                   backgroundColor: [color],
                   borderColor: [color],
@@ -362,9 +363,7 @@ export default class extends Command {
               plugins: {
                 title: {
                   display: true,
-                  text: `${server.name} ${
-                    info === "members" ? "멤버" : "투표"
-                  } 수`,
+                  text: `${server.name} ${statName} 수`,
                   font: { size: 40 }
                 },
                 legend: {
@@ -378,7 +377,9 @@ export default class extends Command {
           });
 
           return msg.edit({
-            content: `**${Util.escapeBold(server.name)}** 차트입니다.`,
+            content: `**${Util.escapeBold(
+              server.name
+            )}** ${statName} 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
           });
         }

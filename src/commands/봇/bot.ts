@@ -381,7 +381,7 @@ export default class extends Command {
           });
 
           return msg.edit({
-            content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
+            content: `**${Util.escapeBold(bot.name)}** 업타임 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
           });
         } else if (info === "keyword") {
@@ -449,6 +449,7 @@ export default class extends Command {
 
           const color =
             info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
+          const statName = info === "servers" ? "서버" : "투표";
 
           const chart = await createChart(1920, 1080, {
             type: "line",
@@ -456,7 +457,7 @@ export default class extends Command {
               labels: dates,
               datasets: [
                 {
-                  label: `${info === "servers" ? "서버" : "투표"} 수`,
+                  label: `${statName} 수`,
                   data: datas,
                   backgroundColor: [color],
                   borderColor: [color],
@@ -470,9 +471,7 @@ export default class extends Command {
               plugins: {
                 title: {
                   display: true,
-                  text: `${bot.name} ${
-                    info === "servers" ? "서버" : "투표"
-                  } 수`,
+                  text: `${bot.name} ${statName} 수`,
                   font: { size: 40 }
                 },
                 legend: {
@@ -485,10 +484,25 @@ export default class extends Command {
             }
           });
 
-          return msg.edit({
-            content: `**${Util.escapeBold(bot.name)}** 차트입니다.`,
-            files: [new MessageAttachment(chart, "chart.png")]
-          });
+          return msg
+            .edit({
+              content: `**${Util.escapeBold(
+                bot.name
+              )}** ${statName} 차트입니다.`,
+              files: [new MessageAttachment(chart, "chart.png")]
+            })
+            .then((resmsg) => {
+              if (bot.servers === null && info === "servers")
+                resmsg.reply({
+                  embeds: [
+                    new KRLSEmbed()
+                      .setTitle("봇의 서버 수를 확인할 수 없습니다.")
+                      .setDescription(
+                        `봇 정보를 [API](${KoreanlistOrigin}/developers/docs/API)로 보내셔야지 봇 서버 정보가 업데이트됩니다.\n[SDK](${KoreanlistOrigin}/developers/docs/SDK)나 [직접 API에 요청](${KoreanlistOrigin}/developers/docs/%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8/%EB%B4%87#%EB%B4%87-%EC%A0%95%EB%B3%B4-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8)을 보내 봇 정보 업데이트가 가능합니다.`
+                      )
+                  ]
+                });
+            });
         }
       })
       .catch(async (e) => {
