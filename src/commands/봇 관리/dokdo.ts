@@ -37,17 +37,17 @@ export default class extends Command {
       description: {
         content: "wonderlandpark님이 개발하신 디스코드 봇 디버깅 툴"
       },
-      args: [
-        {
-          id: "args",
-          match: "rest"
-        }
-      ]
+      args: [{ id: "action" }]
     });
   }
 
-  public async exec(message: Message, { args }: { args?: string }) {
-    if (args && !OWNERS.includes(message.author.id))
+  public async exec(message: Message, { action }: { action?: string }) {
+    if (
+      action &&
+      action !== "docs" &&
+      action !== "djs" &&
+      !OWNERS.includes(message.author.id)
+    )
       return message.reply(CommandBlocked.owner);
 
     this.client.dokdo.options.prefix = message.util.parsed.prefix;
