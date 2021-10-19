@@ -24,8 +24,7 @@ import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
 import winston from "winston";
-import { OWNERS } from "../config";
-import { CommandBlocked } from "../lib/constants";
+import { CommandBlocked, OWNERS } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
 
 class CustomDokdo extends Dokdo {

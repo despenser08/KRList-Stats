@@ -20,8 +20,11 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Util, Message, MessageAttachment, Guild } from "discord.js";
 import moment from "moment-timezone";
-import { TIMEZONE } from "../../config";
-import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
+import {
+  KoreanlistEndPoints,
+  KoreanlistOrigin,
+  TIMEZONE
+} from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
 import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";

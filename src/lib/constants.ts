@@ -142,8 +142,19 @@ export const KoreanlistEndPoints = {
   }
 };
 
+export const OWNERS = ["552348635283587082"];
+export const TIMEZONE = "Asia/Seoul";
+
+export const allowDokdoCommand = ["docs", "djs"];
+
 export enum Colors {
   PRIMARY = "#7070FB"
+}
+
+export enum CommandBlocked {
+  owner = "봇 관리자 전용 명령어입니다.",
+  guild = "서버 전용 명령어입니다.",
+  dm = "DM 전용 명령어입니다."
 }
 
 export const DiscordOrigin = "https://discord.com";
@@ -156,9 +167,3 @@ export const DiscordEndPoints = {
     }
   }
 };
-
-export enum CommandBlocked {
-  owner = "봇 관리자 전용 명령어입니다.",
-  guild = "서버 전용 명령어입니다.",
-  dm = "DM 전용 명령어입니다."
-}

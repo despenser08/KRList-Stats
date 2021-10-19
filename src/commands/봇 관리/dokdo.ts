@@ -17,8 +17,7 @@
 
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { OWNERS } from "../../config";
-import { CommandBlocked } from "../../lib/constants";
+import { allowDokdoCommand, CommandBlocked, OWNERS } from "../../lib/constants";
 
 export default class extends Command {
   constructor() {
@@ -44,8 +43,7 @@ export default class extends Command {
   public async exec(message: Message, { action }: { action?: string }) {
     if (
       action &&
-      action !== "docs" &&
-      action !== "djs" &&
+      !allowDokdoCommand.includes(action) &&
       !OWNERS.includes(message.author.id)
     )
       return message.reply(CommandBlocked.owner);
