@@ -26,11 +26,11 @@ import {
   GuildMember
 } from "discord.js";
 import moment from "moment-timezone";
-import { TIMEZONE } from "../../config";
 import {
   DiscordEndPoints,
   KoreanlistEndPoints,
-  KoreanlistOrigin
+  KoreanlistOrigin,
+  TIMEZONE
 } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";

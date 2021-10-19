@@ -17,8 +17,7 @@
 
 import { Guild, GuildMember, User as DiscordUser } from "discord.js";
 import moment from "moment-timezone";
-import { TIMEZONE } from "../../config";
-import { KoreanlistEndPoints } from "../constants";
+import { KoreanlistEndPoints, TIMEZONE } from "../constants";
 import { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
 
