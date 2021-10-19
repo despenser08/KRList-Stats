@@ -319,7 +319,7 @@ export default class extends Command {
           for await (const stat of stats.map((bot) => bot.status))
             status[stat]++;
 
-          const chart = await createChart(1080, 1080, {
+          const chart = await createChart(2160, 2160, {
             type: "pie",
             data: {
               labels: [
@@ -451,7 +451,7 @@ export default class extends Command {
             info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "servers" ? "서버" : "투표";
 
-          const chart = await createChart(1920, 1080, {
+          const chart = await createChart(3840, 2160, {
             type: "line",
             data: {
               labels: dates,

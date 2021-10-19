@@ -346,7 +346,7 @@ export default class extends Command {
             info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "members" ? "멤버" : "투표";
 
-          const chart = await createChart(1920, 1080, {
+          const chart = await createChart(3840, 2160, {
             type: "line",
             data: {
               labels: dates,
