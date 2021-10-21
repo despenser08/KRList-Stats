@@ -92,9 +92,9 @@ export default class extends Command {
                               flags: bot.flags,
                               vanity: bot.vanity
                             })
-                          )}(${userMention(bot.id)}) ${bot.status.emoji} [서버: ${
-                            bot.servers || "N/A"
-                          }] - ❤️${bot.votes}`
+                          )}(${userMention(bot.id)}) ${
+                            bot.status.emoji
+                          } [서버: ${bot.servers || "N/A"}] - ❤️${bot.votes}`
                       )
                       .join("\n")
                   )
