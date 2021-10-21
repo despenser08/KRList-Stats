@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { hyperlink, userMention } from "@discordjs/builders";
 import { Guild, GuildMember, User as DiscordUser } from "discord.js";
 import moment from "moment-timezone";
 import { KoreanlistEndPoints, TIMEZONE } from "../constants";
@@ -23,8 +24,12 @@ import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatTime({
   date = null,
-  format = "YYYY/MM/DD hh:mm:ss A",
+  format = "YYYY/MM/DD h:mm:ss A",
   timezone = TIMEZONE
+}: {
+  date?: moment.MomentInput;
+  format?: string;
+  timezone?: string;
 } = {}) {
   return date
     ? moment(date).tz(timezone).format(format)
@@ -86,9 +91,12 @@ export function makeUserURL({ id }: { id: string }) {
 }
 
 export function lineUserText(user: User | BotOwner | ServerOwner) {
-  return `[${user.username}#${user.tag}](${KoreanlistEndPoints.URL.user({
-    id: user.id
-  })}) (<@${user.id}>)`;
+  return `${hyperlink(
+    `${user.username}#${user.tag}`,
+    KoreanlistEndPoints.URL.user({
+      id: user.id
+    })
+  )} (${userMention(user.id)})`;
 }
 
 export function filterDesc(text: string) {
@@ -101,7 +109,7 @@ export function filterDesc(text: string) {
       const url = image.replace(imageRegex, "$1");
       images.push(url);
 
-      return `[[설명 이미지 #${images.length}]](${url})`;
+      return `${hyperlink(`[설명 이미지 #${images.length}]`, url)}`;
     })
     .replace(
       /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
@@ -116,7 +124,7 @@ export function duration(
   time: number,
   unit: moment.unitOfTime.DurationConstructor = "minutes"
 ) {
-  return moment.duration(time, unit).locale("ko-KR");
+  return moment.duration(time, unit);
 }
 
 export function getId(data: DiscordUser | GuildMember | Guild | string) {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CustomEmoji from "./utils/CustomEmoji";
+import { formatEmoji } from "@discordjs/builders";
 import { BotFlags, ServerFlags, UserFlags } from "./utils/Flags";
 
 export interface FetchResponse<T> {
@@ -146,7 +146,7 @@ export type RawBotStatus = "online" | "idle" | "dnd" | "streaming" | "offline";
 export interface BotStatus {
   raw: RawBotStatus;
   text: BotStatusEnum;
-  emoji: CustomEmoji;
+  emoji: string;
 }
 
 export type RawBotState =
@@ -180,11 +180,11 @@ export enum BotStatusEnum {
 }
 
 export const BotStatusEmojiEnum = {
-  online: new CustomEmoji("708147696879272027", "online"),
-  idle: new CustomEmoji("708147696807968842", "idle"),
-  dnd: new CustomEmoji("708147696976003092", "dnd"),
-  offline: new CustomEmoji("708147696523018255", "offline"),
-  streaming: new CustomEmoji("708147697168810024", "streaming")
+  online: formatEmoji("708147696879272027"),
+  idle: formatEmoji("708147696807968842"),
+  dnd: formatEmoji("708147696976003092"),
+  offline: formatEmoji("708147696523018255"),
+  streaming: formatEmoji("708147697168810024")
 };
 
 export interface Emoji {

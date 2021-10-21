@@ -86,12 +86,36 @@ export const KoreanlistEndPoints = {
     static bot(options: { id: string; flags?: BotFlags; vanity?: string }) {
       return `${KoreanlistOrigin}${makeBotURL(options)}`;
     }
+    static botVote(options: { id: string; flags?: BotFlags; vanity?: string }) {
+      return `${this.bot(options)}/vote`;
+    }
+    static botReport(options: {
+      id: string;
+      flags?: BotFlags;
+      vanity?: string;
+    }) {
+      return `${this.bot(options)}/report`;
+    }
     static server(options: {
       id: string;
       flags?: ServerFlags;
       vanity?: string;
     }) {
       return `${KoreanlistOrigin}${makeServerURL(options)}`;
+    }
+    static serverVote(options: {
+      id: string;
+      flags?: ServerFlags;
+      vanity?: string;
+    }) {
+      return `${this.server(options)}/vote`;
+    }
+    static serverReport(options: {
+      id: string;
+      flags?: ServerFlags;
+      vanity?: string;
+    }) {
+      return `${this.server(options)}/report`;
     }
     static user(options: { id: string }) {
       return `${KoreanlistOrigin}${makeUserURL(options)}`;

@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { formatEmoji } from "@discordjs/builders";
 import { MessageActionRow, MessageButton } from "discord.js";
 import {
   ButtonPaginator,
   ButtonPaginatorOptions,
   PaginatorDefaultButton
 } from "djs-interaction-util";
-import CustomEmoji from "./CustomEmoji";
 
 const defaultButton = {
   PREV: PaginatorDefaultButton.PREV.setLabel("이전"),
@@ -49,7 +49,7 @@ export default class KRLSPaginator extends ButtonPaginator {
       new MessageActionRow().addComponents(
         new MessageButton()
           .setURL("https://github.com/despenser08/KRList-Stats")
-          .setEmoji(`${new CustomEmoji("877395594216357970", "GitHub")}`)
+          .setEmoji(formatEmoji("877395594216357970"))
           .setLabel("KRList-Stats GitHub")
           .setStyle("LINK")
       )

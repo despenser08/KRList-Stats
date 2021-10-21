@@ -20,7 +20,7 @@ import scheduleFetch from "../../lib/scheduleTask";
 
 export default class extends Listener {
   constructor() {
-    super("ready", { emitter: "client", event: "ready" });
+    super("ready", { emitter: "client", event: "ready", type: "once" });
   }
 
   public async exec() {

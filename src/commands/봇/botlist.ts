@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
@@ -84,13 +85,14 @@ export default class extends Command {
                     res
                       .map(
                         (bot, index) =>
-                          `**${index + 1 + 16 * (page - 1)}.** [${bot.name}#${
-                            bot.tag
-                          }](${KoreanlistEndPoints.URL.bot({
-                            id: bot.id,
-                            flags: bot.flags,
-                            vanity: bot.vanity
-                          })}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
+                          `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
+                            `${bot.name}#${bot.tag}`,
+                            KoreanlistEndPoints.URL.bot({
+                              id: bot.id,
+                              flags: bot.flags,
+                              vanity: bot.vanity
+                            })
+                          )}(${userMention(bot.id)}) ${bot.status.emoji} [서버: ${
                             bot.servers || "N/A"
                           }] - ❤️${bot.votes}`
                       )

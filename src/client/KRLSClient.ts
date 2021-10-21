@@ -26,6 +26,7 @@ import path from "path";
 import winston from "winston";
 import { CommandBlocked, OWNERS } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
+import moment from "moment-timezone";
 
 class CustomDokdo extends Dokdo {
   owners: string[];
@@ -132,6 +133,8 @@ export default class KRLSClient extends AkairoClient {
       integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
       tracesSampleRate: 1
     });
+
+    moment.locale("ko");
   }
 
   public async start(token?: string) {

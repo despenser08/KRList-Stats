@@ -17,7 +17,7 @@
 
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, User, Util } from "discord.js";
+import { GuildMember, Message, User } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import { FetchResponse, RawBot } from "../../lib/types";
@@ -65,9 +65,7 @@ export default class extends Command {
         const bot = convert.bot(data.data);
 
         if (!bot.owners.map((owner) => owner.id).includes(message.author.id))
-          return msg.edit(
-            `**${Util.escapeBold(bot.name)}** 관리자만 수집 요청이 가능합니다.`
-          );
+          return msg.edit(`**${bot.name}** 관리자만 수집 요청이 가능합니다.`);
 
         const botDB = await BotDB.findOneAndUpdate(
           { id: bot.id },
@@ -77,22 +75,16 @@ export default class extends Command {
 
         if (botDB.track) {
           if (botDB.stats.length > 0)
-            return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 수집은 이미 시작되었습니다.`
-            );
+            return msg.edit(`**${bot.name}** 수집은 이미 시작되었습니다.`);
           else
             return msg.edit(
-              `**${Util.escapeBold(
-                bot.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
         }
 
         await botDB.updateOne({ track: true });
 
-        return msg.edit(
-          `1분마다 **${Util.escapeBold(bot.name)}** 수집이 시작됩니다.`
-        );
+        return msg.edit(`1분마다 **${bot.name}** 수집이 시작됩니다.`);
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
@@ -102,9 +94,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -114,9 +104,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -127,9 +115,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -140,9 +126,7 @@ export default class extends Command {
             content: null,
             embeds: [
               new KRLSEmbed().setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  id
-                )}\`)\n${e}`
+                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
               )
             ]
           });

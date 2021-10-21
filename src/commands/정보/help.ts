@@ -16,7 +16,7 @@
  */
 
 import { Argument, Command, Category } from "discord-akairo";
-import { Message, Util } from "discord.js";
+import { Message } from "discord.js";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
@@ -68,9 +68,7 @@ export default class extends Command {
             .setDescription(
               `**별칭**: ${
                 cmdOrCtgry.aliases
-                  ? cmdOrCtgry.aliases
-                      .map((v) => `\`${Util.escapeInlineCode(v)}\``)
-                      .join(", ")
+                  ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ")
                   : "별칭 없음"
               }\n**설명**: ${
                 cmdOrCtgry.description.content || "설명 없음"
@@ -91,7 +89,7 @@ export default class extends Command {
             .setDescription(
               cmdOrCtgry
                 .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+                .map((cmd) => `• **${cmd.id}**`)
                 .join("\n") || "이 카테고리에는 명령어가 없습니다."
             )
         ]
@@ -110,7 +108,7 @@ export default class extends Command {
               category.id,
               category
                 .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
+                .map((cmd) => `• **${cmd.id}**`)
                 .join("\n") || "이 카테고리에는 명령어가 없습니다."
             )
         ]

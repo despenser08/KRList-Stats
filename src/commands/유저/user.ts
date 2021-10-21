@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, User, Util } from "discord.js";
+import { GuildMember, Message, SnowflakeUtil, User } from "discord.js";
 import {
   DiscordEndPoints,
   KoreanlistEndPoints,
@@ -77,6 +78,7 @@ export default class extends Command {
       .then(async ({ data }) => {
         const user = convert.user(data.data);
         const flags = user.flags.toArray();
+        const created = SnowflakeUtil.deconstruct(user.id).date;
 
         const infoEmbed = new KRLSEmbed()
           .setTitle(`${user.username}#${user.tag}`)
@@ -84,7 +86,7 @@ export default class extends Command {
           .setThumbnail(
             `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id)}`
           )
-          .setDescription(`<@${user.id}>`)
+          .setDescription(userMention(user.id))
           .addField(
             "봇",
             user.bots.length > 0 ? `${user.bots.length}개` : "없음",
@@ -99,6 +101,7 @@ export default class extends Command {
             "GitHub",
             user.github ? `https://github.com/${user.github}` : "없음"
           )
+          .addField("생성일", `${time(created)} (${time(created, "R")})`, true)
           .addField(
             "플래그",
             flags.length > 1
@@ -127,15 +130,16 @@ export default class extends Command {
                     })
                   )
                   .setDescription(
-                    `<@${bot.id}>${
+                    `${userMention(bot.id)}${
                       bot.url
-                        ? ` | [초대 링크](${bot.url})`
-                        : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                            bot.id
-                          )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
-                            bot.id,
-                            false
-                          )})`
+                        ? ` | ${hyperlink("초대 링크", bot.url)}`
+                        : `\n생성됨: ${hyperlink(
+                            "슬래시 초대 링크",
+                            DiscordEndPoints.URL.inviteBot(bot.id)
+                          )} | ${hyperlink(
+                            "초대 링크",
+                            DiscordEndPoints.URL.inviteBot(bot.id, false)
+                          )}`
                     }`
                   )
                   .setImage(
@@ -186,9 +190,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 유저를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 유저를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -198,9 +200,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -211,9 +211,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -225,9 +223,7 @@ export default class extends Command {
             content: null,
             embeds: [
               new KRLSEmbed().setDescription(
-                `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  id
-                )}\`)\n${e}`
+                `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
               )
             ]
           });

@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { hyperlink } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message, Util } from "discord.js";
+import { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
 import { FetchListResponse, RawServer } from "../../lib/types";
@@ -84,13 +85,14 @@ export default class extends Command {
                     res
                       .map(
                         (server, index) =>
-                          `**${index + 1 + 16 * (page - 1)}.** [${
-                            server.name
-                          }](${KoreanlistEndPoints.URL.server({
-                            id: server.id,
-                            flags: server.flags,
-                            vanity: server.vanity
-                          })}) [멤버: ${server.members || "N/A"}] - ❤️${
+                          `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
+                            server.name,
+                            KoreanlistEndPoints.URL.server({
+                              id: server.id,
+                              flags: server.flags,
+                              vanity: server.vanity
+                            })
+                          )} [멤버: ${server.members || "N/A"}] - ❤️${
                             server.votes
                           }`
                       )
@@ -125,9 +127,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 서버를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)\n${e}`
+                    `해당 서버를 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`
                   )
                 ]
               });
@@ -137,9 +137,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)\n${e}`
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`
                   )
                 ]
               });
@@ -152,9 +150,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      query
-                    )}\`)\n${e}`
+                    `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
                   )
                 ]
               });
@@ -168,9 +164,7 @@ export default class extends Command {
             content: null,
             embeds: [
               new KRLSEmbed().setDescription(
-                `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  query
-                )}\`)\n${e}`
+                `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
               )
             ]
           });

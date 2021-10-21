@@ -15,15 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import {
   User,
-  Util,
   Message,
   MessageAttachment,
-  GuildMember
+  GuildMember,
+  SnowflakeUtil
 } from "discord.js";
 import moment from "moment-timezone";
 import {
@@ -170,6 +171,7 @@ export default class extends Command {
 
         if (info === "info") {
           const flags = bot.flags.toArray();
+          const created = SnowflakeUtil.deconstruct(bot.id).date;
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -190,7 +192,7 @@ export default class extends Command {
                       )}`
                     )
                     .setDescription(
-                      `<@${bot.id}> | ${
+                      `${userMention(bot.id)} | ${
                         botDB.track
                           ? botDB.stats.length > 0
                             ? `${duration(
@@ -200,13 +202,14 @@ export default class extends Command {
                           : "수집되지 않음"
                       }${
                         bot.url
-                          ? ` | [초대 링크](${bot.url})`
-                          : `\n생성됨: [슬래시 초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id
-                            )}) | [초대 링크](${DiscordEndPoints.URL.inviteBot(
-                              bot.id,
-                              false
-                            )})`
+                          ? ` | ${hyperlink("초대 링크", bot.url)}`
+                          : `\n생성됨: ${hyperlink(
+                              "슬래시 초대 링크",
+                              DiscordEndPoints.URL.inviteBot(bot.id)
+                            )} | ${hyperlink(
+                              "초대 링크",
+                              DiscordEndPoints.URL.inviteBot(bot.id, false)
+                            )}`
                       }\n\n${bot.intro}`
                     )
                     .addField(
@@ -236,6 +239,11 @@ export default class extends Command {
                     .addField(
                       "서버 수",
                       bot.servers ? bot.servers.toString() : "N/A",
+                      true
+                    )
+                    .addField(
+                      "생성일",
+                      `${time(created)} (${time(created, "R")})`,
                       true
                     )
                     .addField("투표 수", bot.votes.toString(), true)
@@ -291,15 +299,11 @@ export default class extends Command {
         } else if (info === "uptime") {
           if (!botDB.track)
             return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
-              `**${Util.escapeBold(
-                bot.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
 
           const status: {
@@ -381,28 +385,22 @@ export default class extends Command {
           });
 
           return msg.edit({
-            content: `**${Util.escapeBold(bot.name)}** 업타임 차트입니다.`,
+            content: `**${bot.name}** 업타임 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
           });
         } else if (info === "keyword") {
           if (!botDB.track)
             return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
-              `**${Util.escapeBold(
-                bot.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
 
           if (!botDB.keywords || botDB.keywords.size < 1)
             return msg.edit(
-              `봇에서 검색한 결과 중에 **${Util.escapeBold(
-                bot.name
-              )}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
+              `봇에서 검색한 결과 중에 **${bot.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
             );
 
           return msg.edit({
@@ -426,15 +424,11 @@ export default class extends Command {
         } else {
           if (!botDB.track)
             return msg.edit(
-              `**${Util.escapeBold(bot.name)}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
-              `**${Util.escapeBold(
-                bot.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
 
           const datas: number[] = [];
@@ -486,9 +480,7 @@ export default class extends Command {
 
           return msg
             .edit({
-              content: `**${Util.escapeBold(
-                bot.name
-              )}** ${statName} 차트입니다.`,
+              content: `**${bot.name}** ${statName} 차트입니다.`,
               files: [new MessageAttachment(chart, "chart.png")]
             })
             .then((resmsg) => {
@@ -498,7 +490,16 @@ export default class extends Command {
                     new KRLSEmbed()
                       .setTitle("봇의 서버 수를 확인할 수 없습니다.")
                       .setDescription(
-                        `봇 정보를 [API](${KoreanlistOrigin}/developers/docs/API)로 보내셔야지 봇 서버 정보가 업데이트됩니다.\n[SDK](${KoreanlistOrigin}/developers/docs/SDK)나 [직접 API에 요청](${KoreanlistOrigin}/developers/docs/%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8/%EB%B4%87#%EB%B4%87-%EC%A0%95%EB%B3%B4-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8)을 보내 봇 정보 업데이트가 가능합니다.`
+                        `봇 정보를 ${hyperlink(
+                          "API",
+                          `${KoreanlistOrigin}/developers/docs/API`
+                        )}로 보내셔야지 봇 서버 정보가 업데이트됩니다.\n${hyperlink(
+                          "SDK",
+                          `${KoreanlistOrigin}/developers/docs/SDK`
+                        )}나 ${hyperlink(
+                          "직접 API에 요청",
+                          `${KoreanlistOrigin}/developers/docs/%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8/%EB%B4%87#%EB%B4%87-%EC%A0%95%EB%B3%B4-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8`
+                        )}을 보내 봇 정보 업데이트가 가능합니다.`
                       )
                   ]
                 });
@@ -513,9 +514,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -525,9 +524,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -538,9 +535,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -552,9 +547,7 @@ export default class extends Command {
             content: null,
             embeds: [
               new KRLSEmbed().setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  id
-                )}\`)\n${e}`
+                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
               )
             ]
           });

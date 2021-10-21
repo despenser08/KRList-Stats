@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { time } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Util, Message, MessageAttachment, Guild } from "discord.js";
+import { Message, MessageAttachment, Guild, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
 import {
   KoreanlistEndPoints,
@@ -161,6 +162,7 @@ export default class extends Command {
 
         if (info === "info") {
           const flags = server.flags.toArray();
+          const created = SnowflakeUtil.deconstruct(server.id).date;
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -214,6 +216,11 @@ export default class extends Command {
                     .addField(
                       "멤버 수",
                       server.members ? server.members.toString() : "N/A",
+                      true
+                    )
+                    .addField(
+                      "생성일",
+                      `${time(created)} (${time(created, "R")})`,
                       true
                     )
                     .addField("투표 수", server.votes.toString(), true)
@@ -275,24 +282,16 @@ export default class extends Command {
         } else if (info === "keyword") {
           if (!serverDB.track)
             return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }서버수집을 사용하여 서버 수집을 시작하세요.`
+              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
 
           if (!serverDB.keywords || serverDB.keywords.size < 1)
             return msg.edit(
-              `서버에서 검색한 결과 중에 **${Util.escapeBold(
-                server.name
-              )}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
+              `서버에서 검색한 결과 중에 **${server.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
             );
 
           return msg.edit({
@@ -319,17 +318,11 @@ export default class extends Command {
         } else {
           if (!serverDB.track)
             return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 데이터가 수집되지 않았습니다. ${
-                message.util.parsed.prefix
-              }서버수집을 사용하여 서버 수집을 시작하세요.`
+              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
-              `**${Util.escapeBold(
-                server.name
-              )}** 수집 대기중입니다. 잠시만 기다려주세요.`
+              `**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
             );
 
           const datas: number[] = [];
@@ -380,9 +373,7 @@ export default class extends Command {
           });
 
           return msg.edit({
-            content: `**${Util.escapeBold(
-              server.name
-            )}** ${statName} 차트입니다.`,
+            content: `**${server.name}** ${statName} 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
           });
         }
@@ -395,9 +386,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 서버를 찾을 수 없습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 서버를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -407,9 +396,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -422,9 +409,7 @@ export default class extends Command {
                 content: null,
                 embeds: [
                   new KRLSEmbed().setDescription(
-                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                      id
-                    )}\`)\n${e}`
+                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
                   )
                 ]
               });
@@ -436,9 +421,7 @@ export default class extends Command {
             content: null,
             embeds: [
               new KRLSEmbed().setDescription(
-                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${Util.escapeInlineCode(
-                  id
-                )}\`)\n${e}`
+                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
               )
             ]
           });
