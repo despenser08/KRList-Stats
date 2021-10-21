@@ -172,6 +172,11 @@ export default class extends Command {
         if (info === "info") {
           const flags = bot.flags.toArray();
           const created = SnowflakeUtil.deconstruct(bot.id).date;
+          const urlOptions = {
+            id: bot.id,
+            flags: bot.flags,
+            vanity: bot.vanity
+          };
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -179,13 +184,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed()
                     .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
-                    .setURL(
-                      KoreanlistEndPoints.URL.bot({
-                        id: bot.id,
-                        flags: bot.flags,
-                        vanity: bot.vanity
-                      })
-                    )
+                    .setURL(KoreanlistEndPoints.URL.bot(urlOptions))
                     .setThumbnail(
                       `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(
                         bot.id
@@ -210,7 +209,13 @@ export default class extends Command {
                               "초대 링크",
                               DiscordEndPoints.URL.inviteBot(bot.id, false)
                             )}`
-                      }\n\n${bot.intro}`
+                      }\n${hyperlink(
+                        "하트 추가",
+                        KoreanlistEndPoints.URL.botVote(urlOptions)
+                      )} | ${hyperlink(
+                        "신고하기",
+                        KoreanlistEndPoints.URL.botReport(urlOptions)
+                      )}\n\n${bot.intro}`
                     )
                     .addField(
                       "관리자",

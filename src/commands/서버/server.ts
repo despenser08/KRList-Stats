@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { time } from "@discordjs/builders";
+import { hyperlink, time } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
@@ -163,6 +163,11 @@ export default class extends Command {
         if (info === "info") {
           const flags = server.flags.toArray();
           const created = SnowflakeUtil.deconstruct(server.id).date;
+          const urlOptions = {
+            id: server.id,
+            flags: server.flags,
+            vanity: server.vanity
+          };
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -170,13 +175,7 @@ export default class extends Command {
                 embeds: [
                   new KRLSEmbed()
                     .setTitle(server.name)
-                    .setURL(
-                      KoreanlistEndPoints.URL.server({
-                        id: server.id,
-                        flags: server.flags,
-                        vanity: server.vanity
-                      })
-                    )
+                    .setURL(KoreanlistEndPoints.URL.server(urlOptions))
                     .setThumbnail(
                       `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(
                         server.id
@@ -191,7 +190,13 @@ export default class extends Command {
                               ).humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
-                      }\n\n${server.intro}`
+                      }\n${hyperlink(
+                        "하트 추가",
+                        KoreanlistEndPoints.URL.serverVote(urlOptions)
+                      )} | ${hyperlink(
+                        "신고하기",
+                        KoreanlistEndPoints.URL.serverReport(urlOptions)
+                      )}\n\n${server.intro}`
                     )
                     .addField("소유자", lineUserText(server.owner))
                     .addField(
