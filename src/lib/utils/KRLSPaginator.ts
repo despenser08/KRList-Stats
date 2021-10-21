@@ -49,7 +49,7 @@ export default class KRLSPaginator extends ButtonPaginator {
       new MessageActionRow().addComponents(
         new MessageButton()
           .setURL("https://github.com/despenser08/KRList-Stats")
-          .setEmoji(formatEmoji("877395594216357970"))
+          .setEmoji(formatEmoji("900808324667301919"))
           .setLabel("KRList-Stats GitHub")
           .setStyle("LINK")
       )
