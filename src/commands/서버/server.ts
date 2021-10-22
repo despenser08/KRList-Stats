@@ -21,11 +21,7 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, MessageAttachment, Guild, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
-import {
-  KoreanlistEndPoints,
-  KoreanlistOrigin,
-  TIMEZONE
-} from "../../lib/constants";
+import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
 import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
@@ -141,10 +137,10 @@ export default class extends Command {
 
         let stats = serverDB.stats;
         if (limit instanceof Date) {
-          const date = moment(limit).tz(TIMEZONE).startOf("day");
+          const date = moment(limit).startOf("day");
           const nextDate = endOfDate
-            ? moment(endOfDate).tz(TIMEZONE).endOf("day")
-            : moment(limit).tz(TIMEZONE).endOf("day");
+            ? moment(endOfDate).endOf("day")
+            : moment(limit).endOf("day");
 
           stats = stats.filter(
             (stat) =>

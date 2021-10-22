@@ -18,22 +18,15 @@
 import { hyperlink, userMention } from "@discordjs/builders";
 import { Guild, GuildMember, User as DiscordUser } from "discord.js";
 import moment from "moment-timezone";
-import { KoreanlistEndPoints, TIMEZONE } from "../constants";
+import { KoreanlistEndPoints } from "../constants";
 import { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatTime({
   date = null,
-  format = "YYYY/MM/DD h:mm:ss A",
-  timezone = TIMEZONE
-}: {
-  date?: moment.MomentInput;
-  format?: string;
-  timezone?: string;
-} = {}) {
-  return date
-    ? moment(date).tz(timezone).format(format)
-    : moment.tz(timezone).format(format);
+  format = "YYYY/MM/DD h:mm:ss A"
+}: { date?: moment.MomentInput; format?: string } = {}) {
+  return date ? moment(date).format(format) : moment().format(format);
 }
 
 export function formatNumber(value: number) {

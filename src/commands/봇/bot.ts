@@ -30,8 +30,7 @@ import moment from "moment-timezone";
 import {
   DiscordEndPoints,
   KoreanlistEndPoints,
-  KoreanlistOrigin,
-  TIMEZONE
+  KoreanlistOrigin
 } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
@@ -150,10 +149,10 @@ export default class extends Command {
 
         let stats = botDB.stats;
         if (limit instanceof Date) {
-          const date = moment(limit).tz(TIMEZONE).startOf("day");
+          const date = moment(limit).startOf("day");
           const nextDate = endOfDate
-            ? moment(endOfDate).tz(TIMEZONE).endOf("day")
-            : moment(limit).tz(TIMEZONE).endOf("day");
+            ? moment(endOfDate).endOf("day")
+            : moment(limit).endOf("day");
 
           stats = stats.filter(
             (stat) =>

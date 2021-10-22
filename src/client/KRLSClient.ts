@@ -24,7 +24,7 @@ import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
 import winston from "winston";
-import { CommandBlocked, OWNERS } from "../lib/constants";
+import { CommandBlocked, OWNERS, TIMEZONE } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
 import moment from "moment-timezone";
 
@@ -134,7 +134,7 @@ export default class KRLSClient extends AkairoClient {
       tracesSampleRate: 1
     });
 
-    moment.locale("ko");
+    moment.tz.setDefault(TIMEZONE).locale("ko");
   }
 
   public async start(token?: string) {
