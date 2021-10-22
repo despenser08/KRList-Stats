@@ -167,8 +167,6 @@ export const KoreanlistEndPoints = {
 };
 
 export const OWNERS = ["552348635283587082"];
-export const TIMEZONE = "Asia/Seoul";
-
 export const allowDokdoCommand = ["docs", "djs"];
 
 export enum Colors {
