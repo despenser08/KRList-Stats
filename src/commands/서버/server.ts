@@ -194,13 +194,12 @@ export default class extends Command {
                         KoreanlistEndPoints.URL.serverReport(urlOptions)
                       )}\n\n${server.intro}`
                     )
-                    .addField("소유자", lineUserText(server.owner))
                     .addField(
-                      "카테고리",
-                      server.category.length > 0
-                        ? server.category.join(", ")
-                        : "없음"
+                      "멤버 수",
+                      server.members ? server.members.toString() : "N/A",
+                      true
                     )
+                    .addField("투표 수", server.votes.toString(), true)
                     .addField(
                       "부스트 티어",
                       (server.boostTier ?? 0) + "레벨",
@@ -215,22 +214,21 @@ export default class extends Command {
                       true
                     )
                     .addField(
-                      "멤버 수",
-                      server.members ? server.members.toString() : "N/A",
-                      true
+                      "생성일",
+                      `${time(created)} (${time(created, "R")})`
                     )
                     .addField(
-                      "생성일",
-                      `${time(created)} (${time(created, "R")})`,
-                      true
+                      "카테고리",
+                      server.category.length > 0
+                        ? server.category.join(", ")
+                        : "없음"
                     )
-                    .addField("투표 수", server.votes.toString(), true)
+                    .addField("소유자", lineUserText(server.owner))
                     .addField(
                       "플래그",
                       flags.length > 0
                         ? flags.map((flag) => ServerFlagsEnum[flag]).join(", ")
-                        : "없음",
-                      true
+                        : "없음"
                     )
                     .setImage(
                       KoreanlistEndPoints.OG.server(

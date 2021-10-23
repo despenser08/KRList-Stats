@@ -216,16 +216,37 @@ export default class extends Command {
                         KoreanlistEndPoints.URL.botReport(urlOptions)
                       )}\n\n${bot.intro}`
                     )
+                    .addField("접두사", bot.prefix, true)
                     .addField(
-                      "관리자",
-                      bot.owners.map((owner) => lineUserText(owner)).join("\n")
+                      "서버 수",
+                      bot.servers ? bot.servers.toString() : "N/A",
+                      true
+                    )
+                    .addField("투표 수", bot.votes.toString(), true)
+                    .addField(
+                      "샤드 수",
+                      bot.shards ? bot.shards.toString() : "N/A",
+                      true
+                    )
+                    .addField("상태", bot.state, true)
+                    .addField(
+                      "생성일",
+                      `${time(created)} (${time(created, "R")})`
+                    )
+                    .addField(
+                      "플래그",
+                      flags.length > 0
+                        ? flags.map((flag) => BotFlagsEnum[flag]).join(", ")
+                        : "없음"
                     )
                     .addField(
                       "카테고리",
                       bot.category.length > 0 ? bot.category.join(", ") : "없음"
                     )
-                    .addField("Git", bot.git || "없음")
-                    .addField("상태", bot.state, true)
+                    .addField(
+                      "관리자",
+                      bot.owners.map((owner) => lineUserText(owner)).join("\n")
+                    )
                     .addField(
                       "디스코드",
                       bot.discord
@@ -234,31 +255,8 @@ export default class extends Command {
                       true
                     )
                     .addField("라이브러리", bot.lib, true)
-                    .addField("접두사", bot.prefix, true)
-                    .addField(
-                      "샤드 수",
-                      bot.shards ? bot.shards.toString() : "N/A",
-                      true
-                    )
-                    .addField(
-                      "서버 수",
-                      bot.servers ? bot.servers.toString() : "N/A",
-                      true
-                    )
-                    .addField(
-                      "생성일",
-                      `${time(created)} (${time(created, "R")})`,
-                      true
-                    )
-                    .addField("투표 수", bot.votes.toString(), true)
-                    .addField(
-                      "플래그",
-                      flags.length > 0
-                        ? flags.map((flag) => BotFlagsEnum[flag]).join(", ")
-                        : "없음",
-                      true
-                    )
-                    .addField("웹페이지", bot.web || "없음")
+                    .addField("웹사이트", bot.web || "없음")
+                    .addField("Git", bot.git || "없음")
                     .setImage(
                       KoreanlistEndPoints.OG.bot(
                         bot.id,

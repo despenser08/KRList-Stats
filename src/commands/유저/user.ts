@@ -101,13 +101,12 @@ export default class extends Command {
             "GitHub",
             user.github ? `https://github.com/${user.github}` : "없음"
           )
-          .addField("생성일", `${time(created)} (${time(created, "R")})`, true)
+          .addField("생성일", `${time(created)} (${time(created, "R")})`)
           .addField(
             "플래그",
             flags.length > 1
               ? flags.map((flag) => UserFlagsEnum[flag]).join(", ")
-              : "없음",
-            true
+              : "없음"
           );
 
         if (user.bots.length < 1 && user.servers.length < 1)
