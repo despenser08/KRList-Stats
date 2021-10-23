@@ -229,6 +229,7 @@ export default class extends Command {
                       true
                     )
                     .addField("상태", bot.state, true)
+                    .addField("라이브러리", bot.lib, true)
                     .addField(
                       "생성일",
                       `${time(created)} (${time(created, "R")})`
@@ -237,11 +238,15 @@ export default class extends Command {
                       "플래그",
                       flags.length > 0
                         ? flags.map((flag) => BotFlagsEnum[flag]).join(", ")
-                        : "없음"
+                        : "없음",
+                      flags.length < 1
                     )
                     .addField(
                       "카테고리",
-                      bot.category.length > 0 ? bot.category.join(", ") : "없음"
+                      bot.category.length > 0
+                        ? bot.category.join(", ")
+                        : "없음",
+                      flags.length < 1
                     )
                     .addField(
                       "관리자",
@@ -252,11 +257,10 @@ export default class extends Command {
                       bot.discord
                         ? `https://discord.gg/${bot.discord}`
                         : "없음",
-                      true
+                      !bot.discord
                     )
-                    .addField("라이브러리", bot.lib, true)
-                    .addField("웹사이트", bot.web || "없음")
-                    .addField("Git", bot.git || "없음")
+                    .addField("웹사이트", bot.web || "없음", !bot.web)
+                    .addField("Git", bot.git || "없음", !bot.git)
                     .setImage(
                       KoreanlistEndPoints.OG.bot(
                         bot.id,
