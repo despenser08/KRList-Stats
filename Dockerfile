@@ -1,4 +1,4 @@
-FROM node:16-slim as base
+FROM node:lts-slim as base
 
 ENV GIT_SSL_NO_VERIFY=1
 
