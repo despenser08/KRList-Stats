@@ -16,7 +16,7 @@
  */
 
 import { Argument, Command, Category } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
@@ -45,7 +45,7 @@ export default class extends Command {
           id: "cmdOrCtgry",
           type: Argument.union(
             "commandAlias",
-            (_, str) => this.handler.categories.get(str) || null
+            (_, str) => this.handler.categories.get(str) ?? null
           ),
           prompt: {
             optional: true,
@@ -71,11 +71,11 @@ export default class extends Command {
                   ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ")
                   : "별칭 없음"
               }\n**설명**: ${
-                cmdOrCtgry.description.content || "설명 없음"
+                cmdOrCtgry.description.content ?? "설명 없음"
               }\n**사용법**: ${
-                `${message.util.parsed.prefix}${cmdOrCtgry} ${
-                  cmdOrCtgry.description.usage || ""
-                }` || "사용법 없음"
+                `${message.util?.parsed?.prefix}${cmdOrCtgry} ${
+                  cmdOrCtgry.description.usage ?? ""
+                }` ?? "사용법 없음"
               }`
             )
         ]
@@ -85,12 +85,14 @@ export default class extends Command {
         embeds: [
           new KRLSEmbed()
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
-            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .setThumbnail(
+              this.client.user?.displayAvatarURL({ dynamic: true }) ?? ""
+            )
             .setDescription(
               cmdOrCtgry
                 .filter((cmd) => cmd.aliases.length > 0)
                 .map((cmd) => `• **${cmd.id}**`)
-                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+                .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
             )
         ]
       });
@@ -103,13 +105,15 @@ export default class extends Command {
         embeds: [
           new KRLSEmbed()
             .setTitle("도움말")
-            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .setThumbnail(
+              this.client.user?.displayAvatarURL({ dynamic: true }) ?? ""
+            )
             .addField(
               category.id,
               category
                 .filter((cmd) => cmd.aliases.length > 0)
                 .map((cmd) => `• **${cmd.id}**`)
-                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+                .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
             )
         ]
       });

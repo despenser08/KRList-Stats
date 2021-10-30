@@ -16,7 +16,7 @@
  */
 
 import { formatEmoji } from "@discordjs/builders";
-import { BotFlags, ServerFlags, UserFlags } from "./utils/Flags";
+import type { BotFlags, ServerFlags, UserFlags } from "./utils/Flags";
 
 export interface FetchResponse<T> {
   code: number;
@@ -54,7 +54,7 @@ export type BotFlagsString =
 export enum BotFlagsEnum {
   OFFICIAL = "공식",
   TRUSTED = "한국 디스코드 리스트 인증됨",
-  PARTNER = "파트너",
+  PARTNERED = "파트너",
   VERIFIED = "디스코드 인증됨",
   PREMIUM = "프리미엄",
   HACKERTHON = "제1회 한국 디스코드 리스트 해커톤 우승자"

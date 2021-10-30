@@ -16,13 +16,14 @@
  */
 
 import axios from "axios";
-import { AkairoClient } from "discord-akairo";
+import type { AkairoClient } from "discord-akairo";
 import moment from "moment-timezone";
 import schedule from "node-schedule";
 import { KoreanlistEndPoints } from "./constants";
 import BotDB from "./database/models/Bot";
 import ServerDB from "./database/models/Server";
-import { FetchResponse, RawBot, RawServer } from "./types";
+import { envParseString } from "./env";
+import type { FetchResponse, RawBot, RawServer } from "./types";
 import convert from "./utils/convertRawToType";
 
 export default function (client: AkairoClient) {
@@ -32,6 +33,10 @@ export default function (client: AkairoClient) {
         axios
           .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
           .then(({ data }) => {
+            if (!data.data)
+              return client.logger.warn(
+                `FetchError: Bot - ${bot.id}:\nData is empty.`
+              );
             const res = convert.bot(data.data);
 
             return bot.updateOne({
@@ -40,7 +45,7 @@ export default function (client: AkairoClient) {
                   updated: moment(date).toDate(),
                   votes: res.votes,
                   servers: res.servers,
-                  status: res.status.raw
+                  status: res.status?.raw
                 }
               }
             });
@@ -57,6 +62,10 @@ export default function (client: AkairoClient) {
             KoreanlistEndPoints.API.server(server.id)
           )
           .then(({ data }) => {
+            if (!data.data)
+              return client.logger.warn(
+                `FetchError: Server - ${server.id}:\nData is empty.`
+              );
             const res = convert.server(data.data);
 
             return server.updateOne({
@@ -75,14 +84,14 @@ export default function (client: AkairoClient) {
     });
 
     const guildCount = client.guilds.cache.size;
-    if (guildCount !== client.cachedGuildCount)
+    if (guildCount !== client.cachedGuildCount && client.user?.id)
       axios
         .post(
           KoreanlistEndPoints.API.stats(client.user.id),
           { servers: guildCount },
           {
             headers: {
-              Authorization: process.env.KOREANLIST_TOKEN,
+              Authorization: envParseString("KOREANLIST_TOKEN"),
               "Content-Type": "application/json"
             }
           }

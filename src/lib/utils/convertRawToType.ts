@@ -40,11 +40,13 @@ function bot(bot: RawBot): Bot {
     ...bot,
     owners: bot.owners.map((raw) => botOwner(raw)),
     flags: new BotFlags(bot.flags),
-    status: {
-      raw: bot.status,
-      text: BotStatusEnum[bot.status],
-      emoji: BotStatusEmojiEnum[bot.status]
-    },
+    status: bot.status
+      ? {
+          raw: bot.status,
+          text: BotStatusEnum[bot.status],
+          emoji: BotStatusEmojiEnum[bot.status]
+        }
+      : undefined,
     state: BotState[bot.state]
   };
 }
@@ -53,7 +55,7 @@ function server(server: RawServer): Server {
   return {
     ...server,
     flags: new ServerFlags(server.flags),
-    owner: serverOwner(server.owner),
+    owner: server.owner ? serverOwner(server.owner) : undefined,
     bots: server.bots.map((raw) => serverBot(raw)),
     state: ServerState[server.state]
   };
@@ -80,11 +82,13 @@ function serverBot(serverBot: RawServerBot): ServerBot {
   return {
     ...serverBot,
     flags: new BotFlags(serverBot.flags),
-    status: {
-      raw: serverBot.status,
-      text: BotStatusEnum[serverBot.status],
-      emoji: BotStatusEmojiEnum[serverBot.status]
-    },
+    status: serverBot.status
+      ? {
+          raw: serverBot.status,
+          text: BotStatusEnum[serverBot.status],
+          emoji: BotStatusEmojiEnum[serverBot.status]
+        }
+      : undefined,
     state: BotState[serverBot.state]
   };
 }

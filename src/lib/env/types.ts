@@ -15,29 +15,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/node";
-import { Command, Listener } from "discord-akairo";
-import type { Message } from "discord.js";
+export type BooleanString = "true" | "false";
+export type IntegerString = `${bigint}`;
 
-export default class extends Listener {
-  constructor() {
-    super("commandStarted", {
-      emitter: "commandHandler",
-      event: "commandStarted"
-    });
-  }
+export type EnvAny = keyof KRLSEnv;
+export type EnvString = {
+  [K in EnvAny]: KRLSEnv[K] extends BooleanString | IntegerString ? never : K;
+}[EnvAny];
+export type EnvBoolean = {
+  [K in EnvAny]: KRLSEnv[K] extends BooleanString ? K : never;
+}[EnvAny];
+export type EnvInteger = {
+  [K in EnvAny]: KRLSEnv[K] extends IntegerString ? K : never;
+}[EnvAny];
 
-  public async exec(message: Message, command: Command) {
-    return this.client.transactions.set(
-      message.id,
-      Sentry.startTransaction({
-        op: `command_${command.id}`,
-        name: `명령어 - ${command.id}`,
-        data: {
-          message: message.content,
-          author: message.author.id
-        }
-      })
-    );
-  }
+export interface KRLSEnv {
+  DISCORD_TOKEN: string;
+
+  PREFIX: string;
+
+  DB_HOST: string;
+  DB_USERNAME: string;
+  DB_PASSWORD: string;
+  DB_PORT: IntegerString;
+  DB_NAME: string;
+
+  SHELL: string;
+
+  KOREANLIST_TOKEN: string;
+
+  SENTRY_DSN: string;
 }

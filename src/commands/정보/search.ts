@@ -19,11 +19,11 @@ import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import ServerDB from "../../lib/database/models/Server";
-import { FetchResponse, SearchAllResult } from "../../lib/types";
+import type { FetchResponse, SearchAllResult } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -68,6 +68,12 @@ export default class extends Command {
         KoreanlistEndPoints.API.searchAll(query, page)
       )
       .then(async ({ data: { data } }) => {
+        if (!data) {
+          this.client.logger.warn("FetchError: Search list:\nData is empty.");
+          return msg.edit(
+            "검색 리스트의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const serverRes = data.servers.map((rawServer) =>
           convert.server(rawServer)
         );
@@ -99,8 +105,8 @@ export default class extends Command {
                                       vanity: bot.vanity
                                     })
                                   )} (${userMention(bot.id)}) ${
-                                    bot.status.emoji
-                                  } [서버: ${bot.servers || "N/A"}] - ❤️${
+                                    bot.status?.emoji
+                                  } [서버: ${bot.servers ?? "N/A"}] - ❤️${
                                     bot.votes
                                   }`
                               )
@@ -131,7 +137,7 @@ export default class extends Command {
                                       flags: server.flags,
                                       vanity: server.vanity
                                     })
-                                  )} [멤버: ${server.members || "N/A"}] - ❤️${
+                                  )} [멤버: ${server.members ?? "N/A"}] - ❤️${
                                     server.votes
                                   }`
                               )
@@ -154,7 +160,7 @@ export default class extends Command {
             });
             if (!botDB) continue;
 
-            botDB.keywords.set(query, (botDB.keywords.get(query) || 0) + 1);
+            botDB.keywords.set(query, (botDB.keywords.get(query) ?? 0) + 1);
             botDB.save();
           }
 
@@ -167,15 +173,17 @@ export default class extends Command {
 
             serverDB.keywords.set(
               query,
-              (serverDB.keywords.get(query) || 0) + 1
+              (serverDB.keywords.get(query) ?? 0) + 1
             );
             serverDB.save();
           }
+
+          return;
         }
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

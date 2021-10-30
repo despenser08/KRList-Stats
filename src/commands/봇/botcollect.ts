@@ -17,10 +17,10 @@
 
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { GuildMember, Message, User } from "discord.js";
+import type { GuildMember, Message, User } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import { FetchResponse, RawBot } from "../../lib/types";
+import type { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
@@ -62,6 +62,12 @@ export default class extends Command {
     await axios
       .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(id))
       .then(async ({ data }) => {
+        if (!data.data) {
+          this.client.logger.warn(`FetchError: Bot - ${id}:\nData is empty.`);
+          return msg.edit(
+            "해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const bot = convert.bot(data.data);
 
         if (!bot.owners.map((owner) => owner.id).includes(message.author.id))
@@ -88,7 +94,7 @@ export default class extends Command {
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

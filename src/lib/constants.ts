@@ -18,8 +18,9 @@
 // https://github.com/koreanbots/core
 
 import { Permissions } from "discord.js";
-import { KoreanlistImageOptions } from "./types";
-import { BotFlags, ServerFlags } from "./utils/Flags";
+import { URL } from "url";
+import type { KoreanlistImageOptions } from "./types";
+import type { BotFlags, ServerFlags } from "./utils/Flags";
 import {
   makeBotURL,
   makeImageURL,

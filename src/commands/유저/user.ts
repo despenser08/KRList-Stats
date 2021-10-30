@@ -76,7 +76,14 @@ export default class extends Command {
     return axios
       .get<FetchResponse<RawUser>>(KoreanlistEndPoints.API.user(id))
       .then(async ({ data }) => {
+        if (!data.data) {
+          this.client.logger.warn(`FetchError: User - ${id}:\nData is empty.`);
+          return msg.edit(
+            "해당 유저 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const user = convert.user(data.data);
+
         const flags = user.flags.toArray();
         const created = SnowflakeUtil.deconstruct(user.id).date;
 
@@ -120,7 +127,7 @@ export default class extends Command {
             paginator.addPage({
               embeds: [
                 new KRLSEmbed()
-                  .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji} (봇)`)
+                  .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji} (봇)`)
                   .setURL(
                     KoreanlistEndPoints.URL.bot({
                       id: bot.id,
@@ -183,7 +190,7 @@ export default class extends Command {
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

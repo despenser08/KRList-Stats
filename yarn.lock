@@ -106,6 +106,19 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.8.tgz#dac698654a17fb0e202fa3ff0c2c176bbdc08935"
   integrity sha512-Oi4EEi8vOne8RM1tCdQ3kYAtl/J6ztak3Th6wwGFqA2SVNJtedw196LjsLX0bK8Li8cwaljbFf08N+0zeqhkWQ==
 
+"@sapphire/ts-config@^3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/ts-config/-/ts-config-3.1.3.tgz#a005e466befbbeeebf856046ab1a90ef49e3b5f3"
+  integrity sha512-SSYJJnxBIBswgveb5P0TZqWUs/dU/7ToYCnaxegXAOUVVgesCz3izmrfG/lFq567IgmOqeU62CHaFMABDXMz9w==
+  dependencies:
+    tslib "^2.3.1"
+    typescript "^4.4.4"
+
+"@sapphire/utilities@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.6.tgz#ba14fcd6ca19a2665b78335d28477241f99494ea"
+  integrity sha512-veCUmM1Q/zSscv223IveJBaQ/HlENycsmmLnakL79EWpAFnnayycrsa00rMDRUfqgizTJ2rsqoH0JVqqRbxKiA==
+
 "@sentry/core@6.13.3":
   version "6.13.3"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-6.13.3.tgz#5cbbb995128e793ebebcbf1d3b7514e0e5e8b221"
@@ -1888,7 +1901,7 @@ type-fest@^2.3.4:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-2.5.2.tgz#d6a5247b8019716b300d9023fa7b1b02016dd864"
   integrity sha512-WMbytmAs5PUTqwGJRE+WoRrD2S0bYFtHX8k4Y/1l18CG5kqA3keJud9pPQ/r30FE9n8XRFCXF9BbccHIZzRYJw==
 
-typescript@4.4.4:
+typescript@4.4.4, typescript@^4.4.4:
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
   integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==

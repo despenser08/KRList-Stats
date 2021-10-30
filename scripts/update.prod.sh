@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 sudo docker-compose pull
 sudo docker-compose rm -s -f

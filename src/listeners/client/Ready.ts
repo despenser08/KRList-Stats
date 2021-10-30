@@ -16,6 +16,7 @@
  */
 
 import { Listener } from "discord-akairo";
+import { envParseArray } from "../../lib/env";
 import scheduleFetch from "../../lib/scheduleTask";
 
 export default class extends Listener {
@@ -26,16 +27,16 @@ export default class extends Listener {
   public async exec() {
     scheduleFetch(this.client);
 
-    this.client.user.setPresence({
+    this.client.user?.setPresence({
       status: "idle",
       activities: [
         {
-          name: `${this.client.commandHandler.prefix[0]}도움말`,
+          name: `${envParseArray("PREFIX")[0]}도움말`,
           type: "PLAYING"
         }
       ]
     });
 
-    this.client.logger.info(`Ready: ${this.client.user.tag}`);
+    this.client.logger.info(`Ready: ${this.client.user?.tag}`);
   }
 }

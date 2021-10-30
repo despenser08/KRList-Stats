@@ -19,10 +19,10 @@ import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import { FetchListResponse, RawBot } from "../../lib/types";
+import type { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -65,57 +65,53 @@ export default class extends Command {
       .get<FetchListResponse<RawBot>>(
         KoreanlistEndPoints.API.searchBot(query, page)
       )
-      .then(
-        async ({
-          data: {
-            data: { data }
+      .then(async ({ data: { data } }) => {
+        const res = data?.data.map((rawBot) => convert.bot(rawBot));
+
+        if (!res || res.length < 1)
+          return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
+        else {
+          msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle(`"${query}"에 대한 봇 검색 결과입니다.`)
+                .setDescription(
+                  res
+                    .map(
+                      (bot, index) =>
+                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
+                          `${bot.name}#${bot.tag}`,
+                          KoreanlistEndPoints.URL.bot({
+                            id: bot.id,
+                            flags: bot.flags,
+                            vanity: bot.vanity
+                          })
+                        )} (${userMention(bot.id)}) ${
+                          bot.status?.emoji
+                        } [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
+                    )
+                    .join("\n")
+                )
+                .setFooter(`페이지 ${page}`)
+                .setTimestamp()
+            ]
+          });
+
+          for (let i = 0; i < res.length; i++) {
+            const botDB = await BotDB.findOne({ id: res[i].id, track: true });
+            if (!botDB) continue;
+
+            botDB.keywords.set(query, (botDB.keywords.get(query) ?? 0) + 1);
+            botDB.save();
           }
-        }) => {
-          const res = data.map((rawBot) => convert.bot(rawBot));
 
-          if (res.length < 1)
-            return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
-          else {
-            msg.edit({
-              content: null,
-              embeds: [
-                new KRLSEmbed()
-                  .setTitle(`"${query}"에 대한 봇 검색 결과입니다.`)
-                  .setDescription(
-                    res
-                      .map(
-                        (bot, index) =>
-                          `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                            `${bot.name}#${bot.tag}`,
-                            KoreanlistEndPoints.URL.bot({
-                              id: bot.id,
-                              flags: bot.flags,
-                              vanity: bot.vanity
-                            })
-                          )} (${userMention(bot.id)}) ${
-                            bot.status.emoji
-                          } [서버: ${bot.servers || "N/A"}] - ❤️${bot.votes}`
-                      )
-                      .join("\n")
-                  )
-                  .setFooter(`페이지 ${page}`)
-                  .setTimestamp()
-              ]
-            });
-
-            for (let i = 0; i < res.length; i++) {
-              const botDB = await BotDB.findOne({ id: res[i].id, track: true });
-              if (!botDB) continue;
-
-              botDB.keywords.set(query, (botDB.keywords.get(query) || 0) + 1);
-              botDB.save();
-            }
-          }
+          return;
         }
-      )
+      })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

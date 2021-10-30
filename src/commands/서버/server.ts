@@ -127,6 +127,14 @@ export default class extends Command {
     return axios
       .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
+        if (!data.data) {
+          this.client.logger.warn(
+            `FetchError: Server - ${id}:\nData is empty.`
+          );
+          return msg.edit(
+            "해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const server = convert.server(data.data);
 
         const serverDB = await ServerDB.findOneAndUpdate(
@@ -223,7 +231,10 @@ export default class extends Command {
                         ? server.category.join(", ")
                         : "없음"
                     )
-                    .addField("소유자", lineUserText(server.owner))
+                    .addField(
+                      "소유자",
+                      lineUserText(server.owner) ?? "확인 불가능"
+                    )
                     .addField(
                       "플래그",
                       flags.length > 0
@@ -281,7 +292,7 @@ export default class extends Command {
         } else if (info === "keyword") {
           if (!serverDB.track)
             return msg.edit(
-              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
+              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
@@ -302,7 +313,8 @@ export default class extends Command {
                   [...serverDB.keywords.keys()]
                     .sort(
                       (a, b) =>
-                        serverDB.keywords.get(b) - serverDB.keywords.get(a)
+                        (serverDB.keywords.get(b) ?? 0) -
+                        (serverDB.keywords.get(a) ?? 0)
                     )
                     .map(
                       (key, index) =>
@@ -317,7 +329,7 @@ export default class extends Command {
         } else {
           if (!serverDB.track)
             return msg.edit(
-              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
+              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
@@ -328,7 +340,7 @@ export default class extends Command {
           const dates: string[] = [];
 
           for await (const stat of stats) {
-            datas.push(stat[info]);
+            datas.push(stat[info] ?? 0);
             dates.push(
               formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
             );
@@ -379,7 +391,7 @@ export default class extends Command {
       })
       .catch(async (e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

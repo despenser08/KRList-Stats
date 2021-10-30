@@ -15,29 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Sentry from "@sentry/node";
-import { Command, Listener } from "discord-akairo";
-import type { Message } from "discord.js";
+// https://github.com/skyra-project/skyra
 
-export default class extends Listener {
-  constructor() {
-    super("commandStarted", {
-      emitter: "commandHandler",
-      event: "commandStarted"
-    });
-  }
-
-  public async exec(message: Message, command: Command) {
-    return this.client.transactions.set(
-      message.id,
-      Sentry.startTransaction({
-        op: `command_${command.id}`,
-        name: `명령어 - ${command.id}`,
-        data: {
-          message: message.content,
-          author: message.author.id
-        }
-      })
-    );
-  }
-}
+export * from "./types";
+export * from "./utils";

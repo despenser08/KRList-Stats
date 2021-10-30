@@ -16,10 +16,10 @@
  */
 
 import { hyperlink, userMention } from "@discordjs/builders";
-import { Guild, GuildMember, User as DiscordUser } from "discord.js";
+import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
 import moment from "moment-timezone";
 import { KoreanlistEndPoints } from "../constants";
-import { ImageOptions, BotOwner, User, ServerOwner } from "../types";
+import type { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatTime({
@@ -29,7 +29,7 @@ export function formatTime({
   return date ? moment(date).format(format) : moment().format(format);
 }
 
-export function formatNumber(value: number) {
+export function formatNumber(value?: number) {
   if (!value) return "0";
   const suffixes = ["", "만", "억", "조", "해"];
   const suffixNum = Math.floor(("" + value).length / 4);
@@ -83,7 +83,9 @@ export function makeUserURL({ id }: { id: string }) {
   return `/users/${id}`;
 }
 
-export function lineUserText(user: User | BotOwner | ServerOwner) {
+export function lineUserText(user?: User | BotOwner | ServerOwner) {
+  if (!user) return null;
+
   return `${hyperlink(
     `${user.username}#${user.tag}`,
     KoreanlistEndPoints.URL.user({

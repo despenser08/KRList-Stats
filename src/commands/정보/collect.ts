@@ -16,7 +16,7 @@
  */
 
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 
 export default class extends Command {
   constructor() {
@@ -51,7 +51,7 @@ export default class extends Command {
     message: Message,
     { action, rest }: { action: "bot" | "server"; rest: string }
   ) {
-    message.content = `${message.util.parsed.prefix}${action}collect ${rest}`;
+    message.content = `${message.util?.parsed?.prefix}${action}collect ${rest}`;
     return this.handler.handle(message);
   }
 }

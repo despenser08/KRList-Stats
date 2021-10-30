@@ -19,9 +19,9 @@ import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import { FetchListResponse, RawBot } from "../../lib/types";
+import type { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -68,42 +68,44 @@ export default class extends Command {
     if (category === "votes") {
       await axios
         .get<FetchListResponse<RawBot>>(KoreanlistEndPoints.API.voteList(page))
-        .then(
-          async ({
-            data: {
-              data: { data }
-            }
-          }) => {
-            const res = data.map((rawBot) => convert.bot(rawBot));
-
-            return msg.edit({
-              content: null,
-              embeds: [
-                new KRLSEmbed()
-                  .setTitle("봇 투표순 리스트")
-                  .setDescription(
-                    res
-                      .map(
-                        (bot, index) =>
-                          `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                            `${bot.name}#${bot.tag}`,
-                            KoreanlistEndPoints.URL.bot({
-                              id: bot.id,
-                              flags: bot.flags,
-                              vanity: bot.vanity
-                            })
-                          )}(${userMention(bot.id)}) ${
-                            bot.status.emoji
-                          } [서버: ${bot.servers || "N/A"}] - ❤️${bot.votes}`
-                      )
-                      .join("\n")
-                  )
-                  .setFooter(`페이지 ${page}`)
-                  .setTimestamp()
-              ]
-            });
+        .then(async ({ data: { data } }) => {
+          const res = data?.data.map((rawBot) => convert.bot(rawBot));
+          if (!res) {
+            this.client.logger.warn(
+              "FetchError: Bot vote list:\nData is empty."
+            );
+            return msg.edit(
+              "투표 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요."
+            );
           }
-        )
+
+          return msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle("봇 투표순 리스트")
+                .setDescription(
+                  res
+                    .map(
+                      (bot, index) =>
+                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
+                          `${bot.name}#${bot.tag}`,
+                          KoreanlistEndPoints.URL.bot({
+                            id: bot.id,
+                            flags: bot.flags,
+                            vanity: bot.vanity
+                          })
+                        )}(${userMention(bot.id)}) ${
+                          bot.status?.emoji
+                        } [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
+                    )
+                    .join("\n")
+                )
+                .setFooter(`페이지 ${page}`)
+                .setTimestamp()
+            ]
+          });
+        })
         .catch((e) => {
           if (isInterface<AxiosError>(e, "response")) {
             this.client.logger.warn(`FetchError: Bot vote list:\n${e.stack}`);
@@ -131,40 +133,42 @@ export default class extends Command {
     } else {
       await axios
         .get<FetchListResponse<RawBot>>(KoreanlistEndPoints.API.newList())
-        .then(
-          async ({
-            data: {
-              data: { data }
-            }
-          }) => {
-            const res = data.map((rawBot) => convert.bot(rawBot));
-
-            return msg.edit({
-              content: null,
-              embeds: [
-                new KRLSEmbed()
-                  .setTitle("신규 봇 리스트")
-                  .setDescription(
-                    res
-                      .map(
-                        (bot, index) =>
-                          `**${index + 1}.** [${bot.name}#${
-                            bot.tag
-                          }](${KoreanlistEndPoints.URL.bot({
-                            id: bot.id,
-                            flags: bot.flags,
-                            vanity: bot.vanity
-                          })}) (<@${bot.id}>) ${bot.status.emoji} [서버: ${
-                            bot.servers || "N/A"
-                          }]`
-                      )
-                      .join("\n")
-                  )
-                  .setTimestamp()
-              ]
-            });
+        .then(async ({ data: { data } }) => {
+          const res = data?.data.map((rawBot) => convert.bot(rawBot));
+          if (!res) {
+            this.client.logger.warn(
+              "FetchError: Bot new list:\nData is empty."
+            );
+            return msg.edit(
+              "신규 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요."
+            );
           }
-        )
+
+          return msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle("신규 봇 리스트")
+                .setDescription(
+                  res
+                    .map(
+                      (bot, index) =>
+                        `**${index + 1}.** [${bot.name}#${
+                          bot.tag
+                        }](${KoreanlistEndPoints.URL.bot({
+                          id: bot.id,
+                          flags: bot.flags,
+                          vanity: bot.vanity
+                        })}) (<@${bot.id}>) ${bot.status?.emoji} [서버: ${
+                          bot.servers ?? "N/A"
+                        }]`
+                    )
+                    .join("\n")
+                )
+                .setTimestamp()
+            ]
+          });
+        })
         .catch((e) => {
           if (isInterface<AxiosError>(e, "response")) {
             this.client.logger.warn(`FetchError: Bot new list:\n${e.stack}`);

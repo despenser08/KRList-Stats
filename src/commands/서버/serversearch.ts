@@ -19,10 +19,10 @@ import { hyperlink } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
-import { FetchListResponse, RawServer } from "../../lib/types";
+import type { FetchListResponse, RawServer } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -65,63 +65,59 @@ export default class extends Command {
       .get<FetchListResponse<RawServer>>(
         KoreanlistEndPoints.API.searchServer(query, page)
       )
-      .then(
-        async ({
-          data: {
-            data: { data }
-          }
-        }) => {
-          const res = data.map((rawServer) => convert.server(rawServer));
+      .then(async ({ data: { data } }) => {
+        const res = data?.data.map((rawServer) => convert.server(rawServer));
 
-          if (res.length < 1)
-            return msg.edit(`"${query}"에 대한 서버 검색 결과가 없습니다.`);
-          else {
-            msg.edit({
-              content: null,
-              embeds: [
-                new KRLSEmbed()
-                  .setTitle(`"${query}"에 대한 서버 검색 결과입니다.`)
-                  .setDescription(
-                    res
-                      .map(
-                        (server, index) =>
-                          `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                            server.name,
-                            KoreanlistEndPoints.URL.server({
-                              id: server.id,
-                              flags: server.flags,
-                              vanity: server.vanity
-                            })
-                          )} [멤버: ${server.members || "N/A"}] - ❤️${
-                            server.votes
-                          }`
-                      )
-                      .join("\n")
-                  )
-                  .setFooter(`페이지 ${page}`)
-                  .setTimestamp()
-              ]
+        if (!res || res.length < 1)
+          return msg.edit(`"${query}"에 대한 서버 검색 결과가 없습니다.`);
+        else {
+          msg.edit({
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle(`"${query}"에 대한 서버 검색 결과입니다.`)
+                .setDescription(
+                  res
+                    .map(
+                      (server, index) =>
+                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
+                          server.name,
+                          KoreanlistEndPoints.URL.server({
+                            id: server.id,
+                            flags: server.flags,
+                            vanity: server.vanity
+                          })
+                        )} [멤버: ${server.members ?? "N/A"}] - ❤️${
+                          server.votes
+                        }`
+                    )
+                    .join("\n")
+                )
+                .setFooter(`페이지 ${page}`)
+                .setTimestamp()
+            ]
+          });
+
+          for (let i = 0; i < res.length; i++) {
+            const serverDB = await ServerDB.findOne({
+              id: res[i].id,
+              track: true
             });
+            if (!serverDB) continue;
 
-            for (let i = 0; i < res.length; i++) {
-              const serverDB = await ServerDB.findOne({
-                id: res[i].id,
-                track: true
-              });
-              if (!serverDB) continue;
-
-              serverDB.keywords.set(
-                query,
-                (serverDB.keywords.get(query) || 0) + 1
-              );
-              serverDB.save();
-            }
+            serverDB.keywords.set(
+              query,
+              (serverDB.keywords.get(query) ?? 0) + 1
+            );
+            serverDB.save();
           }
+
+          return;
         }
-      )
+      })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

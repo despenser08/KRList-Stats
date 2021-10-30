@@ -17,19 +17,20 @@
 
 import * as Tracing from "@sentry/tracing";
 import * as Sentry from "@sentry/node";
-import { Transaction } from "@sentry/types";
+import type { Transaction } from "@sentry/types";
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
 import { Collection, Intents } from "discord.js";
 import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
-import winston from "winston";
+import type winston from "winston";
 import { CommandBlocked, OWNERS } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
 import moment from "moment-timezone";
+import { envParseArray, envParseInteger, envParseString } from "../lib/env";
 
 class CustomDokdo extends Dokdo {
-  owners: string[];
+  owners!: string[];
 }
 
 declare module "discord-akairo" {
@@ -52,7 +53,7 @@ export default class KRLSClient extends AkairoClient {
 
   public commandHandler: CommandHandler = new CommandHandler(this, {
     directory: path.join(__dirname, "..", "commands"),
-    prefix: JSON.parse(process.env.PREFIX),
+    prefix: envParseArray("PREFIX"),
     automateCategories: true,
     handleEdits: true,
     commandUtil: true,
@@ -76,7 +77,7 @@ export default class KRLSClient extends AkairoClient {
   public logger = createLogger("BOT");
 
   public dokdo = new CustomDokdo(this, {
-    prefix: JSON.parse(process.env.PREFIX)[0],
+    prefix: envParseArray("PREFIX")[0],
     aliases: [
       "dokdo",
       "dok",
@@ -90,11 +91,13 @@ export default class KRLSClient extends AkairoClient {
     ],
     owners: OWNERS,
     secrets: [
-      process.env.DISCORD_TOKEN,
-      process.env.DB_USERNAME,
-      process.env.DB_PASSWORD,
-      process.env.DB_PORT,
-      process.env.KOREANLIST_TOKEN
+      envParseString("DISCORD_TOKEN"),
+      envParseString("KOREANLIST_TOKEN"),
+      envParseString("SENTRY_DSN"),
+      envParseString("DB_HOST"),
+      envParseString("DB_USERNAME"),
+      envParseString("DB_PASSWORD"),
+      envParseInteger("DB_PORT")
     ],
     noPerm: (message) => message.reply(CommandBlocked.owner)
   });
@@ -122,7 +125,11 @@ export default class KRLSClient extends AkairoClient {
     this.commandHandler.loadAll();
 
     connect(
-      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
+      `mongodb://${envParseString("DB_USERNAME")}:${envParseString(
+        "DB_PASSWORD"
+      )}@${envParseString("DB_HOST")}:${envParseInteger(
+        "DB_PORT"
+      )}/${envParseString("DB_NAME")}?authSource=admin`
     )
       .then((m) =>
         this.logger.info(`Success: Connect database - ${m.connection.host}`)

@@ -18,10 +18,10 @@
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { Guild, Message } from "discord.js";
+import type { Guild, Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
-import { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
+import type { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
@@ -63,6 +63,14 @@ export default class extends Command {
     await axios
       .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
+        if (!data.data) {
+          this.client.logger.warn(
+            `FetchError: Server - ${id}:\nData is empty.`
+          );
+          return msg.edit(
+            "해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const server = convert.server(data.data);
 
         const owners = await axios
@@ -70,6 +78,14 @@ export default class extends Command {
             KoreanlistEndPoints.API.serverOwners(id)
           )
           .then(({ data }) => data.data);
+        if (!owners) {
+          this.client.logger.warn(
+            `FetchError: Server Owners - ${id}:\nData is empty.`
+          );
+          return msg.edit(
+            "해당 서버 관리자 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
 
         if (!owners.map((owner) => owner.id).includes(message.author.id))
           return msg.edit(
@@ -97,7 +113,7 @@ export default class extends Command {
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

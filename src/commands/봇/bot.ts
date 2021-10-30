@@ -139,6 +139,12 @@ export default class extends Command {
     return axios
       .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(id))
       .then(async ({ data }) => {
+        if (!data.data) {
+          this.client.logger.warn(`FetchError: Bot - ${id}:\nData is empty.`);
+          return msg.edit(
+            "해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요."
+          );
+        }
         const bot = convert.bot(data.data);
 
         const botDB = await BotDB.findOneAndUpdate(
@@ -182,7 +188,7 @@ export default class extends Command {
               {
                 embeds: [
                   new KRLSEmbed()
-                    .setTitle(`${bot.name}#${bot.tag} ${bot.status.emoji}`)
+                    .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
                     .setURL(KoreanlistEndPoints.URL.bot(urlOptions))
                     .setThumbnail(
                       `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(
@@ -259,8 +265,8 @@ export default class extends Command {
                         : "없음",
                       !bot.discord
                     )
-                    .addField("웹사이트", bot.web || "없음", !bot.web)
-                    .addField("Git", bot.git || "없음", !bot.git)
+                    .addField("웹사이트", bot.web ?? "없음", !bot.web)
+                    .addField("Git", bot.git ?? "없음", !bot.git)
                     .setImage(
                       KoreanlistEndPoints.OG.bot(
                         bot.id,
@@ -305,7 +311,7 @@ export default class extends Command {
         } else if (info === "uptime") {
           if (!botDB.track)
             return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
@@ -360,7 +366,7 @@ export default class extends Command {
                     if (value !== 0) {
                       const formattedTime = duration(value).humanize();
                       const rawTime = `${value}분`;
-                      const label = ctx.chart.data.labels[ctx.dataIndex];
+                      const label = ctx.chart.data.labels?.[ctx.dataIndex];
 
                       return formattedTime !== rawTime
                         ? `${label}: ${formattedTime} (${rawTime})`
@@ -397,7 +403,7 @@ export default class extends Command {
         } else if (info === "keyword") {
           if (!botDB.track)
             return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
@@ -417,7 +423,9 @@ export default class extends Command {
                 .setDescription(
                   [...botDB.keywords.keys()]
                     .sort(
-                      (a, b) => botDB.keywords.get(b) - botDB.keywords.get(a)
+                      (a, b) =>
+                        (botDB.keywords.get(b) ?? 0) -
+                        (botDB.keywords.get(a) ?? 0)
                     )
                     .map(
                       (key, index) =>
@@ -430,7 +438,7 @@ export default class extends Command {
         } else {
           if (!botDB.track)
             return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util.parsed.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
+              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
             );
           else if (stats.length < 1)
             return msg.edit(
@@ -441,7 +449,7 @@ export default class extends Command {
           const dates: string[] = [];
 
           for await (const stat of stats) {
-            datas.push(stat[info]);
+            datas.push(stat[info] ?? 0);
             dates.push(
               formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
             );
@@ -514,7 +522,7 @@ export default class extends Command {
       })
       .catch(async (e) => {
         if (isInterface<AxiosError>(e, "response")) {
-          switch (e.response.status) {
+          switch (e.response?.status) {
             case 404:
               return msg.edit({
                 content: null,

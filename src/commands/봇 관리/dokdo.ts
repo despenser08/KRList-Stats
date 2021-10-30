@@ -16,7 +16,7 @@
  */
 
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { allowDokdoCommand, CommandBlocked, OWNERS } from "../../lib/constants";
 
 export default class extends Command {
@@ -48,7 +48,7 @@ export default class extends Command {
     )
       return message.reply(CommandBlocked.owner);
 
-    this.client.dokdo.options.prefix = message.util.parsed.prefix;
+    this.client.dokdo.options.prefix = message.util?.parsed?.prefix;
     this.client.dokdo.owners = [message.author.id];
     return this.client.dokdo.run(message);
   }
