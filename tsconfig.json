@@ -4,6 +4,9 @@
     "target": "ESNext",
     "removeComments": true,
     "outDir": "./dist",
+    "declaration": false,
+    "declarationMap": false,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*.ts"]
 }
