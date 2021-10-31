@@ -139,6 +139,7 @@ export default class extends Command {
         if (info === "info") {
           const flags = server.flags.toArray();
           const created = SnowflakeUtil.deconstruct(server.id).date;
+          const desc = filterDesc(server.desc);
           const urlOptions = {
             id: server.id,
             flags: server.flags,
@@ -181,13 +182,9 @@ export default class extends Command {
                       ])
                     )
                 ]
-              }
+              },
+              { embeds: [new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)] }
             ]
-          });
-
-          const desc = filterDesc(server.desc);
-          paginator.addPage({
-            embeds: [new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)]
           });
 
           for (let i = 0; i < desc.images.length; i++)
