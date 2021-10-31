@@ -127,6 +127,7 @@ export default class extends Command {
         if (info === "info") {
           const flags = bot.flags.toArray();
           const created = SnowflakeUtil.deconstruct(bot.id).date;
+          const desc = filterDesc(bot.desc);
           const urlOptions = {
             id: bot.id,
             flags: bot.flags,
@@ -173,13 +174,9 @@ export default class extends Command {
                       KoreanlistEndPoints.OG.bot(bot.id, bot.name, bot.intro, bot.category, [formatNumber(bot.votes), formatNumber(bot.servers)])
                     )
                 ]
-              }
+              },
+              { embeds: [new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)] }
             ]
-          });
-
-          const desc = filterDesc(bot.desc);
-          paginator.addPage({
-            embeds: [new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)]
           });
 
           for (let i = 0; i < desc.images.length; i++)
