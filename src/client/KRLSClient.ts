@@ -113,9 +113,9 @@ export default class KRLSClient extends AkairoClient {
     this.commandHandler.loadAll();
 
     connect(
-      `mongodb://${envParseString("DB_USERNAME")}:${envParseString("DB_PASSWORD")}@${envParseString("DB_HOST")}:${envParseInteger(
-        "DB_PORT"
-      )}/${envParseString("DB_NAME")}?authSource=admin`
+      `mongodb://${envParseString("DB_USERNAME")}:${envParseString("DB_PASSWORD")}@${envParseString("DB_HOST")}/${envParseString(
+        "DB_NAME"
+      )}?authSource=admin`
     )
       .then((m) => this.logger.info(`Success: Connect database - ${m.connection.host}`))
       .catch((e) => this.logger.error(`Error: Connect database\n${e.stack}`));
