@@ -59,10 +59,7 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { category, page }: { category: "votes" | "new"; page: number }
-  ) {
+  public async exec(message: Message, { category, page }: { category: "votes" | "new"; page: number }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     if (category === "votes") {
@@ -71,12 +68,8 @@ export default class extends Command {
         .then(async ({ data: { data } }) => {
           const res = data?.data.map((rawBot) => convert.bot(rawBot));
           if (!res) {
-            this.client.logger.warn(
-              "FetchError: Bot vote list:\nData is empty."
-            );
-            return msg.edit(
-              "투표 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요."
-            );
+            this.client.logger.warn("FetchError: Bot vote list:\nData is empty.");
+            return msg.edit("투표 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요.");
           }
 
           return msg.edit({
@@ -95,9 +88,7 @@ export default class extends Command {
                             flags: bot.flags,
                             vanity: bot.vanity
                           })
-                        )}(${userMention(bot.id)}) ${
-                          bot.status?.emoji
-                        } [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
+                        )}(${userMention(bot.id)}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
                     )
                     .join("\n")
                 )
@@ -111,22 +102,14 @@ export default class extends Command {
             this.client.logger.warn(`FetchError: Bot vote list:\n${e.stack}`);
             return msg.edit({
               content: null,
-              embeds: [
-                new KRLSEmbed().setDescription(
-                  `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-                )
-              ]
+              embeds: [new KRLSEmbed().setDescription(`투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`)]
             });
           } else {
             this.client.logger.error(`Error: Bot vote list:\n${e.stack}`);
             Sentry.captureException(e);
             return msg.edit({
               content: null,
-              embeds: [
-                new KRLSEmbed().setDescription(
-                  `투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-                )
-              ]
+              embeds: [new KRLSEmbed().setDescription(`투표 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`)]
             });
           }
         });
@@ -136,12 +119,8 @@ export default class extends Command {
         .then(async ({ data: { data } }) => {
           const res = data?.data.map((rawBot) => convert.bot(rawBot));
           if (!res) {
-            this.client.logger.warn(
-              "FetchError: Bot new list:\nData is empty."
-            );
-            return msg.edit(
-              "신규 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요."
-            );
+            this.client.logger.warn("FetchError: Bot new list:\nData is empty.");
+            return msg.edit("신규 봇 리스트의 응답이 비어있습니다. 다시 시도해주세요.");
           }
 
           return msg.edit({
@@ -153,15 +132,11 @@ export default class extends Command {
                   res
                     .map(
                       (bot, index) =>
-                        `**${index + 1}.** [${bot.name}#${
-                          bot.tag
-                        }](${KoreanlistEndPoints.URL.bot({
+                        `**${index + 1}.** [${bot.name}#${bot.tag}](${KoreanlistEndPoints.URL.bot({
                           id: bot.id,
                           flags: bot.flags,
                           vanity: bot.vanity
-                        })}) (<@${bot.id}>) ${bot.status?.emoji} [서버: ${
-                          bot.servers ?? "N/A"
-                        }]`
+                        })}) (<@${bot.id}>) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}]`
                     )
                     .join("\n")
                 )
@@ -174,22 +149,14 @@ export default class extends Command {
             this.client.logger.warn(`FetchError: Bot new list:\n${e.stack}`);
             return msg.edit({
               content: null,
-              embeds: [
-                new KRLSEmbed().setDescription(
-                  `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-                )
-              ]
+              embeds: [new KRLSEmbed().setDescription(`신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`)]
             });
           } else {
             this.client.logger.error(`Error: Bot new list:\n${e.stack}`);
             Sentry.captureException(e);
             return msg.edit({
               content: null,
-              embeds: [
-                new KRLSEmbed().setDescription(
-                  `신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`
-                )
-              ]
+              embeds: [new KRLSEmbed().setDescription(`신규 봇 리스트를 가져오는 중에 에러가 발생하였습니다.\n${e}`)]
             });
           }
         });

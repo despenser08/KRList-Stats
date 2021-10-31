@@ -29,14 +29,7 @@ import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 export default class extends Command {
   constructor() {
     super("봇수집", {
-      aliases: [
-        "봇수집",
-        "botcollect",
-        "collectbot",
-        "수집봇",
-        "bottrack",
-        "봇추적"
-      ],
+      aliases: ["봇수집", "botcollect", "collectbot", "수집봇", "bottrack", "봇추적"],
       description: {
         content: "해당 봇의 정보를 수집합니다.",
         usage: "<봇>"
@@ -51,10 +44,7 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { userOrId }: { userOrId: string | User | GuildMember }
-  ) {
+  public async exec(message: Message, { userOrId }: { userOrId: string | User | GuildMember }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     const id = getId(userOrId);
@@ -64,28 +54,17 @@ export default class extends Command {
       .then(async ({ data }) => {
         if (!data.data) {
           this.client.logger.warn(`FetchError: Bot - ${id}:\nData is empty.`);
-          return msg.edit(
-            "해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          return msg.edit("해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
         const bot = convert.bot(data.data);
 
-        if (!bot.owners.map((owner) => owner.id).includes(message.author.id))
-          return msg.edit(`**${bot.name}** 관리자만 수집 요청이 가능합니다.`);
+        if (!bot.owners.map((owner) => owner.id).includes(message.author.id)) return msg.edit(`**${bot.name}** 관리자만 수집 요청이 가능합니다.`);
 
-        const botDB = await BotDB.findOneAndUpdate(
-          { id: bot.id },
-          {},
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
+        const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
 
         if (botDB.track) {
-          if (botDB.stats.length > 0)
-            return msg.edit(`**${bot.name}** 수집은 이미 시작되었습니다.`);
-          else
-            return msg.edit(
-              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+          if (botDB.stats.length > 0) return msg.edit(`**${bot.name}** 수집은 이미 시작되었습니다.`);
+          else return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
         }
 
         await botDB.updateOne({ track: true });
@@ -98,43 +77,27 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`)]
               });
 
             default:
               this.client.logger.warn(`FetchError: Bot - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
               });
           }
         } else {
           this.client.logger.warn(`Error: Bot - ${id}:\n${e.stack}`);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
           });
         }
       });

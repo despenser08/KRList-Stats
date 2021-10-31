@@ -23,11 +23,11 @@ import { Collection, Intents } from "discord.js";
 import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
-import type winston from "winston";
 import { CommandBlocked, OWNERS } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
 import moment from "moment-timezone";
 import { envParseArray, envParseInteger, envParseString } from "../lib/env";
+import type { Logger } from "winston";
 
 class CustomDokdo extends Dokdo {
   owners!: string[];
@@ -38,7 +38,7 @@ declare module "discord-akairo" {
     commandHandler: CommandHandler;
     listenerHandler: ListenerHandler;
     inhibitorHandler: InhibitorHandler;
-    logger: winston.Logger;
+    logger: Logger;
     dokdo: CustomDokdo;
     cachedGuildCount: number;
     transactions: Collection<string, Transaction>;
@@ -59,10 +59,8 @@ export default class KRLSClient extends AkairoClient {
     commandUtil: true,
     argumentDefaults: {
       prompt: {
-        modifyStart: (_, str) =>
-          `${str}\n\n\`취소\`를 입력해서 명령어를 취소할 수 있습니다.`,
-        modifyRetry: (_, str) =>
-          `${str}\n\n\`취소\`를 입력해서 명령어를 취소할 수 있습니다.`,
+        modifyStart: (_, str) => `${str}\n\n\`취소\`를 입력해서 명령어를 취소할 수 있습니다.`,
+        modifyRetry: (_, str) => `${str}\n\n\`취소\`를 입력해서 명령어를 취소할 수 있습니다.`,
         timeout: "입력 시간이 초과되었습니다.",
         ended: "입력 최대 시도 횟수를 초과하였습니다.",
         cancel: "취소되었습니다.",
@@ -78,17 +76,7 @@ export default class KRLSClient extends AkairoClient {
 
   public dokdo = new CustomDokdo(this, {
     prefix: envParseArray("PREFIX")[0],
-    aliases: [
-      "dokdo",
-      "dok",
-      "독도",
-      "evaluate",
-      "eval",
-      "이발",
-      "execute",
-      "exec",
-      "실행"
-    ],
+    aliases: ["dokdo", "dok", "독도", "evaluate", "eval", "이발", "execute", "exec", "실행"],
     owners: OWNERS,
     secrets: [
       envParseString("DISCORD_TOKEN"),
@@ -125,15 +113,11 @@ export default class KRLSClient extends AkairoClient {
     this.commandHandler.loadAll();
 
     connect(
-      `mongodb://${envParseString("DB_USERNAME")}:${envParseString(
-        "DB_PASSWORD"
-      )}@${envParseString("DB_HOST")}:${envParseInteger(
+      `mongodb://${envParseString("DB_USERNAME")}:${envParseString("DB_PASSWORD")}@${envParseString("DB_HOST")}:${envParseInteger(
         "DB_PORT"
       )}/${envParseString("DB_NAME")}?authSource=admin`
     )
-      .then((m) =>
-        this.logger.info(`Success: Connect database - ${m.connection.host}`)
-      )
+      .then((m) => this.logger.info(`Success: Connect database - ${m.connection.host}`))
       .catch((e) => this.logger.error(`Error: Connect database\n${e.stack}`));
 
     Sentry.init({

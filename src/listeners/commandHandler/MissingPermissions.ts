@@ -26,17 +26,10 @@ export default class extends Listener {
     });
   }
 
-  public async exec(
-    message: Message,
-    command: Command,
-    type: string,
-    missing: unknown
-  ) {
+  public async exec(message: Message, command: Command, type: string, missing: unknown) {
     return message.reply(
       `${
-        type === "user"
-          ? `${message.author}님은 \`${missing}\` 권한이 없어`
-          : `현재 봇이 \`${missing}\` 권한이 없어`
+        type === "user" ? `${message.author}님은 \`${missing}\` 권한이 없어` : `현재 봇이 \`${missing}\` 권한이 없어`
       } \`${command}\` 명령어를 사용하실 수 없습니다.`
     );
   }

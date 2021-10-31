@@ -20,11 +20,7 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, SnowflakeUtil, User } from "discord.js";
-import {
-  DiscordEndPoints,
-  KoreanlistEndPoints,
-  KoreanlistOrigin
-} from "../../lib/constants";
+import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import { FetchResponse, RawUser, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { formatNumber, getId } from "../../lib/utils/format";
@@ -65,10 +61,7 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { userOrId }: { userOrId: User | GuildMember | string }
-  ) {
+  public async exec(message: Message, { userOrId }: { userOrId: User | GuildMember | string }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     const id = getId(userOrId);
@@ -78,9 +71,7 @@ export default class extends Command {
       .then(async ({ data }) => {
         if (!data.data) {
           this.client.logger.warn(`FetchError: User - ${id}:\nData is empty.`);
-          return msg.edit(
-            "해당 유저 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          return msg.edit("해당 유저 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
         const user = convert.user(data.data);
 
@@ -90,34 +81,15 @@ export default class extends Command {
         const infoEmbed = new KRLSEmbed()
           .setTitle(`${user.username}#${user.tag}`)
           .setURL(KoreanlistEndPoints.URL.user({ id: user.id }))
-          .setThumbnail(
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id)}`
-          )
+          .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id)}`)
           .setDescription(userMention(user.id))
-          .addField(
-            "봇",
-            user.bots.length > 0 ? `${user.bots.length}개` : "없음",
-            true
-          )
-          .addField(
-            "서버",
-            user.servers.length > 0 ? `${user.servers.length}개` : "없음",
-            true
-          )
-          .addField(
-            "GitHub",
-            user.github ? `https://github.com/${user.github}` : "없음"
-          )
+          .addField("봇", user.bots.length > 0 ? `${user.bots.length}개` : "없음", true)
+          .addField("서버", user.servers.length > 0 ? `${user.servers.length}개` : "없음", true)
+          .addField("GitHub", user.github ? `https://github.com/${user.github}` : "없음")
           .addField("생성일", `${time(created)} (${time(created, "R")})`)
-          .addField(
-            "플래그",
-            flags.length > 1
-              ? flags.map((flag) => UserFlagsEnum[flag]).join(", ")
-              : "없음"
-          );
+          .addField("플래그", flags.length > 1 ? flags.map((flag) => UserFlagsEnum[flag]).join(", ") : "없음");
 
-        if (user.bots.length < 1 && user.servers.length < 1)
-          return msg.edit({ content: null, embeds: [infoEmbed] });
+        if (user.bots.length < 1 && user.servers.length < 1) return msg.edit({ content: null, embeds: [infoEmbed] });
         else {
           const paginator = new KRLSPaginator({
             pages: [{ embeds: [infoEmbed] }]
@@ -139,23 +111,14 @@ export default class extends Command {
                     `${userMention(bot.id)}${
                       bot.url
                         ? ` | ${hyperlink("초대 링크", bot.url)}`
-                        : `\n생성됨: ${hyperlink(
-                            "슬래시 초대 링크",
-                            DiscordEndPoints.URL.inviteBot(bot.id)
-                          )} | ${hyperlink(
+                        : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
                             "초대 링크",
                             DiscordEndPoints.URL.inviteBot(bot.id, false)
                           )}`
                     }`
                   )
                   .setImage(
-                    KoreanlistEndPoints.OG.bot(
-                      bot.id,
-                      bot.name,
-                      bot.intro,
-                      bot.category,
-                      [formatNumber(bot.votes), formatNumber(bot.servers)]
-                    )
+                    KoreanlistEndPoints.OG.bot(bot.id, bot.name, bot.intro, bot.category, [formatNumber(bot.votes), formatNumber(bot.servers)])
                   )
               ]
             });
@@ -174,13 +137,10 @@ export default class extends Command {
                   )
                   .setDescription(`https://discord.gg/${server.invite}`)
                   .setImage(
-                    KoreanlistEndPoints.OG.server(
-                      server.id,
-                      server.name,
-                      server.intro,
-                      server.category,
-                      [formatNumber(server.votes), formatNumber(server.members)]
-                    )
+                    KoreanlistEndPoints.OG.server(server.id, server.name, server.intro, server.category, [
+                      formatNumber(server.votes),
+                      formatNumber(server.members)
+                    ])
                   )
               ]
             });
@@ -194,32 +154,20 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 유저를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 유저를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`)]
               });
 
             default:
               this.client.logger.warn(`FetchError: User - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
               });
           }
         } else {
@@ -227,11 +175,7 @@ export default class extends Command {
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`해당 유저를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
           });
         }
       });

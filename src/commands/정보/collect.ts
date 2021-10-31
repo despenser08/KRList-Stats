@@ -47,10 +47,7 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { action, rest }: { action: "bot" | "server"; rest: string }
-  ) {
+  public async exec(message: Message, { action, rest }: { action: "bot" | "server"; rest: string }) {
     message.content = `${message.util?.parsed?.prefix}${action}collect ${rest}`;
     return this.handler.handle(message);
   }

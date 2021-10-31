@@ -23,18 +23,7 @@ import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 export default class extends Command {
   constructor() {
     super("도움말", {
-      aliases: [
-        "도움말",
-        "help",
-        "도움",
-        "헬프",
-        "command",
-        "cmd",
-        "commands",
-        "cmds",
-        "명령어",
-        "커맨드"
-      ],
+      aliases: ["도움말", "help", "도움", "헬프", "command", "cmd", "commands", "cmds", "명령어", "커맨드"],
       channel: "guild",
       description: {
         content: "도움말을 보여줍니다.",
@@ -43,10 +32,7 @@ export default class extends Command {
       args: [
         {
           id: "cmdOrCtgry",
-          type: Argument.union(
-            "commandAlias",
-            (_, str) => this.handler.categories.get(str) ?? null
-          ),
+          type: Argument.union("commandAlias", (_, str) => this.handler.categories.get(str) ?? null),
           prompt: {
             optional: true,
             retry: `명령어 | 카테고리를 입력해 주세요.`
@@ -56,27 +42,16 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }
-  ) {
+  public async exec(message: Message, { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }) {
     if (cmdOrCtgry instanceof Command) {
       return message.reply({
         embeds: [
           new KRLSEmbed()
             .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
             .setDescription(
-              `**별칭**: ${
-                cmdOrCtgry.aliases
-                  ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ")
-                  : "별칭 없음"
-              }\n**설명**: ${
+              `**별칭**: ${cmdOrCtgry.aliases ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ") : "별칭 없음"}\n**설명**: ${
                 cmdOrCtgry.description.content ?? "설명 없음"
-              }\n**사용법**: ${
-                `${message.util?.parsed?.prefix}${cmdOrCtgry} ${
-                  cmdOrCtgry.description.usage ?? ""
-                }` ?? "사용법 없음"
-              }`
+              }\n**사용법**: ${`${message.util?.parsed?.prefix}${cmdOrCtgry} ${cmdOrCtgry.description.usage ?? ""}` ?? "사용법 없음"}`
             )
         ]
       });
@@ -85,9 +60,7 @@ export default class extends Command {
         embeds: [
           new KRLSEmbed()
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
-            .setThumbnail(
-              this.client.user?.displayAvatarURL({ dynamic: true }) ?? ""
-            )
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .setDescription(
               cmdOrCtgry
                 .filter((cmd) => cmd.aliases.length > 0)
@@ -105,9 +78,7 @@ export default class extends Command {
         embeds: [
           new KRLSEmbed()
             .setTitle("도움말")
-            .setThumbnail(
-              this.client.user?.displayAvatarURL({ dynamic: true }) ?? ""
-            )
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .addField(
               category.id,
               category

@@ -27,11 +27,7 @@ export default class extends Listener {
     });
   }
 
-  public async exec(
-    message: Message,
-    _: Command,
-    reason: keyof typeof CommandBlocked
-  ) {
+  public async exec(message: Message, _: Command, reason: keyof typeof CommandBlocked) {
     if (CommandBlocked[reason]) message.reply(CommandBlocked[reason]);
   }
 }

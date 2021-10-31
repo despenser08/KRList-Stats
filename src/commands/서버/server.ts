@@ -26,14 +26,7 @@ import ServerDB from "../../lib/database/models/Server";
 import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
-import {
-  duration,
-  filterDesc,
-  formatNumber,
-  formatTime,
-  getId,
-  lineUserText
-} from "../../lib/utils/format";
+import { duration, filterDesc, formatNumber, formatTime, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
@@ -57,8 +50,7 @@ export default class extends Command {
       ],
       description: {
         content: "해당 서버의 정보를 보여줍니다.",
-        usage:
-          '<서버 ["정보" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+        usage: '<서버 ["정보" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -84,10 +76,7 @@ export default class extends Command {
         },
         {
           id: "limit",
-          type: Argument.union(Argument.range("integer", 1, Infinity), "date", [
-            "all",
-            "전체"
-          ]),
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", ["all", "전체"]),
           prompt: {
             optional: true,
             retry: '"전체" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
@@ -128,37 +117,20 @@ export default class extends Command {
       .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
         if (!data.data) {
-          this.client.logger.warn(
-            `FetchError: Server - ${id}:\nData is empty.`
-          );
-          return msg.edit(
-            "해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          this.client.logger.warn(`FetchError: Server - ${id}:\nData is empty.`);
+          return msg.edit("해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
         const server = convert.server(data.data);
 
-        const serverDB = await ServerDB.findOneAndUpdate(
-          { id: server.id },
-          {},
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
+        const serverDB = await ServerDB.findOneAndUpdate({ id: server.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
 
         let stats = serverDB.stats;
         if (limit instanceof Date) {
           const date = moment(limit).startOf("day");
-          const nextDate = endOfDate
-            ? moment(endOfDate).endOf("day")
-            : moment(limit).endOf("day");
+          const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
 
-          stats = stats.filter(
-            (stat) =>
-              stat.updated >= date.toDate() && stat.updated <= nextDate.toDate()
-          );
-        } else if (
-          typeof limit === "number" &&
-          Number.isInteger(limit) &&
-          stats.length > limit
-        ) {
+          stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
+        } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
           stats.reverse();
           stats.splice(limit);
           stats.reverse();
@@ -180,78 +152,33 @@ export default class extends Command {
                   new KRLSEmbed()
                     .setTitle(server.name)
                     .setURL(KoreanlistEndPoints.URL.server(urlOptions))
-                    .setThumbnail(
-                      `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(
-                        server.id
-                      )}`
-                    )
+                    .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(server.id)}`)
                     .setDescription(
                       `https://discord.gg/${server.invite} | ${
                         serverDB.track
                           ? serverDB.stats.length > 0
-                            ? `${duration(
-                                serverDB.stats.length
-                              ).humanize()} 수집됨`
+                            ? `${duration(serverDB.stats.length).humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
-                      }\n${hyperlink(
-                        "하트 추가",
-                        KoreanlistEndPoints.URL.serverVote(urlOptions)
-                      )} | ${hyperlink(
+                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(urlOptions))} | ${hyperlink(
                         "신고하기",
                         KoreanlistEndPoints.URL.serverReport(urlOptions)
                       )}\n\n${server.intro}`
                     )
-                    .addField(
-                      "멤버 수",
-                      server.members ? server.members.toString() : "N/A",
-                      true
-                    )
+                    .addField("멤버 수", server.members ? server.members.toString() : "N/A", true)
                     .addField("투표 수", server.votes.toString(), true)
-                    .addField(
-                      "부스트 티어",
-                      (server.boostTier ?? 0) + "레벨",
-                      true
-                    )
+                    .addField("부스트 티어", (server.boostTier ?? 0) + "레벨", true)
                     .addField("상태", server.state, true)
-                    .addField(
-                      "이모지",
-                      server.emojis.length > 0
-                        ? `${server.emojis.length}개`
-                        : "없음",
-                      true
-                    )
-                    .addField(
-                      "생성일",
-                      `${time(created)} (${time(created, "R")})`
-                    )
-                    .addField(
-                      "카테고리",
-                      server.category.length > 0
-                        ? server.category.join(", ")
-                        : "없음"
-                    )
-                    .addField(
-                      "소유자",
-                      lineUserText(server.owner) ?? "확인 불가능"
-                    )
-                    .addField(
-                      "플래그",
-                      flags.length > 0
-                        ? flags.map((flag) => ServerFlagsEnum[flag]).join(", ")
-                        : "없음"
-                    )
+                    .addField("이모지", server.emojis.length > 0 ? `${server.emojis.length}개` : "없음", true)
+                    .addField("생성일", `${time(created)} (${time(created, "R")})`)
+                    .addField("카테고리", server.category.length > 0 ? server.category.join(", ") : "없음")
+                    .addField("소유자", lineUserText(server.owner) ?? "확인 불가능")
+                    .addField("플래그", flags.length > 0 ? flags.map((flag) => ServerFlagsEnum[flag]).join(", ") : "없음")
                     .setImage(
-                      KoreanlistEndPoints.OG.server(
-                        server.id,
-                        server.name,
-                        server.intro,
-                        server.category,
-                        [
-                          formatNumber(server.votes),
-                          formatNumber(server.members)
-                        ]
-                      )
+                      KoreanlistEndPoints.OG.server(server.id, server.name, server.intro, server.category, [
+                        formatNumber(server.votes),
+                        formatNumber(server.members)
+                      ])
                     )
                 ]
               }
@@ -260,9 +187,7 @@ export default class extends Command {
 
           const desc = filterDesc(server.desc);
           paginator.addPage({
-            embeds: [
-              new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)
-            ]
+            embeds: [new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)]
           });
 
           for (let i = 0; i < desc.images.length; i++)
@@ -277,15 +202,11 @@ export default class extends Command {
 
           if (server.banner)
             paginator.addPage({
-              embeds: [
-                new KRLSEmbed().setTitle("서버 배너").setImage(server.banner)
-              ]
+              embeds: [new KRLSEmbed().setTitle("서버 배너").setImage(server.banner)]
             });
           if (server.bg)
             paginator.addPage({
-              embeds: [
-                new KRLSEmbed().setTitle("서버 배경").setImage(server.bg)
-              ]
+              embeds: [new KRLSEmbed().setTitle("서버 배경").setImage(server.bg)]
             });
 
           return paginator.run(message, msg);
@@ -294,36 +215,20 @@ export default class extends Command {
             return msg.edit(
               `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
-          else if (stats.length < 1)
-            return msg.edit(
-              `**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+          else if (stats.length < 1) return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           if (!serverDB.keywords || serverDB.keywords.size < 1)
-            return msg.edit(
-              `서버에서 검색한 결과 중에 **${server.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
-            );
+            return msg.edit(`서버에서 검색한 결과 중에 **${server.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`);
 
           return msg.edit({
             content: null,
             embeds: [
-              new KRLSEmbed()
-                .setTitle(`${server.name} 검색 키워드`)
-                .setDescription(
-                  [...serverDB.keywords.keys()]
-                    .sort(
-                      (a, b) =>
-                        (serverDB.keywords.get(b) ?? 0) -
-                        (serverDB.keywords.get(a) ?? 0)
-                    )
-                    .map(
-                      (key, index) =>
-                        `**${index + 1}.** ${key} - ${serverDB.keywords.get(
-                          key
-                        )}`
-                    )
-                    .join("\n")
-                )
+              new KRLSEmbed().setTitle(`${server.name} 검색 키워드`).setDescription(
+                [...serverDB.keywords.keys()]
+                  .sort((a, b) => (serverDB.keywords.get(b) ?? 0) - (serverDB.keywords.get(a) ?? 0))
+                  .map((key, index) => `**${index + 1}.** ${key} - ${serverDB.keywords.get(key)}`)
+                  .join("\n")
+              )
             ]
           });
         } else {
@@ -331,23 +236,17 @@ export default class extends Command {
             return msg.edit(
               `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
-          else if (stats.length < 1)
-            return msg.edit(
-              `**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+          else if (stats.length < 1) return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           const datas: number[] = [];
           const dates: string[] = [];
 
           for await (const stat of stats) {
             datas.push(stat[info] ?? 0);
-            dates.push(
-              formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
-            );
+            dates.push(formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" }));
           }
 
-          const color =
-            info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
+          const color = info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "members" ? "멤버" : "투표";
 
           const chart = await createChart(1920, 1080, {
@@ -395,34 +294,20 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 서버를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 서버를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`)]
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Server - ${id}:\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Server - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
               });
           }
         } else {
@@ -430,11 +315,7 @@ export default class extends Command {
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
           });
         }
       });

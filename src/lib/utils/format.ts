@@ -22,10 +22,7 @@ import { KoreanlistEndPoints } from "../constants";
 import type { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
 
-export function formatTime({
-  date = null,
-  format = "YYYY/MM/DD h:mm:ss A"
-}: { date?: moment.MomentInput; format?: string } = {}) {
+export function formatTime({ date = null, format = "YYYY/MM/DD h:mm:ss A" }: { date?: moment.MomentInput; format?: string } = {}) {
   return date ? moment(date).format(format) : moment().format(format);
 }
 
@@ -33,9 +30,7 @@ export function formatNumber(value?: number) {
   if (!value) return "0";
   const suffixes = ["", "만", "억", "조", "해"];
   const suffixNum = Math.floor(("" + value).length / 4);
-  let shortValue: string | number = parseFloat(
-    (suffixNum != 0 ? value / Math.pow(10000, suffixNum) : value).toPrecision(2)
-  );
+  let shortValue: string | number = parseFloat((suffixNum != 0 ? value / Math.pow(10000, suffixNum) : value).toPrecision(2));
   if (shortValue % 1 != 0) {
     shortValue = shortValue.toFixed(1);
   }
@@ -44,39 +39,16 @@ export function formatNumber(value?: number) {
   return shortValue + suffixes[suffixNum];
 }
 
-export function makeImageURL(
-  root: string,
-  { format = "gif", size = 512 }: ImageOptions = { format: "gif", size: 512 }
-): string {
+export function makeImageURL(root: string, { format = "gif", size = 512 }: ImageOptions = { format: "gif", size: 512 }): string {
   return `${root}.${format}?size=${size}`;
 }
 
-export function makeBotURL({
-  id,
-  vanity,
-  flags = new BotFlags(0)
-}: {
-  id: string;
-  flags?: BotFlags;
-  vanity?: string;
-}) {
-  return `/bots/${
-    (flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id
-  }`;
+export function makeBotURL({ id, vanity, flags = new BotFlags(0) }: { id: string; flags?: BotFlags; vanity?: string }) {
+  return `/bots/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
 }
 
-export function makeServerURL({
-  id,
-  vanity,
-  flags = new ServerFlags(0)
-}: {
-  id: string;
-  flags?: ServerFlags;
-  vanity?: string;
-}) {
-  return `/servers/${
-    (flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id
-  }`;
+export function makeServerURL({ id, vanity, flags = new ServerFlags(0) }: { id: string; flags?: ServerFlags; vanity?: string }) {
+  return `/servers/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
 }
 
 export function makeUserURL({ id }: { id: string }) {
@@ -106,24 +78,16 @@ export function filterDesc(text: string) {
 
       return hyperlink(`[설명 이미지 #${images.length}]`, url);
     })
-    .replace(
-      /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
-      "\n"
-    )
+    .replace(/^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm, "\n")
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
 
   return { res, images };
 }
 
-export function duration(
-  time: number,
-  unit: moment.unitOfTime.DurationConstructor = "minutes"
-) {
+export function duration(time: number, unit: moment.unitOfTime.DurationConstructor = "minutes") {
   return moment.duration(time, unit);
 }
 
 export function getId(data: DiscordUser | GuildMember | Guild | string) {
-  return encodeURIComponent(
-    typeof data === "object" && "id" in data ? data.id : data
-  );
+  return encodeURIComponent(typeof data === "object" && "id" in data ? data.id : data);
 }

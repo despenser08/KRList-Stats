@@ -22,17 +22,7 @@ import { allowDokdoCommand, CommandBlocked, OWNERS } from "../../lib/constants";
 export default class extends Command {
   constructor() {
     super("독도", {
-      aliases: [
-        "독도",
-        "dokdo",
-        "dok",
-        "evaluate",
-        "eval",
-        "이발",
-        "execute",
-        "exec",
-        "실행"
-      ],
+      aliases: ["독도", "dokdo", "dok", "evaluate", "eval", "이발", "execute", "exec", "실행"],
       description: {
         content: "wonderlandpark님이 개발하신 디스코드 봇 디버깅 툴"
       },
@@ -41,12 +31,7 @@ export default class extends Command {
   }
 
   public async exec(message: Message, { action }: { action?: string }) {
-    if (
-      action &&
-      !allowDokdoCommand.includes(action) &&
-      !OWNERS.includes(message.author.id)
-    )
-      return message.reply(CommandBlocked.owner);
+    if (action && !allowDokdoCommand.includes(action) && !OWNERS.includes(message.author.id)) return message.reply(CommandBlocked.owner);
 
     this.client.dokdo.options.prefix = message.util?.parsed?.prefix;
     this.client.dokdo.owners = [message.author.id];

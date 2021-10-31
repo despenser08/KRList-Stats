@@ -21,25 +21,13 @@ import { Permissions } from "discord.js";
 import { URL } from "url";
 import type { KoreanlistImageOptions } from "./types";
 import type { BotFlags, ServerFlags } from "./utils/Flags";
-import {
-  makeBotURL,
-  makeImageURL,
-  makeServerURL,
-  makeUserURL
-} from "./utils/format";
+import { makeBotURL, makeImageURL, makeServerURL, makeUserURL } from "./utils/format";
 
 export const KoreanlistOrigin = "https://beta.koreanbots.dev";
 export const KoreanlistEndPoints = {
   OG: class {
     static root = "https://og.kbots.link";
-    static generate(
-      id: string,
-      name: string,
-      bio: string,
-      tags: string[],
-      stats: string[],
-      type: "bot" | "server"
-    ) {
+    static generate(id: string, name: string, bio: string, tags: string[], stats: string[], type: "bot" | "server") {
       const u = new URL(this.root);
       u.pathname = name;
       u.searchParams.append(
@@ -55,22 +43,10 @@ export const KoreanlistEndPoints = {
       stats.map((s) => u.searchParams.append("stats", s));
       return u.href;
     }
-    static bot(
-      id: string,
-      name: string,
-      bio: string,
-      tags: string[],
-      stats: string[]
-    ) {
+    static bot(id: string, name: string, bio: string, tags: string[], stats: string[]) {
       return this.generate(id, name, bio, tags, stats, "bot");
     }
-    static server(
-      id: string,
-      name: string,
-      bio: string,
-      tags: string[],
-      stats: string[]
-    ) {
+    static server(id: string, name: string, bio: string, tags: string[], stats: string[]) {
       return this.generate(id, name, bio, tags, stats, "server");
     }
   },
@@ -90,32 +66,16 @@ export const KoreanlistEndPoints = {
     static botVote(options: { id: string; flags?: BotFlags; vanity?: string }) {
       return `${this.bot(options)}/vote`;
     }
-    static botReport(options: {
-      id: string;
-      flags?: BotFlags;
-      vanity?: string;
-    }) {
+    static botReport(options: { id: string; flags?: BotFlags; vanity?: string }) {
       return `${this.bot(options)}/report`;
     }
-    static server(options: {
-      id: string;
-      flags?: ServerFlags;
-      vanity?: string;
-    }) {
+    static server(options: { id: string; flags?: ServerFlags; vanity?: string }) {
       return `${KoreanlistOrigin}${makeServerURL(options)}`;
     }
-    static serverVote(options: {
-      id: string;
-      flags?: ServerFlags;
-      vanity?: string;
-    }) {
+    static serverVote(options: { id: string; flags?: ServerFlags; vanity?: string }) {
       return `${this.server(options)}/vote`;
     }
-    static serverReport(options: {
-      id: string;
-      flags?: ServerFlags;
-      vanity?: string;
-    }) {
+    static serverReport(options: { id: string; flags?: ServerFlags; vanity?: string }) {
       return `${this.server(options)}/report`;
     }
     static user(options: { id: string }) {
@@ -138,19 +98,13 @@ export const KoreanlistEndPoints = {
       return `${this.base}/servers/${id}/owners`;
     }
     static searchAll(query: string, page = 1) {
-      return `${this.base}/search/all?query=${encodeURIComponent(
-        query
-      )}&page=${page}`;
+      return `${this.base}/search/all?query=${encodeURIComponent(query)}&page=${page}`;
     }
     static searchBot(query: string, page = 1) {
-      return `${this.base}/search/bots?query=${encodeURIComponent(
-        query
-      )}&page=${page}`;
+      return `${this.base}/search/bots?query=${encodeURIComponent(query)}&page=${page}`;
     }
     static searchServer(query: string, page = 1) {
-      return `${this.base}/search/servers?query=${encodeURIComponent(
-        query
-      )}&page=${page}`;
+      return `${this.base}/search/servers?query=${encodeURIComponent(query)}&page=${page}`;
     }
     static voteList(page = 1) {
       return `${this.base}/list/bots/votes?page=${page}`;
@@ -184,9 +138,7 @@ export const DiscordOrigin = "https://discord.com";
 export const DiscordEndPoints = {
   URL: class {
     static inviteBot(id: string, slash = true, perms = Permissions.ALL) {
-      return `${DiscordOrigin}/api/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot${
-        slash ? "%20applications.commands" : ""
-      }`;
+      return `${DiscordOrigin}/api/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot${slash ? "%20applications.commands" : ""}`;
     }
   }
 };

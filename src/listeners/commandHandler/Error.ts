@@ -28,9 +28,7 @@ export default class extends Listener {
   }
 
   public async exec(error: Error, message: Message, command: Command) {
-    this.client.logger.error(
-      `CommandError: Command - ${command} | Request - "${message.content}"\n${error.stack}`
-    );
+    this.client.logger.error(`CommandError: Command - ${command} | Request - "${message.content}"\n${error.stack}`);
     Sentry.captureException(error);
 
     const transaction = this.client.transactions.get(message.id);
@@ -41,8 +39,6 @@ export default class extends Listener {
       this.client.transactions.delete(message.id);
     }
 
-    return message.reply(
-      `\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`\n${error.stack}\n\`\`\``
-    );
+    return message.reply(`\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`\n${error.stack}\n\`\`\``);
   }
 }

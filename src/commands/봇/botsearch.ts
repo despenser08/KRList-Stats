@@ -55,21 +55,15 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { query, page }: { query: string; page: number }
-  ) {
+  public async exec(message: Message, { query, page }: { query: string; page: number }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get<FetchListResponse<RawBot>>(
-        KoreanlistEndPoints.API.searchBot(query, page)
-      )
+      .get<FetchListResponse<RawBot>>(KoreanlistEndPoints.API.searchBot(query, page))
       .then(async ({ data: { data } }) => {
         const res = data?.data.map((rawBot) => convert.bot(rawBot));
 
-        if (!res || res.length < 1)
-          return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
+        if (!res || res.length < 1) return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
         else {
           msg.edit({
             content: null,
@@ -87,9 +81,7 @@ export default class extends Command {
                             flags: bot.flags,
                             vanity: bot.vanity
                           })
-                        )} (${userMention(bot.id)}) ${
-                          bot.status?.emoji
-                        } [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
+                        )} (${userMention(bot.id)}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
                     )
                     .join("\n")
                 )
@@ -115,48 +107,28 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 봇을 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`)]
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Bot search list - "${query}":\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Bot search list - "${query}":\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
               });
           }
         } else {
-          this.client.logger.error(
-            `Error: Bot search list - "${query}":\n${e.stack}`
-          );
+          this.client.logger.error(`Error: Bot search list - "${query}":\n${e.stack}`);
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`봇 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
           });
         }
       });

@@ -33,10 +33,7 @@ export default function (client: AkairoClient) {
         axios
           .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
           .then(({ data }) => {
-            if (!data.data)
-              return client.logger.warn(
-                `FetchError: Bot - ${bot.id}:\nData is empty.`
-              );
+            if (!data.data) return client.logger.warn(`FetchError: Bot - ${bot.id}:\nData is empty.`);
             const res = convert.bot(data.data);
 
             return bot.updateOne({
@@ -50,22 +47,15 @@ export default function (client: AkairoClient) {
               }
             });
           })
-          .catch((e) =>
-            client.logger.warn(`FetchError: Bot - ${bot.id}:\n${e.stack}`)
-          );
+          .catch((e) => client.logger.warn(`FetchError: Bot - ${bot.id}:\n${e.stack}`));
     });
 
     ServerDB.find({ track: true }).then((servers) => {
       for (const server of servers)
         axios
-          .get<FetchResponse<RawServer>>(
-            KoreanlistEndPoints.API.server(server.id)
-          )
+          .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(server.id))
           .then(({ data }) => {
-            if (!data.data)
-              return client.logger.warn(
-                `FetchError: Server - ${server.id}:\nData is empty.`
-              );
+            if (!data.data) return client.logger.warn(`FetchError: Server - ${server.id}:\nData is empty.`);
             const res = convert.server(data.data);
 
             return server.updateOne({
@@ -78,9 +68,7 @@ export default function (client: AkairoClient) {
               }
             });
           })
-          .catch((e) =>
-            client.logger.warn(`FetchError: Server - ${server.id}:\n${e.stack}`)
-          );
+          .catch((e) => client.logger.warn(`FetchError: Server - ${server.id}:\n${e.stack}`));
     });
 
     const guildCount = client.guilds.cache.size;
@@ -97,15 +85,11 @@ export default function (client: AkairoClient) {
           }
         )
         .then(({ data }) => {
-          client.logger.info(
-            `Success: Bump guilds - ${guildCount}:\n${JSON.stringify(data)}}`
-          );
+          client.logger.info(`Success: Bump guilds - ${guildCount}:\n${JSON.stringify(data)}}`);
           client.cachedGuildCount = guildCount;
         })
         .catch((e) => {
-          client.logger.warn(
-            `FetchError: Bump guilds - ${guildCount}:\n${e.stack}`
-          );
+          client.logger.warn(`FetchError: Bump guilds - ${guildCount}:\n${e.stack}`);
         });
   });
 }

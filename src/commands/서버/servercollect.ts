@@ -30,14 +30,7 @@ import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 export default class extends Command {
   constructor() {
     super("서버수집", {
-      aliases: [
-        "서버수집",
-        "servercollect",
-        "collectserver",
-        "수집서버",
-        "servertrack",
-        "서버추적"
-      ],
+      aliases: ["서버수집", "servercollect", "collectserver", "수집서버", "servertrack", "서버추적"],
       description: {
         content: "해당 서버의 정보를 수집합니다.",
         usage: "<서버>"
@@ -52,10 +45,7 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { guildOrId }: { guildOrId: Guild | string }
-  ) {
+  public async exec(message: Message, { guildOrId }: { guildOrId: Guild | string }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     const id = getId(guildOrId);
@@ -64,47 +54,24 @@ export default class extends Command {
       .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(id))
       .then(async ({ data }) => {
         if (!data.data) {
-          this.client.logger.warn(
-            `FetchError: Server - ${id}:\nData is empty.`
-          );
-          return msg.edit(
-            "해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          this.client.logger.warn(`FetchError: Server - ${id}:\nData is empty.`);
+          return msg.edit("해당 서버 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
         const server = convert.server(data.data);
 
-        const owners = await axios
-          .get<FetchResponse<ServerOwner[]>>(
-            KoreanlistEndPoints.API.serverOwners(id)
-          )
-          .then(({ data }) => data.data);
+        const owners = await axios.get<FetchResponse<ServerOwner[]>>(KoreanlistEndPoints.API.serverOwners(id)).then(({ data }) => data.data);
         if (!owners) {
-          this.client.logger.warn(
-            `FetchError: Server Owners - ${id}:\nData is empty.`
-          );
-          return msg.edit(
-            "해당 서버 관리자 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          this.client.logger.warn(`FetchError: Server Owners - ${id}:\nData is empty.`);
+          return msg.edit("해당 서버 관리자 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
 
-        if (!owners.map((owner) => owner.id).includes(message.author.id))
-          return msg.edit(
-            `**${server.name}** 관리자만 수집 요청이 가능합니다.`
-          );
+        if (!owners.map((owner) => owner.id).includes(message.author.id)) return msg.edit(`**${server.name}** 관리자만 수집 요청이 가능합니다.`);
 
-        const serverDB = await ServerDB.findOneAndUpdate(
-          { id: server.id },
-          {},
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
+        const serverDB = await ServerDB.findOneAndUpdate({ id: server.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
 
         if (serverDB.track) {
-          if (serverDB.stats.length > 0)
-            return msg.edit(`**${server.name}** 수집은 이미 시작되었습니다.`);
-          else
-            return msg.edit(
-              `**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+          if (serverDB.stats.length > 0) return msg.edit(`**${server.name}** 수집은 이미 시작되었습니다.`);
+          else return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
         }
 
         await serverDB.updateOne({ track: true });
@@ -117,34 +84,20 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 서버를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 서버를 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`)]
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Server - ${id}:\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Server - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
               });
           }
         } else {
@@ -152,11 +105,7 @@ export default class extends Command {
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`해당 서버를 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
           });
         }
       });

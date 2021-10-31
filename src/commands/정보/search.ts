@@ -57,30 +57,20 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { query, page }: { query: string; page: number }
-  ) {
+  public async exec(message: Message, { query, page }: { query: string; page: number }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get<FetchResponse<SearchAllResult>>(
-        KoreanlistEndPoints.API.searchAll(query, page)
-      )
+      .get<FetchResponse<SearchAllResult>>(KoreanlistEndPoints.API.searchAll(query, page))
       .then(async ({ data: { data } }) => {
         if (!data) {
           this.client.logger.warn("FetchError: Search list:\nData is empty.");
-          return msg.edit(
-            "검색 리스트의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          return msg.edit("검색 리스트의 응답이 비어있습니다. 다시 시도해주세요.");
         }
-        const serverRes = data.servers.map((rawServer) =>
-          convert.server(rawServer)
-        );
+        const serverRes = data.servers.map((rawServer) => convert.server(rawServer));
         const botRes = data.bots.map((rawBot) => convert.bot(rawBot));
 
-        if (serverRes.length < 1 && botRes.length < 1)
-          return msg.edit(`"${query}"에 대한 전체 검색 결과가 없습니다.`);
+        if (serverRes.length < 1 && botRes.length < 1) return msg.edit(`"${query}"에 대한 전체 검색 결과가 없습니다.`);
         else {
           const paginator = new KRLSPaginator({
             pages: [
@@ -95,20 +85,14 @@ export default class extends Command {
                           : botRes
                               .map(
                                 (bot, index) =>
-                                  `**${
-                                    index + 1 + 16 * (page - 1)
-                                  }.** ${hyperlink(
+                                  `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
                                     `${bot.name}#${bot.tag}`,
                                     KoreanlistEndPoints.URL.bot({
                                       id: bot.id,
                                       flags: bot.flags,
                                       vanity: bot.vanity
                                     })
-                                  )} (${userMention(bot.id)}) ${
-                                    bot.status?.emoji
-                                  } [서버: ${bot.servers ?? "N/A"}] - ❤️${
-                                    bot.votes
-                                  }`
+                                  )} (${userMention(bot.id)}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
                               )
                               .join("\n")
                       }`
@@ -128,18 +112,14 @@ export default class extends Command {
                           : serverRes
                               .map(
                                 (server, index) =>
-                                  `**${
-                                    index + 1 + 16 * (page - 1)
-                                  }.** ${hyperlink(
+                                  `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
                                     server.name,
                                     KoreanlistEndPoints.URL.server({
                                       id: server.id,
                                       flags: server.flags,
                                       vanity: server.vanity
                                     })
-                                  )} [멤버: ${server.members ?? "N/A"}] - ❤️${
-                                    server.votes
-                                  }`
+                                  )} [멤버: ${server.members ?? "N/A"}] - ❤️${server.votes}`
                               )
                               .join("\n")
                       }`
@@ -171,10 +151,7 @@ export default class extends Command {
             });
             if (!serverDB) continue;
 
-            serverDB.keywords.set(
-              query,
-              (serverDB.keywords.get(query) ?? 0) + 1
-            );
+            serverDB.keywords.set(query, (serverDB.keywords.get(query) ?? 0) + 1);
             serverDB.save();
           }
 
@@ -187,48 +164,28 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 검색어를 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 검색어를 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`)]
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Search list - "${query}":\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Search list - "${query}":\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `전체 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`전체 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
               });
           }
         } else {
-          this.client.logger.error(
-            `Error: Search list - "${query}":\n${e.stack}`
-          );
+          this.client.logger.error(`Error: Search list - "${query}":\n${e.stack}`);
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `전체 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`전체 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
           });
         }
       });

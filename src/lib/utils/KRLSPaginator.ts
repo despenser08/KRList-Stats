@@ -16,11 +16,7 @@
  */
 
 import { MessageActionRow, MessageButton } from "discord.js";
-import {
-  ButtonPaginator,
-  ButtonPaginatorOptions,
-  PaginatorDefaultButton
-} from "djs-interaction-util";
+import { ButtonPaginator, ButtonPaginatorOptions, PaginatorDefaultButton } from "djs-interaction-util";
 
 const defaultButton = {
   PREV: PaginatorDefaultButton.PREV.setLabel("이전"),

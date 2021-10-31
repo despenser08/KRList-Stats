@@ -19,31 +19,14 @@ import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import {
-  User,
-  Message,
-  MessageAttachment,
-  GuildMember,
-  SnowflakeUtil
-} from "discord.js";
+import { User, Message, MessageAttachment, GuildMember, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
-import {
-  DiscordEndPoints,
-  KoreanlistEndPoints,
-  KoreanlistOrigin
-} from "../../lib/constants";
+import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
-import {
-  duration,
-  filterDesc,
-  formatNumber,
-  formatTime,
-  getId,
-  lineUserText
-} from "../../lib/utils/format";
+import { duration, filterDesc, formatNumber, formatTime, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
@@ -51,24 +34,10 @@ import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 export default class extends Command {
   constructor() {
     super("봇", {
-      aliases: [
-        "봇",
-        "bot",
-        "botinformation",
-        "botinfo",
-        "봇정보",
-        "botdata",
-        "봇데이터",
-        "botstat",
-        "botstats",
-        "봇스텟",
-        "botstatus",
-        "봇상태"
-      ],
+      aliases: ["봇", "bot", "botinformation", "botinfo", "봇정보", "botdata", "봇데이터", "botstat", "botstats", "봇스텟", "botstatus", "봇상태"],
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
-        usage:
-          '<봇 ["정보" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+        usage: '<봇 ["정보" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -89,17 +58,13 @@ export default class extends Command {
           ],
           prompt: {
             optional: true,
-            retry:
-              '"정보" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
+            retry: '"정보" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
           },
           default: "info"
         },
         {
           id: "limit",
-          type: Argument.union(Argument.range("integer", 1, Infinity), "date", [
-            "all",
-            "전체"
-          ]),
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", ["all", "전체"]),
           prompt: {
             optional: true,
             retry: '"전체" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
@@ -141,34 +106,19 @@ export default class extends Command {
       .then(async ({ data }) => {
         if (!data.data) {
           this.client.logger.warn(`FetchError: Bot - ${id}:\nData is empty.`);
-          return msg.edit(
-            "해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요."
-          );
+          return msg.edit("해당 봇 데이터의 응답이 비어있습니다. 다시 시도해주세요.");
         }
         const bot = convert.bot(data.data);
 
-        const botDB = await BotDB.findOneAndUpdate(
-          { id: bot.id },
-          {},
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
+        const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
 
         let stats = botDB.stats;
         if (limit instanceof Date) {
           const date = moment(limit).startOf("day");
-          const nextDate = endOfDate
-            ? moment(endOfDate).endOf("day")
-            : moment(limit).endOf("day");
+          const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
 
-          stats = stats.filter(
-            (stat) =>
-              stat.updated >= date.toDate() && stat.updated <= nextDate.toDate()
-          );
-        } else if (
-          typeof limit === "number" &&
-          Number.isInteger(limit) &&
-          stats.length > limit
-        ) {
+          stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
+        } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
           stats.reverse();
           stats.splice(limit);
           stats.reverse();
@@ -190,91 +140,37 @@ export default class extends Command {
                   new KRLSEmbed()
                     .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
                     .setURL(KoreanlistEndPoints.URL.bot(urlOptions))
-                    .setThumbnail(
-                      `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(
-                        bot.id
-                      )}`
-                    )
+                    .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
                     .setDescription(
                       `${userMention(bot.id)} | ${
-                        botDB.track
-                          ? botDB.stats.length > 0
-                            ? `${duration(
-                                botDB.stats.length
-                              ).humanize()} 수집됨`
-                            : "수집 대기중"
-                          : "수집되지 않음"
+                        botDB.track ? (botDB.stats.length > 0 ? `${duration(botDB.stats.length).humanize()} 수집됨` : "수집 대기중") : "수집되지 않음"
                       }${
                         bot.url
                           ? ` | ${hyperlink("초대 링크", bot.url)}`
-                          : `\n생성됨: ${hyperlink(
-                              "슬래시 초대 링크",
-                              DiscordEndPoints.URL.inviteBot(bot.id)
-                            )} | ${hyperlink(
+                          : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
                               "초대 링크",
                               DiscordEndPoints.URL.inviteBot(bot.id, false)
                             )}`
-                      }\n${hyperlink(
-                        "하트 추가",
-                        KoreanlistEndPoints.URL.botVote(urlOptions)
-                      )} | ${hyperlink(
+                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(urlOptions))} | ${hyperlink(
                         "신고하기",
                         KoreanlistEndPoints.URL.botReport(urlOptions)
                       )}\n\n${bot.intro}`
                     )
                     .addField("접두사", bot.prefix, true)
-                    .addField(
-                      "서버 수",
-                      bot.servers ? bot.servers.toString() : "N/A",
-                      true
-                    )
+                    .addField("서버 수", bot.servers ? bot.servers.toString() : "N/A", true)
                     .addField("투표 수", bot.votes.toString(), true)
-                    .addField(
-                      "샤드 수",
-                      bot.shards ? bot.shards.toString() : "N/A",
-                      true
-                    )
+                    .addField("샤드 수", bot.shards ? bot.shards.toString() : "N/A", true)
                     .addField("상태", bot.state, true)
                     .addField("라이브러리", bot.lib, true)
-                    .addField(
-                      "생성일",
-                      `${time(created)} (${time(created, "R")})`
-                    )
-                    .addField(
-                      "플래그",
-                      flags.length > 0
-                        ? flags.map((flag) => BotFlagsEnum[flag]).join(", ")
-                        : "없음",
-                      flags.length < 1
-                    )
-                    .addField(
-                      "카테고리",
-                      bot.category.length > 0
-                        ? bot.category.join(", ")
-                        : "없음",
-                      flags.length < 1
-                    )
-                    .addField(
-                      "관리자",
-                      bot.owners.map((owner) => lineUserText(owner)).join("\n")
-                    )
-                    .addField(
-                      "디스코드",
-                      bot.discord
-                        ? `https://discord.gg/${bot.discord}`
-                        : "없음",
-                      !bot.discord
-                    )
+                    .addField("생성일", `${time(created)} (${time(created, "R")})`)
+                    .addField("플래그", flags.length > 0 ? flags.map((flag) => BotFlagsEnum[flag]).join(", ") : "없음", flags.length < 1)
+                    .addField("카테고리", bot.category.length > 0 ? bot.category.join(", ") : "없음", flags.length < 1)
+                    .addField("관리자", bot.owners.map((owner) => lineUserText(owner)).join("\n"))
+                    .addField("디스코드", bot.discord ? `https://discord.gg/${bot.discord}` : "없음", !bot.discord)
                     .addField("웹사이트", bot.web ?? "없음", !bot.web)
                     .addField("Git", bot.git ?? "없음", !bot.git)
                     .setImage(
-                      KoreanlistEndPoints.OG.bot(
-                        bot.id,
-                        bot.name,
-                        bot.intro,
-                        bot.category,
-                        [formatNumber(bot.votes), formatNumber(bot.servers)]
-                      )
+                      KoreanlistEndPoints.OG.bot(bot.id, bot.name, bot.intro, bot.category, [formatNumber(bot.votes), formatNumber(bot.servers)])
                     )
                 ]
               }
@@ -283,9 +179,7 @@ export default class extends Command {
 
           const desc = filterDesc(bot.desc);
           paginator.addPage({
-            embeds: [
-              new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)
-            ]
+            embeds: [new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)]
           });
 
           for (let i = 0; i < desc.images.length; i++)
@@ -310,13 +204,8 @@ export default class extends Command {
           return paginator.run(message, msg);
         } else if (info === "uptime") {
           if (!botDB.track)
-            return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
-          else if (stats.length < 1)
-            return msg.edit(
-              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+            return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
+          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           const status: {
             online: number;
@@ -332,30 +221,17 @@ export default class extends Command {
             offline: 0
           };
 
-          for await (const stat of stats.map((bot) => bot.status))
-            status[stat]++;
+          for await (const stat of stats.map((bot) => bot.status)) status[stat]++;
 
           const chart = await createChart(1080, 1080, {
             type: "pie",
             data: {
-              labels: [
-                "온라인",
-                "자리 비움",
-                "다른 용무 중",
-                "방송 중",
-                "오프라인"
-              ],
+              labels: ["온라인", "자리 비움", "다른 용무 중", "방송 중", "오프라인"],
               datasets: [
                 {
                   label: "Status",
                   data: Object.values(status),
-                  backgroundColor: [
-                    "rgb(59, 165, 93)",
-                    "rgb(208, 143, 30)",
-                    "rgb(221, 64, 68)",
-                    "rgb(88, 53, 147)",
-                    "rgb(116, 127, 141)"
-                  ]
+                  backgroundColor: ["rgb(59, 165, 93)", "rgb(208, 143, 30)", "rgb(221, 64, 68)", "rgb(88, 53, 147)", "rgb(116, 127, 141)"]
                 }
               ]
             },
@@ -368,9 +244,7 @@ export default class extends Command {
                       const rawTime = `${value}분`;
                       const label = ctx.chart.data.labels?.[ctx.dataIndex];
 
-                      return formattedTime !== rawTime
-                        ? `${label}: ${formattedTime} (${rawTime})`
-                        : `${label}: ${rawTime}`;
+                      return formattedTime !== rawTime ? `${label}: ${formattedTime} (${rawTime})` : `${label}: ${rawTime}`;
                     } else return "";
                   },
                   font: { size: 30 }
@@ -382,10 +256,7 @@ export default class extends Command {
                 },
                 subtitle: {
                   display: true,
-                  text: `업타임: ${(
-                    ((stats.length - status.offline) / stats.length) *
-                    100
-                  ).toFixed(2)}%`,
+                  text: `업타임: ${(((stats.length - status.offline) / stats.length) * 100).toFixed(2)}%`,
                   font: { size: 30 }
                 },
                 legend: {
@@ -402,61 +273,37 @@ export default class extends Command {
           });
         } else if (info === "keyword") {
           if (!botDB.track)
-            return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
-          else if (stats.length < 1)
-            return msg.edit(
-              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+            return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
+          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           if (!botDB.keywords || botDB.keywords.size < 1)
-            return msg.edit(
-              `봇에서 검색한 결과 중에 **${bot.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`
-            );
+            return msg.edit(`봇에서 검색한 결과 중에 **${bot.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`);
 
           return msg.edit({
             content: null,
             embeds: [
-              new KRLSEmbed()
-                .setTitle(`${bot.name} 검색 키워드`)
-                .setDescription(
-                  [...botDB.keywords.keys()]
-                    .sort(
-                      (a, b) =>
-                        (botDB.keywords.get(b) ?? 0) -
-                        (botDB.keywords.get(a) ?? 0)
-                    )
-                    .map(
-                      (key, index) =>
-                        `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`
-                    )
-                    .join("\n")
-                )
+              new KRLSEmbed().setTitle(`${bot.name} 검색 키워드`).setDescription(
+                [...botDB.keywords.keys()]
+                  .sort((a, b) => (botDB.keywords.get(b) ?? 0) - (botDB.keywords.get(a) ?? 0))
+                  .map((key, index) => `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`)
+                  .join("\n")
+              )
             ]
           });
         } else {
           if (!botDB.track)
-            return msg.edit(
-              `**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`
-            );
-          else if (stats.length < 1)
-            return msg.edit(
-              `**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`
-            );
+            return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
+          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           const datas: number[] = [];
           const dates: string[] = [];
 
           for await (const stat of stats) {
             datas.push(stat[info] ?? 0);
-            dates.push(
-              formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" })
-            );
+            dates.push(formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" }));
           }
 
-          const color =
-            info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
+          const color = info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "servers" ? "서버" : "투표";
 
           const chart = await createChart(1920, 1080, {
@@ -507,10 +354,7 @@ export default class extends Command {
                         `봇 정보를 ${hyperlink(
                           "API",
                           `${KoreanlistOrigin}/developers/docs/API`
-                        )}로 보내셔야지 봇 서버 정보가 업데이트됩니다.\n${hyperlink(
-                          "SDK",
-                          `${KoreanlistOrigin}/developers/docs/SDK`
-                        )}나 ${hyperlink(
+                        )}로 보내셔야지 봇 서버 정보가 업데이트됩니다.\n${hyperlink("SDK", `${KoreanlistOrigin}/developers/docs/SDK`)}나 ${hyperlink(
                           "직접 API에 요청",
                           `${KoreanlistOrigin}/developers/docs/%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8/%EB%B4%87#%EB%B4%87-%EC%A0%95%EB%B3%B4-%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8`
                         )}을 보내 봇 정보 업데이트가 가능합니다.`
@@ -526,32 +370,20 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 봇을 찾을 수 없습니다. (입력: \`${id}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${id}\`)\n${e}`)]
               });
 
             default:
               this.client.logger.warn(`FetchError: Bot - ${id}:\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
               });
           }
         } else {
@@ -559,11 +391,7 @@ export default class extends Command {
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`해당 봇을 가져오는 중에 에러가 발생하였습니다. (입력: \`${id}\`)\n${e}`)]
           });
         }
       });

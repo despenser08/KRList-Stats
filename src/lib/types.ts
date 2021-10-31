@@ -44,13 +44,7 @@ export interface KoreanlistImageOptions {
   size?: 128 | 256 | 512;
 }
 
-export type BotFlagsString =
-  | "OFFICIAL"
-  | "TRUSTED"
-  | "PARTNERED"
-  | "VERIFIED"
-  | "PREMIUM"
-  | "HACKERTHON";
+export type BotFlagsString = "OFFICIAL" | "TRUSTED" | "PARTNERED" | "VERIFIED" | "PREMIUM" | "HACKERTHON";
 export enum BotFlagsEnum {
   OFFICIAL = "공식",
   TRUSTED = "한국 디스코드 리스트 인증됨",
@@ -60,12 +54,7 @@ export enum BotFlagsEnum {
   HACKERTHON = "제1회 한국 디스코드 리스트 해커톤 우승자"
 }
 
-export type ServerFlagsString =
-  | "OFFICIAL"
-  | "TRUSTED"
-  | "PARTNERED"
-  | "VERIFIED"
-  | "DISCORD_PARTNERED";
+export type ServerFlagsString = "OFFICIAL" | "TRUSTED" | "PARTNERED" | "VERIFIED" | "DISCORD_PARTNERED";
 export enum ServerFlagsEnum {
   OFFICIAL = "공식",
   TRUSTED = "한국 디스코드 리스트 인증됨",
@@ -149,12 +138,7 @@ export interface BotStatus {
   emoji: string;
 }
 
-export type RawBotState =
-  | "ok"
-  | "reported"
-  | "blocked"
-  | "archived"
-  | "private";
+export type RawBotState = "ok" | "reported" | "blocked" | "archived" | "private";
 export enum BotState {
   ok = "정상",
   reported = "일시정지",

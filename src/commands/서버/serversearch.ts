@@ -55,21 +55,15 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { query, page }: { query: string; page: number }
-  ) {
+  public async exec(message: Message, { query, page }: { query: string; page: number }) {
     const msg = await message.reply("잠시만 기다려주세요...");
 
     await axios
-      .get<FetchListResponse<RawServer>>(
-        KoreanlistEndPoints.API.searchServer(query, page)
-      )
+      .get<FetchListResponse<RawServer>>(KoreanlistEndPoints.API.searchServer(query, page))
       .then(async ({ data: { data } }) => {
         const res = data?.data.map((rawServer) => convert.server(rawServer));
 
-        if (!res || res.length < 1)
-          return msg.edit(`"${query}"에 대한 서버 검색 결과가 없습니다.`);
+        if (!res || res.length < 1) return msg.edit(`"${query}"에 대한 서버 검색 결과가 없습니다.`);
         else {
           msg.edit({
             content: null,
@@ -87,9 +81,7 @@ export default class extends Command {
                             flags: server.flags,
                             vanity: server.vanity
                           })
-                        )} [멤버: ${server.members ?? "N/A"}] - ❤️${
-                          server.votes
-                        }`
+                        )} [멤버: ${server.members ?? "N/A"}] - ❤️${server.votes}`
                     )
                     .join("\n")
                 )
@@ -105,10 +97,7 @@ export default class extends Command {
             });
             if (!serverDB) continue;
 
-            serverDB.keywords.set(
-              query,
-              (serverDB.keywords.get(query) ?? 0) + 1
-            );
+            serverDB.keywords.set(query, (serverDB.keywords.get(query) ?? 0) + 1);
             serverDB.save();
           }
 
@@ -121,48 +110,28 @@ export default class extends Command {
             case 404:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `해당 서버를 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`해당 서버를 찾을 수 없습니다. (입력: \`${query}\`)\n${e}`)]
               });
 
             case 400:
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`잘못된 입력입니다. 다시 시도해주세요. (입력: \`${query}\`)\n${e}`)]
               });
 
             default:
-              this.client.logger.warn(
-                `FetchError: Server search list - "${query}":\n${e.stack}`
-              );
+              this.client.logger.warn(`FetchError: Server search list - "${query}":\n${e.stack}`);
               return msg.edit({
                 content: null,
-                embeds: [
-                  new KRLSEmbed().setDescription(
-                    `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-                  )
-                ]
+                embeds: [new KRLSEmbed().setDescription(`서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
               });
           }
         } else {
-          this.client.logger.error(
-            `Error: Server search list - "${query}":\n${e.stack}`
-          );
+          this.client.logger.error(`Error: Server search list - "${query}":\n${e.stack}`);
           Sentry.captureException(e);
           return msg.edit({
             content: null,
-            embeds: [
-              new KRLSEmbed().setDescription(
-                `서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`
-              )
-            ]
+            embeds: [new KRLSEmbed().setDescription(`서버 검색 리스트를 가져오는 중에 에러가 발생하였습니다. (입력: \`${query}\`)\n${e}`)]
           });
         }
       });
