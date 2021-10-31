@@ -33,6 +33,7 @@ export interface KRLSEnv {
   DISCORD_TOKEN: string;
 
   PREFIX: string;
+  OWNERS: string;
 
   DB_HOST: string;
   DB_USERNAME: string;

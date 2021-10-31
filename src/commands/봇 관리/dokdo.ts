@@ -17,7 +17,8 @@
 
 import { Command } from "discord-akairo";
 import type { Message } from "discord.js";
-import { allowDokdoCommand, CommandBlocked, OWNERS } from "../../lib/constants";
+import { allowDokdoCommand, CommandBlocked } from "../../lib/constants";
+import { envParseArray } from "../../lib/env";
 
 export default class extends Command {
   constructor() {
@@ -31,7 +32,8 @@ export default class extends Command {
   }
 
   public async exec(message: Message, { action }: { action?: string }) {
-    if (action && !allowDokdoCommand.includes(action) && !OWNERS.includes(message.author.id)) return message.reply(CommandBlocked.owner);
+    if (action && !allowDokdoCommand.includes(action) && !envParseArray("OWNERS").includes(message.author.id))
+      return message.reply(CommandBlocked.owner);
 
     this.client.dokdo.options.prefix = message.util?.parsed?.prefix;
     this.client.dokdo.owners = [message.author.id];

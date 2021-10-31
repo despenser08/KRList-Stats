@@ -23,7 +23,7 @@ import { Collection, Intents } from "discord.js";
 import Dokdo from "dokdo";
 import { connect } from "mongoose";
 import path from "path";
-import { CommandBlocked, OWNERS } from "../lib/constants";
+import { CommandBlocked } from "../lib/constants";
 import createLogger from "../lib/utils/createLogger";
 import moment from "moment-timezone";
 import { envParseArray, envParseInteger, envParseString } from "../lib/env";
@@ -69,7 +69,7 @@ export default class KRLSClient extends AkairoClient {
       },
       otherwise: ""
     },
-    ignorePermissions: OWNERS
+    ignorePermissions: envParseArray("OWNERS")
   });
 
   public logger = createLogger("BOT");
@@ -77,7 +77,7 @@ export default class KRLSClient extends AkairoClient {
   public dokdo = new CustomDokdo(this, {
     prefix: envParseArray("PREFIX")[0],
     aliases: ["dokdo", "dok", "독도", "evaluate", "eval", "이발", "execute", "exec", "실행"],
-    owners: OWNERS,
+    owners: envParseArray("OWNERS"),
     secrets: [
       envParseString("DISCORD_TOKEN"),
       envParseString("KOREANLIST_TOKEN"),
@@ -97,7 +97,7 @@ export default class KRLSClient extends AkairoClient {
   constructor() {
     super({
       intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-      ownerID: OWNERS
+      ownerID: envParseArray("OWNERS")
     });
   }
 
