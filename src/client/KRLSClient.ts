@@ -30,7 +30,7 @@ import { envParseArray, envParseInteger, envParseString } from "../lib/env";
 import type { Logger } from "winston";
 
 class CustomDokdo extends Dokdo {
-  owners!: string[];
+  owners?: string[];
 }
 
 declare module "discord-akairo" {
