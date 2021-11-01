@@ -31,7 +31,7 @@ import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
-export default class extends Command {
+export default class BotCommand extends Command {
   constructor() {
     super("봇", {
       aliases: ["봇", "bot", "botinformation", "botinfo", "봇정보", "botdata", "봇데이터", "botstat", "botstats", "봇스텟", "botstatus", "봇상태"],

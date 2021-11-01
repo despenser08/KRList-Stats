@@ -18,7 +18,7 @@
 import { Listener } from "discord-akairo";
 import type { Message } from "discord.js";
 
-export default class extends Listener {
+export default class CommandFinishedListener extends Listener {
   constructor() {
     super("commandFinished", {
       emitter: "commandHandler",

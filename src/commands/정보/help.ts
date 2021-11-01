@@ -20,7 +20,7 @@ import type { Message } from "discord.js";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
-export default class extends Command {
+export default class HelpCommand extends Command {
   constructor() {
     super("도움말", {
       aliases: ["도움말", "help", "도움", "헬프", "command", "cmd", "commands", "cmds", "명령어", "커맨드"],

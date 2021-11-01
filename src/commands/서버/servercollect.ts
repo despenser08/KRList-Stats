@@ -27,7 +27,7 @@ import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
-export default class extends Command {
+export default class ServerCollectCommand extends Command {
   constructor() {
     super("서버수집", {
       aliases: ["서버수집", "servercollect", "collectserver", "수집서버", "servertrack", "서버추적"],

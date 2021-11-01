@@ -26,7 +26,7 @@ import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
-export default class extends Command {
+export default class BotListCommand extends Command {
   constructor() {
     super("봇리스트", {
       aliases: ["봇리스트", "botlist"],

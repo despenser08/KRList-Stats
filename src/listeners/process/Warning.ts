@@ -17,7 +17,7 @@
 
 import { Listener } from "discord-akairo";
 
-export default class extends Listener {
+export default class WarningListener extends Listener {
   constructor() {
     super("warning", {
       emitter: "process",

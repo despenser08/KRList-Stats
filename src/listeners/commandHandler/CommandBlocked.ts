@@ -19,7 +19,7 @@ import { Command, Listener } from "discord-akairo";
 import type { Message } from "discord.js";
 import { CommandBlocked } from "../../lib/constants";
 
-export default class extends Listener {
+export default class CommandBlockedListener extends Listener {
   constructor() {
     super("commandBlocked", {
       emitter: "commandHandler",

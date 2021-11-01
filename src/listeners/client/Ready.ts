@@ -19,7 +19,7 @@ import { Listener } from "discord-akairo";
 import { envParseArray } from "../../lib/env";
 import scheduleFetch from "../../lib/scheduleTask";
 
-export default class extends Listener {
+export default class ReadyListener extends Listener {
   constructor() {
     super("ready", { emitter: "client", event: "ready", type: "once" });
   }

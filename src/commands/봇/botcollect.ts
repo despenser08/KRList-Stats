@@ -26,7 +26,7 @@ import { getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
-export default class extends Command {
+export default class BotCollectCommand extends Command {
   constructor() {
     super("봇수집", {
       aliases: ["봇수집", "botcollect", "collectbot", "수집봇", "bottrack", "봇추적"],

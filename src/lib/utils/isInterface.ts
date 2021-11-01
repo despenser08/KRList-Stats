@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export default function <T>(
+export default function isInterface<T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   object: any,
   property: string

@@ -29,7 +29,7 @@ import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
-export default class extends Command {
+export default class SearchCommand extends Command {
   constructor() {
     super("검색", {
       aliases: ["검색", "search", "전체검색", "allsearch"],

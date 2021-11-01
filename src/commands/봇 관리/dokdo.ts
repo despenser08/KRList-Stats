@@ -20,7 +20,7 @@ import type { Message } from "discord.js";
 import { allowDokdoCommand, CommandBlocked } from "../../lib/constants";
 import { envParseArray } from "../../lib/env";
 
-export default class extends Command {
+export default class DokdoCommand extends Command {
   constructor() {
     super("독도", {
       aliases: ["독도", "dokdo", "dok", "evaluate", "eval", "이발", "execute", "exec", "실행"],

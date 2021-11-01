@@ -26,7 +26,7 @@ import { envParseString } from "./env";
 import type { FetchResponse, RawBot, RawServer } from "./types";
 import convert from "./utils/convertRawToType";
 
-export default function (client: AkairoClient) {
+export default function scheduleTask(client: AkairoClient) {
   return schedule.scheduleJob("* * * * *", (date) => {
     BotDB.find({ track: true }).then((bots) => {
       for (const bot of bots)

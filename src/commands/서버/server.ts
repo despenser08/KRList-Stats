@@ -31,7 +31,7 @@ import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
-export default class extends Command {
+export default class ServerCommand extends Command {
   constructor() {
     super("서버", {
       aliases: [

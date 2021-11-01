@@ -19,7 +19,7 @@ import * as Sentry from "@sentry/node";
 import { Command, Listener } from "discord-akairo";
 import type { Message } from "discord.js";
 
-export default class extends Listener {
+export default class ErrorListener extends Listener {
   constructor() {
     super("error", {
       emitter: "commandHandler",

@@ -27,7 +27,7 @@ import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
-export default class extends Command {
+export default class BotSearchCommand extends Command {
   constructor() {
     super("봇검색", {
       aliases: ["봇검색", "botsearch"],

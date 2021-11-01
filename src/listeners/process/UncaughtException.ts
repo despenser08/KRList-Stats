@@ -18,7 +18,7 @@
 import * as Sentry from "@sentry/node";
 import { Listener } from "discord-akairo";
 
-export default class extends Listener {
+export default class UncaughtExceptionListener extends Listener {
   constructor() {
     super("uncaughtException", {
       emitter: "process",
