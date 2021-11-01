@@ -26,7 +26,7 @@ import BotDB from "../../lib/database/models/Bot";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
-import { duration, filterDesc, formatNumber, formatTime, getId, lineUserText } from "../../lib/utils/format";
+import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
@@ -144,7 +144,11 @@ export default class BotCommand extends Command {
                     .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
                     .setDescription(
                       `${userMention(bot.id)} | ${
-                        botDB.track ? (botDB.stats.length > 0 ? `${duration(botDB.stats.length).humanize()} 수집됨` : "수집 대기중") : "수집되지 않음"
+                        botDB.track
+                          ? botDB.stats.length > 0
+                            ? `${moment.duration(botDB.stats.length, "minutes").humanize()} 수집됨`
+                            : "수집 대기중"
+                          : "수집되지 않음"
                       }${
                         bot.url
                           ? ` | ${hyperlink("초대 링크", bot.url)}`
@@ -237,7 +241,7 @@ export default class BotCommand extends Command {
                 datalabels: {
                   formatter: (value, ctx) => {
                     if (value !== 0) {
-                      const formattedTime = duration(value).humanize();
+                      const formattedTime = moment.duration(value, "minutes").humanize();
                       const rawTime = `${value}분`;
                       const label = ctx.chart.data.labels?.[ctx.dataIndex];
 
@@ -297,7 +301,7 @@ export default class BotCommand extends Command {
 
           for await (const stat of stats) {
             datas.push(stat[info] ?? 0);
-            dates.push(formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" }));
+            dates.push(moment(stat.updated).format("YYYY/MM/DD HH:mm"));
           }
 
           const color = info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";

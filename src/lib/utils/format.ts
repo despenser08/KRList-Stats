@@ -17,14 +17,9 @@
 
 import { hyperlink, userMention } from "@discordjs/builders";
 import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
-import moment from "moment-timezone";
 import { KoreanlistEndPoints } from "../constants";
 import type { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
-
-export function formatTime({ date = null, format = "YYYY/MM/DD h:mm:ss A" }: { date?: moment.MomentInput; format?: string } = {}) {
-  return date ? moment(date).format(format) : moment().format(format);
-}
 
 export function formatNumber(value?: number) {
   if (!value) return "0";
@@ -82,10 +77,6 @@ export function filterDesc(text: string) {
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
 
   return { res, images };
-}
-
-export function duration(time: number, unit: moment.unitOfTime.DurationConstructor = "minutes") {
-  return moment.duration(time, unit);
 }
 
 export function getId(data: DiscordUser | GuildMember | Guild | string) {

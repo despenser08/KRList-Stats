@@ -26,7 +26,7 @@ import ServerDB from "../../lib/database/models/Server";
 import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
-import { duration, filterDesc, formatNumber, formatTime, getId, lineUserText } from "../../lib/utils/format";
+import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
@@ -158,7 +158,7 @@ export default class ServerCommand extends Command {
                       `https://discord.gg/${server.invite} | ${
                         serverDB.track
                           ? serverDB.stats.length > 0
-                            ? `${duration(serverDB.stats.length).humanize()} 수집됨`
+                            ? `${moment.duration(serverDB.stats.length, "minutes").humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
                       }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(urlOptions))} | ${hyperlink(
@@ -240,7 +240,7 @@ export default class ServerCommand extends Command {
 
           for await (const stat of stats) {
             datas.push(stat[info] ?? 0);
-            dates.push(formatTime({ date: stat.updated, format: "YYYY/MM/DD HH:mm" }));
+            dates.push(moment(stat.updated).format("YYYY/MM/DD HH:mm"));
           }
 
           const color = info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
