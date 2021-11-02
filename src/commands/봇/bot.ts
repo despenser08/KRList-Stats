@@ -37,7 +37,7 @@ export default class BotCommand extends Command {
       aliases: ["봇", "bot", "botinformation", "botinfo", "봇정보", "botdata", "봇데이터", "botstat", "botstats", "봇스텟", "botstatus", "봇상태"],
       description: {
         content: "해당 봇의 정보를 보여줍니다.",
-        usage: '<봇 ["정보" | "업타임" | "키워드"] | ["투표" | "서버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+        usage: '<봇 ["정보"] | ["서버" | "업타임" | "투표" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -51,14 +51,13 @@ export default class BotCommand extends Command {
           id: "info",
           type: [
             ["info", "정보", "information"],
-            ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["servers", "서버", "server", "guild", "guilds", "길드"],
             ["uptime", "업타임", "status", "상태"],
-            ["keyword", "키워드", "keywords"]
+            ["votes", "투표", "vote", "heart", "hearts", "하트"]
           ],
           prompt: {
             optional: true,
-            retry: '"정보" | "투표" | "서버" | "업타임" | "키워드"를 입력해 주세요.'
+            retry: '"정보" | "투표" | "서버" | "키워드"를 입력해 주세요.'
           },
           default: "info"
         },
@@ -92,7 +91,7 @@ export default class BotCommand extends Command {
       endOfDate
     }: {
       userOrId: User | GuildMember | string;
-      info: "info" | "votes" | "servers" | "uptime" | "keyword";
+      info: "info" | "votes" | "servers" | "uptime";
       limit: "all" | number | Date;
       endOfDate?: Date;
     }
@@ -271,25 +270,6 @@ export default class BotCommand extends Command {
           return msg.edit({
             content: `**${bot.name}** 업타임 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
-          });
-        } else if (info === "keyword") {
-          if (!botDB.track)
-            return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
-          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
-
-          if (!botDB.keywords || botDB.keywords.size < 1)
-            return msg.edit(`봇에서 검색한 결과 중에 **${bot.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`);
-
-          return msg.edit({
-            content: null,
-            embeds: [
-              new KRLSEmbed().setTitle(`${bot.name} 검색 키워드`).setDescription(
-                [...botDB.keywords.keys()]
-                  .sort((a, b) => (botDB.keywords.get(b) ?? 0) - (botDB.keywords.get(a) ?? 0))
-                  .map((key, index) => `**${index + 1}.** ${key} - ${botDB.keywords.get(key)}`)
-                  .join("\n")
-              )
-            ]
           });
         } else {
           if (!botDB.track)

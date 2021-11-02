@@ -21,8 +21,6 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import BotDB from "../../lib/database/models/Bot";
-import ServerDB from "../../lib/database/models/Server";
 import type { FetchResponse, SearchAllResult } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -131,31 +129,7 @@ export default class SearchCommand extends Command {
             ]
           });
 
-          paginator.run(message, msg);
-
-          for (let i = 0; i < botRes.length; i++) {
-            const botDB = await BotDB.findOne({
-              id: botRes[i].id,
-              track: true
-            });
-            if (!botDB) continue;
-
-            botDB.keywords.set(query, (botDB.keywords.get(query) ?? 0) + 1);
-            botDB.save();
-          }
-
-          for (let i = 0; i < serverRes.length; i++) {
-            const serverDB = await ServerDB.findOne({
-              id: serverRes[i].id,
-              track: true
-            });
-            if (!serverDB) continue;
-
-            serverDB.keywords.set(query, (serverDB.keywords.get(query) ?? 0) + 1);
-            serverDB.save();
-          }
-
-          return;
+          return paginator.run(message, msg);
         }
       })
       .catch((e) => {

@@ -37,13 +37,6 @@ class Server {
 
   @prop({ type: () => ServerStats, required: true, default: [] })
   public stats!: ServerStats[];
-
-  @prop({
-    type: () => Number,
-    required: true,
-    default: new Map<string, number>()
-  })
-  public keywords!: Map<string, number>;
 }
 
 export default getModelForClass(Server);

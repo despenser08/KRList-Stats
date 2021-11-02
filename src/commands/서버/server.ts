@@ -50,7 +50,7 @@ export default class ServerCommand extends Command {
       ],
       description: {
         content: "해당 서버의 정보를 보여줍니다.",
-        usage: '<서버 ["정보" | "키워드"] | ["투표" | "멤버" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
+        usage: '<서버 ["정보"] | ["멤버" | "투표" ["전체" | 최근 정보 수 | 날짜 [날짜]]]]>'
       },
       args: [
         {
@@ -64,13 +64,12 @@ export default class ServerCommand extends Command {
           id: "info",
           type: [
             ["info", "정보", "information"],
-            ["votes", "투표", "vote", "heart", "hearts", "하트"],
             ["members", "멤버", "member", "user", "users", "유저"],
-            ["keyword", "키워드", "keywords"]
+            ["votes", "투표", "vote", "heart", "hearts", "하트"]
           ],
           prompt: {
             optional: true,
-            retry: '"정보" | "투표" | "멤버" | "키워드"를 입력해 주세요.'
+            retry: '"정보" | "투표" | "멤버"를 입력해 주세요.'
           },
           default: "info"
         },
@@ -104,7 +103,7 @@ export default class ServerCommand extends Command {
       endOfDate
     }: {
       guildOrId: Guild | string;
-      info: "info" | "votes" | "members" | "keyword";
+      info: "info" | "votes" | "members";
       limit: "all" | number | Date;
       endOfDate?: Date;
     }
@@ -207,27 +206,6 @@ export default class ServerCommand extends Command {
             });
 
           return paginator.run(message, msg);
-        } else if (info === "keyword") {
-          if (!serverDB.track)
-            return msg.edit(
-              `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
-            );
-          else if (stats.length < 1) return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
-
-          if (!serverDB.keywords || serverDB.keywords.size < 1)
-            return msg.edit(`서버에서 검색한 결과 중에 **${server.name}**에 관한 결과가 나오지 않았습니다. 나중에 다시 시도해주세요.`);
-
-          return msg.edit({
-            content: null,
-            embeds: [
-              new KRLSEmbed().setTitle(`${server.name} 검색 키워드`).setDescription(
-                [...serverDB.keywords.keys()]
-                  .sort((a, b) => (serverDB.keywords.get(b) ?? 0) - (serverDB.keywords.get(a) ?? 0))
-                  .map((key, index) => `**${index + 1}.** ${key} - ${serverDB.keywords.get(key)}`)
-                  .join("\n")
-              )
-            ]
-          });
         } else {
           if (!serverDB.track)
             return msg.edit(

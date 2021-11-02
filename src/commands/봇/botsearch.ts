@@ -21,7 +21,6 @@ import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
-import BotDB from "../../lib/database/models/Bot";
 import type { FetchListResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
@@ -64,8 +63,8 @@ export default class BotSearchCommand extends Command {
         const res = data?.data.map((rawBot) => convert.bot(rawBot));
 
         if (!res || res.length < 1) return msg.edit(`"${query}"에 대한 봇 검색 결과가 없습니다.`);
-        else {
-          msg.edit({
+        else
+          return msg.edit({
             content: null,
             embeds: [
               new KRLSEmbed()
@@ -89,17 +88,6 @@ export default class BotSearchCommand extends Command {
                 .setTimestamp()
             ]
           });
-
-          for (let i = 0; i < res.length; i++) {
-            const botDB = await BotDB.findOne({ id: res[i].id, track: true });
-            if (!botDB) continue;
-
-            botDB.keywords.set(query, (botDB.keywords.get(query) ?? 0) + 1);
-            botDB.save();
-          }
-
-          return;
-        }
       })
       .catch((e) => {
         if (isInterface<AxiosError>(e, "response")) {
