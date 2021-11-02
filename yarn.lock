@@ -622,10 +622,10 @@ discord.js@^13.3.1:
     node-fetch "^2.6.1"
     ws "^8.2.3"
 
-djs-interaction-util@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.9.tgz#86f0a7cddfc2e8ab72af87b0a78a34438410b5d6"
-  integrity sha512-FpeZ5ZU78qmeFJ/wxZUn10KytlrSZTlpREdC+ioYQAV6BzfRKmNLVQCb5LYmO1bmdtYGglA/rpoYbR0tAd/Ncg==
+djs-interaction-util@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.1.10.tgz#bfa64bd5403c152b1d7f36d2f1e09c2d85869626"
+  integrity sha512-KgsIQfyv6uWLZaspeTiRc3fANUBkFP9d2spGyioUdDiNx04ekJXC/QpqqLYZyYkLeqDv9nupmhnDHM4T822E9w==
 
 doctrine@^3.0.0:
   version "3.0.0"
