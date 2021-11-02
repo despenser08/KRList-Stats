@@ -3,22 +3,23 @@ version: "3"
 services:
   bot:
     image: ghcr.io/despenser08/krlist-stats:latest
-    restart: unless-stopped
-    env_file: .env
-    environment:
-      DB_HOST: db
     volumes:
       - ./logs:/usr/src/bot/logs
     depends_on:
       - db
+    env_file: .env
+    environment:
+      DB_HOST: db
+    restart: unless-stopped
+
   db:
     image: mongo
-    restart: unless-stopped
+    ports:
+      - ${DB_PORT}:27017
+    volumes:
+      - ./db:/data/db
     env_file: .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - ./db:/data/db
-    ports:
-      - ${DB_PORT}:27017
+    restart: unless-stopped
