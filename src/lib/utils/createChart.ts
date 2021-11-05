@@ -24,7 +24,7 @@ import path from "path";
 export default function createChart(
   width: number,
   height: number,
-  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint)[], unknown>,
+  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint | null)[], unknown>,
   profile?: string
 ) {
   const chart = new ChartJSNodeCanvas({
@@ -35,7 +35,8 @@ export default function createChart(
       // chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.set("font", { family: "Noto Sans KR" });
       chart.defaults.color = "#000";
-    }
+    },
+    backgroundColour: "white"
   });
   chart.registerFont(path.join(__dirname, "..", "..", "..", "assets", "fonts", "NotoSansKR-Regular.otf"), {
     family: "Noto Sans KR"
@@ -44,31 +45,18 @@ export default function createChart(
   if (profile) {
     if (!configuration.plugins) configuration.plugins = [];
 
-    configuration.plugins.unshift(
-      {
-        id: "background",
-        beforeDraw: (chart) => {
-          const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
+    configuration.plugins.push({
+      id: "profile",
+      afterDraw: (chart) => {
+        const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
+        canvas.loadImage(profile).then((avatar) => {
           ctx.save();
-          ctx.globalCompositeOperation = "destination-over";
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, chart.width, chart.height);
+          ctx.globalAlpha = 0.5;
+          ctx.drawImage(avatar, width - 5, height - 5, 20, 20);
           ctx.restore();
-        }
-      },
-      {
-        id: "profile",
-        beforeDraw: (chart) => {
-          const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
-          canvas.loadImage(profile).then((avatar) => {
-            ctx.save();
-            ctx.globalAlpha = 0.5;
-            ctx.drawImage(avatar, width - 5, height - 5, 20, 20);
-            ctx.restore();
-          });
-        }
+        });
       }
-    );
+    });
   }
 
   return chart.renderToBuffer(configuration, "image/png");
