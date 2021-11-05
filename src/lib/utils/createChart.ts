@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import canvas from "canvas";
 import type { BubbleDataPoint, ChartConfiguration, ChartTypeRegistry, ScatterDataPoint } from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import "chartjs-plugin-datalabels";
@@ -39,21 +38,6 @@ export default function createChart(
   });
   chart.registerFont(path.join(__dirname, "..", "..", "..", "assets", "fonts", "NotoSansKR-Regular.otf"), {
     family: "Noto Sans KR"
-  });
-
-  if (!configuration.plugins) configuration.plugins = [];
-
-  configuration.plugins.push({
-    id: "watermark",
-    afterDraw: async (chart) => {
-      const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
-      const avatar = await canvas.loadImage(path.join(__dirname, "..", "..", "..", "assets", "images", "profile.png"));
-
-      ctx.save();
-      ctx.globalAlpha = 0.5;
-      ctx.drawImage(avatar, width - 10, height - 10, 20, 20);
-      ctx.restore();
-    }
   });
 
   return chart.renderToBuffer(configuration, "image/png");
