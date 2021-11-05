@@ -52,7 +52,7 @@ export default function createChart(
         canvas.loadImage(profile).then((avatar) => {
           ctx.save();
           ctx.globalAlpha = 0.5;
-          ctx.drawImage(avatar, width - 5, height - 5, 20, 20);
+          ctx.drawImage(avatar, width + 10, height + 10, 20, 20);
           ctx.restore();
         });
       }
