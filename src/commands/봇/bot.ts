@@ -269,7 +269,7 @@ export default class BotCommand extends Command {
                 }
               }
             },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`
+            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id, { format: "png", size: 512 })}`
           );
 
           return msg.edit({
@@ -327,7 +327,7 @@ export default class BotCommand extends Command {
                 scales: { yAxes: { ticks: { precision: 0 } } }
               }
             },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`
+            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id, { format: "png", size: 512 })}`
           );
 
           return msg

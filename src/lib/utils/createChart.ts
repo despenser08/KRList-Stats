@@ -47,14 +47,14 @@ export default function createChart(
 
     configuration.plugins.push({
       id: "profile",
-      afterDraw: (chart) => {
+      afterDraw: async (chart) => {
         const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
-        canvas.loadImage(profile).then((avatar) => {
-          ctx.save();
-          ctx.globalAlpha = 0.5;
-          ctx.drawImage(avatar, width + 10, height + 10, 20, 20);
-          ctx.restore();
-        });
+        const avatar = await canvas.loadImage(profile);
+
+        ctx.save();
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(avatar, width - 10, height - 10, 20, 20);
+        ctx.restore();
       }
     });
   }

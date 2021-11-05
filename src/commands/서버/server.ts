@@ -259,7 +259,7 @@ export default class ServerCommand extends Command {
                 scales: { yAxes: { ticks: { precision: 0 } } }
               }
             },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(server.id)}`
+            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(server.id, { format: "png", size: 512 })}`
           );
 
           return msg.edit({
