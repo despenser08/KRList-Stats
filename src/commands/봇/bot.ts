@@ -223,54 +223,49 @@ export default class BotCommand extends Command {
 
           for await (const stat of stats.map((bot) => bot.status)) status[stat]++;
 
-          const chart = await createChart(
-            1080,
-            1080,
-            {
-              type: "pie",
-              data: {
-                labels: ["온라인", "자리 비움", "다른 용무 중", "방송 중", "오프라인"],
-                datasets: [
-                  {
-                    label: "Status",
-                    data: Object.values(status),
-                    backgroundColor: ["rgb(59, 165, 93)", "rgb(208, 143, 30)", "rgb(221, 64, 68)", "rgb(88, 53, 147)", "rgb(116, 127, 141)"]
-                  }
-                ]
-              },
-              options: {
-                plugins: {
-                  datalabels: {
-                    formatter: (value, ctx) => {
-                      if (value !== 0) {
-                        const formattedTime = moment.duration(value, "minutes").humanize();
-                        const rawTime = `${value}분`;
-                        const label = ctx.chart.data.labels?.[ctx.dataIndex];
+          const chart = await createChart(1080, 1080, {
+            type: "pie",
+            data: {
+              labels: ["온라인", "자리 비움", "다른 용무 중", "방송 중", "오프라인"],
+              datasets: [
+                {
+                  label: "Status",
+                  data: Object.values(status),
+                  backgroundColor: ["rgb(59, 165, 93)", "rgb(208, 143, 30)", "rgb(221, 64, 68)", "rgb(88, 53, 147)", "rgb(116, 127, 141)"]
+                }
+              ]
+            },
+            options: {
+              plugins: {
+                datalabels: {
+                  formatter: (value, ctx) => {
+                    if (value !== 0) {
+                      const formattedTime = moment.duration(value, "minutes").humanize();
+                      const rawTime = `${value}분`;
+                      const label = ctx.chart.data.labels?.[ctx.dataIndex];
 
-                        return formattedTime !== rawTime ? `${label}: ${formattedTime} (${rawTime})` : `${label}: ${rawTime}`;
-                      } else return "";
-                    },
-                    font: { size: 30 }
+                      return formattedTime !== rawTime ? `${label}: ${formattedTime} (${rawTime})` : `${label}: ${rawTime}`;
+                    } else return "";
                   },
-                  title: {
-                    display: true,
-                    text: `${bot.name} 업타임`,
-                    font: { size: 40 }
-                  },
-                  subtitle: {
-                    display: true,
-                    text: `업타임: ${(((stats.length - status.offline) / stats.length) * 100).toFixed(2)}%`,
-                    font: { size: 30 }
-                  },
-                  legend: {
-                    position: "bottom",
-                    labels: { boxHeight: 3, font: { size: 20 } }
-                  }
+                  font: { size: 30 }
+                },
+                title: {
+                  display: true,
+                  text: `${bot.name} 업타임`,
+                  font: { size: 40 }
+                },
+                subtitle: {
+                  display: true,
+                  text: `업타임: ${(((stats.length - status.offline) / stats.length) * 100).toFixed(2)}%`,
+                  font: { size: 30 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
                 }
               }
-            },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id, { format: "png", size: 512 })}`
-          );
+            }
+          });
 
           return msg.edit({
             content: `**${bot.name}** 업타임 차트입니다.`,
@@ -292,43 +287,38 @@ export default class BotCommand extends Command {
           const color = info === "servers" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "servers" ? "서버" : "투표";
 
-          const chart = await createChart(
-            1920,
-            1080,
-            {
-              type: "line",
-              data: {
-                labels: dates,
-                datasets: [
-                  {
-                    label: `${statName} 수`,
-                    data: datas,
-                    backgroundColor: [color],
-                    borderColor: [color],
-                    borderWidth: 5,
-                    pointRadius: 0,
-                    tension: 0.1
-                  }
-                ]
-              },
-              options: {
-                plugins: {
-                  title: {
-                    display: true,
-                    text: `${bot.name} ${statName} 수`,
-                    font: { size: 40 }
-                  },
-                  legend: {
-                    position: "bottom",
-                    labels: { boxHeight: 3, font: { size: 20 } }
-                  },
-                  datalabels: { display: false }
-                },
-                scales: { yAxes: { ticks: { precision: 0 } } }
-              }
+          const chart = await createChart(1920, 1080, {
+            type: "line",
+            data: {
+              labels: dates,
+              datasets: [
+                {
+                  label: `${statName} 수`,
+                  data: datas,
+                  backgroundColor: [color],
+                  borderColor: [color],
+                  borderWidth: 5,
+                  pointRadius: 0,
+                  tension: 0.1
+                }
+              ]
             },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id, { format: "png", size: 512 })}`
-          );
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `${bot.name} ${statName} 수`,
+                  font: { size: 40 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
+                },
+                datalabels: { display: false }
+              },
+              scales: { yAxes: { ticks: { precision: 0 } } }
+            }
+          });
 
           return msg
             .edit({

@@ -24,8 +24,7 @@ import path from "path";
 export default function createChart(
   width: number,
   height: number,
-  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint | null)[], unknown>,
-  profile?: string
+  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint | null)[], unknown>
 ) {
   const chart = new ChartJSNodeCanvas({
     width,
@@ -42,22 +41,20 @@ export default function createChart(
     family: "Noto Sans KR"
   });
 
-  if (profile) {
-    if (!configuration.plugins) configuration.plugins = [];
+  if (!configuration.plugins) configuration.plugins = [];
 
-    configuration.plugins.push({
-      id: "profile",
-      afterDraw: async (chart) => {
-        const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
-        const avatar = await canvas.loadImage(profile);
+  configuration.plugins.push({
+    id: "watermark",
+    afterDraw: async (chart) => {
+      const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
+      const avatar = await canvas.loadImage(path.join(__dirname, "..", "..", "..", "assets", "images", "profile.png"));
 
-        ctx.save();
-        ctx.globalAlpha = 0.5;
-        ctx.drawImage(avatar, width - 10, height - 10, 20, 20);
-        ctx.restore();
-      }
-    });
-  }
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(avatar, width - 10, height - 10, 20, 20);
+      ctx.restore();
+    }
+  });
 
   return chart.renderToBuffer(configuration, "image/png");
 }

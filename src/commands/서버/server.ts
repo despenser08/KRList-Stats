@@ -224,43 +224,38 @@ export default class ServerCommand extends Command {
           const color = info === "members" ? "rgb(51, 102, 255)" : "rgb(255, 0, 0)";
           const statName = info === "members" ? "멤버" : "투표";
 
-          const chart = await createChart(
-            1920,
-            1080,
-            {
-              type: "line",
-              data: {
-                labels: dates,
-                datasets: [
-                  {
-                    label: `${statName} 수`,
-                    data: datas,
-                    backgroundColor: [color],
-                    borderColor: [color],
-                    borderWidth: 5,
-                    pointRadius: 0,
-                    tension: 0.1
-                  }
-                ]
-              },
-              options: {
-                plugins: {
-                  title: {
-                    display: true,
-                    text: `${server.name} ${statName} 수`,
-                    font: { size: 40 }
-                  },
-                  legend: {
-                    position: "bottom",
-                    labels: { boxHeight: 3, font: { size: 20 } }
-                  },
-                  datalabels: { display: false }
-                },
-                scales: { yAxes: { ticks: { precision: 0 } } }
-              }
+          const chart = await createChart(1920, 1080, {
+            type: "line",
+            data: {
+              labels: dates,
+              datasets: [
+                {
+                  label: `${statName} 수`,
+                  data: datas,
+                  backgroundColor: [color],
+                  borderColor: [color],
+                  borderWidth: 5,
+                  pointRadius: 0,
+                  tension: 0.1
+                }
+              ]
             },
-            `${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(server.id, { format: "png", size: 512 })}`
-          );
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `${server.name} ${statName} 수`,
+                  font: { size: 40 }
+                },
+                legend: {
+                  position: "bottom",
+                  labels: { boxHeight: 3, font: { size: 20 } }
+                },
+                datalabels: { display: false }
+              },
+              scales: { yAxes: { ticks: { precision: 0 } } }
+            }
+          });
 
           return msg.edit({
             content: `**${server.name}** ${statName} 차트입니다.`,
