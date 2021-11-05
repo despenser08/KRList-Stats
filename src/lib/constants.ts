@@ -29,7 +29,7 @@ export const KoreanlistEndPoints = {
     static root = "https://og.kbots.link";
     static generate(id: string, name: string, bio: string, tags: string[], stats: string[], type: "bot" | "server") {
       const u = new URL(this.root);
-      u.pathname = name;
+      u.pathname = name + ".png";
       u.searchParams.append(
         "image",
         KoreanlistOrigin +
