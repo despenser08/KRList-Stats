@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import canvas from "canvas";
 import type { BubbleDataPoint, ChartConfiguration, ChartTypeRegistry, ScatterDataPoint } from "chart.js";
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import "chartjs-plugin-datalabels";
@@ -23,7 +24,8 @@ import path from "path";
 export default function createChart(
   width: number,
   height: number,
-  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint)[], unknown>
+  configuration: ChartConfiguration<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint)[], unknown>,
+  profile?: string
 ) {
   const chart = new ChartJSNodeCanvas({
     width,
@@ -39,6 +41,23 @@ export default function createChart(
   chart.registerFont(path.join(__dirname, "..", "..", "..", "assets", "fonts", "NotoSansKR-Regular.otf"), {
     family: "Noto Sans KR"
   });
+
+  if (profile) {
+    if (!configuration.plugins) configuration.plugins = [];
+
+    configuration.plugins.unshift({
+      id: "profile",
+      beforeDraw: (chart) => {
+        const ctx = chart.canvas.getContext("2d") as canvas.CanvasRenderingContext2D;
+        canvas.loadImage(profile).then((avatar) => {
+          ctx.save();
+          ctx.globalAlpha = 0.5;
+          ctx.drawImage(avatar, width - 5, height - 5, 20, 20);
+          ctx.restore();
+        });
+      }
+    });
+  }
 
   return chart.renderToBuffer(configuration, "image/png");
 }
