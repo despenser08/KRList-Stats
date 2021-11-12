@@ -17,6 +17,7 @@
 
 import { Argument, Command, Category } from "discord-akairo";
 import type { Message } from "discord.js";
+import { botDescription } from "../../lib/constants";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
@@ -48,8 +49,9 @@ export default class HelpCommand extends Command {
         embeds: [
           new KRLSEmbed()
             .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .setDescription(
-              `**별칭**: ${cmdOrCtgry.aliases ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ") : "별칭 없음"}\n**설명**: ${
+              `${botDescription}\n\n**별칭**: ${cmdOrCtgry.aliases ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ") : "별칭 없음"}\n**설명**: ${
                 cmdOrCtgry.description.content ?? "설명 없음"
               }\n**사용법**: ${`${message.util?.parsed?.prefix}${cmdOrCtgry} ${cmdOrCtgry.description.usage ?? ""}` ?? "사용법 없음"}`
             )
@@ -62,10 +64,12 @@ export default class HelpCommand extends Command {
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
             .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .setDescription(
-              cmdOrCtgry
-                .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${cmd.id}**`)
-                .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
+              `${botDescription}\n\n${
+                cmdOrCtgry
+                  .filter((cmd) => cmd.aliases.length > 0)
+                  .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
+                  .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
+              }`
             )
         ]
       });
@@ -79,11 +83,12 @@ export default class HelpCommand extends Command {
           new KRLSEmbed()
             .setTitle("도움말")
             .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
+            .setDescription(botDescription)
             .addField(
               category.id,
               category
                 .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${cmd.id}**`)
+                .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
                 .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
             )
         ]

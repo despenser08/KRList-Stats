@@ -121,18 +121,6 @@ export const KoreanlistEndPoints = {
   }
 };
 
-export const allowDokdoCommand = ["docs", "djs"];
-
-export enum Colors {
-  PRIMARY = "#7070FB"
-}
-
-export enum CommandBlocked {
-  owner = "봇 관리자 전용 명령어입니다.",
-  guild = "서버 전용 명령어입니다.",
-  dm = "DM 전용 명령어입니다."
-}
-
 export const DiscordOrigin = "https://discord.com";
 export const DiscordEndPoints = {
   URL: class {
@@ -141,3 +129,14 @@ export const DiscordEndPoints = {
     }
   }
 };
+
+export const botDescription = "한국 디스코드 리스트의 스텟을 확인하세요.";
+export const allowDokdoCommand = ["docs", "djs"];
+export enum Colors {
+  PRIMARY = "#7070FB"
+}
+export enum CommandBlocked {
+  owner = "봇 관리자 전용 명령어입니다.",
+  guild = "서버 전용 명령어입니다.",
+  dm = "DM 전용 명령어입니다."
+}
