@@ -30,7 +30,7 @@ import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 export default class ServerCollectCommand extends Command {
   constructor() {
     super("서버수집", {
-      aliases: ["서버수집", "servercollect", "collectserver", "수집서버", "servertrack", "서버추적"],
+      aliases: ["서버수집", "servercollect", "collectserver", "servertrack", "서버추적"],
       description: {
         content: "해당 서버의 정보를 수집합니다.",
         usage: "<서버>"

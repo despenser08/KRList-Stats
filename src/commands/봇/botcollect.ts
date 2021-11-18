@@ -29,7 +29,7 @@ import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 export default class BotCollectCommand extends Command {
   constructor() {
     super("봇수집", {
-      aliases: ["봇수집", "botcollect", "collectbot", "수집봇", "bottrack", "봇추적"],
+      aliases: ["봇수집", "botcollect", "collectbot", "bottrack", "봇추적"],
       description: {
         content: "해당 봇의 정보를 수집합니다.",
         usage: "<봇>"
