@@ -124,7 +124,7 @@ export const KoreanlistEndPoints = {
 export const DiscordOrigin = "https://discord.com";
 export const DiscordEndPoints = {
   URL: class {
-    static inviteBot(id: string, slash = true, perms = Permissions.ALL) {
+    static inviteBot(id: string, slash = true, perms = Permissions.DEFAULT) {
       return `${DiscordOrigin}/api/oauth2/authorize?client_id=${id}&permissions=${perms}&scope=bot${slash ? "%20applications.commands" : ""}`;
     }
   }
