@@ -24,7 +24,7 @@
   "dependencies": {
     "@typegoose/typegoose": "^8.3.0",
     "axios": "^0.24.0",
-    "chart.js": "^3.5.1",
+    "chart.js": "^3.6.0",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "https://github.com/discord-akairo/discord-akairo#master",
