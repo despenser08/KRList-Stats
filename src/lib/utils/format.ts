@@ -15,32 +15,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import moment from "moment-timezone";
-import { TIMEZONE } from "../../config";
-
-export function formatTime({
-  date = null,
-  format = "YYYY/MM/DD hh:mm:ss A",
-  timezone = TIMEZONE
-} = {}) {
-  return date
-    ? moment(date).tz(timezone).format(format)
-    : moment.tz(timezone).format(format);
-}
+import { hyperlink, userMention } from "@discordjs/builders";
+import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
+import { KoreanlistEndPoints } from "../constants";
+import type { ImageOptions, BotOwner, User, ServerOwner } from "../types";
+import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatNumber(value?: number) {
-  if (!value && value !== 0) return "N/A";
-
+  if (!value) return "0";
   const suffixes = ["", "만", "억", "조", "해"];
   const suffixNum = Math.floor(("" + value).length / 4);
-  let shortValue: string | number = parseFloat(
-    (suffixNum != 0 ? value / Math.pow(10000, suffixNum) : value).toPrecision(2)
-  );
+  let shortValue: string | number = parseFloat((suffixNum != 0 ? value / Math.pow(10000, suffixNum) : value).toPrecision(2));
   if (shortValue % 1 != 0) {
     shortValue = shortValue.toFixed(1);
   }
   if (suffixNum === 1 && shortValue < 1) return Number(shortValue) * 10 + "천";
+  else if (shortValue === 1000) return "1천";
   return shortValue + suffixes[suffixNum];
+}
+
+export function makeImageURL(root: string, { format = "gif", size = 512 }: ImageOptions = { format: "gif", size: 512 }): string {
+  return `${root}.${format}?size=${size}`;
+}
+
+export function makeBotURL({ id, vanity, flags = new BotFlags(0) }: { id: string; flags?: BotFlags; vanity?: string }) {
+  return `/bots/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
+}
+
+export function makeServerURL({ id, vanity, flags = new ServerFlags(0) }: { id: string; flags?: ServerFlags; vanity?: string }) {
+  return `/servers/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
+}
+
+export function makeUserURL({ id }: { id: string }) {
+  return `/users/${id}`;
+}
+
+export function lineUserText(user?: User | BotOwner | ServerOwner) {
+  if (!user) return null;
+
+  return `${hyperlink(
+    `${user.username}#${user.tag}`,
+    KoreanlistEndPoints.URL.user({
+      id: user.id
+    })
+  )} (${userMention(user.id)})`;
 }
 
 export function filterDesc(text: string) {
@@ -53,13 +71,14 @@ export function filterDesc(text: string) {
       const url = image.replace(imageRegex, "$1");
       images.push(url);
 
-      return `[[봇 설명 이미지 #${images.length}]](${url})`;
+      return hyperlink(`[설명 이미지 #${images.length}]`, url);
     })
-    .replace(
-      /^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm,
-      "\n"
-    )
+    .replace(/^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm, "\n")
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
 
   return { res, images };
+}
+
+export function getId(data: DiscordUser | GuildMember | Guild | string) {
+  return encodeURIComponent(typeof data === "object" && "id" in data ? data.id : data);
 }

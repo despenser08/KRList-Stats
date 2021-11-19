@@ -15,18 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Snowflake } from "discord-api-types";
+import { Listener } from "discord-akairo";
+import type { Message } from "discord.js";
 
-export default class CustomEmoji extends String {
-  public id: Snowflake;
-  public name: string;
-  public animated: boolean;
+export default class CommandFinishedListener extends Listener {
+  constructor() {
+    super("commandFinished", {
+      emitter: "commandHandler",
+      event: "commandFinished"
+    });
+  }
 
-  constructor(id: string, name: string, animated = false) {
-    super(`<${animated ? "a" : ""}:${name}:${id}>`);
-
-    this.id = id;
-    this.name = name;
-    this.animated = animated;
+  public async exec(message: Message) {
+    const transaction = this.client.transactions.get(message.id);
+    if (transaction) {
+      transaction.setStatus("success");
+      transaction.finish();
+      this.client.transactions.delete(message.id);
+    }
   }
 }

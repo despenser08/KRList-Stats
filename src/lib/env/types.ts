@@ -15,32 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import type { RawBotStatus } from "../../types";
+export type BooleanString = "true" | "false";
+export type IntegerString = `${bigint}`;
 
-class BotStats {
-  @prop({ required: true })
-  public updated!: Date;
+export type EnvAny = keyof KRLSEnv;
+export type EnvString = {
+  [K in EnvAny]: KRLSEnv[K] extends BooleanString | IntegerString ? never : K;
+}[EnvAny];
+export type EnvBoolean = {
+  [K in EnvAny]: KRLSEnv[K] extends BooleanString ? K : never;
+}[EnvAny];
+export type EnvInteger = {
+  [K in EnvAny]: KRLSEnv[K] extends IntegerString ? K : never;
+}[EnvAny];
 
-  @prop({ required: true })
-  public votes!: number;
+export interface KRLSEnv {
+  DISCORD_TOKEN: string;
 
-  @prop()
-  public servers?: number;
+  PREFIX: string;
+  OWNERS: string;
 
-  @prop({ required: true })
-  public status!: RawBotStatus;
+  DB_HOST: string;
+  DB_USERNAME: string;
+  DB_PASSWORD: string;
+  DB_PORT: IntegerString;
+  DB_NAME: string;
+
+  SHELL: string;
+
+  KOREANLIST_TOKEN: string;
+
+  SENTRY_DSN: string;
 }
-
-class Bot {
-  @prop({ required: true, unique: true })
-  public id!: string;
-
-  @prop({ required: true, default: false })
-  public track!: boolean;
-
-  @prop({ type: () => BotStats, required: true, default: [] })
-  public stats!: BotStats[];
-}
-
-export default getModelForClass(Bot);

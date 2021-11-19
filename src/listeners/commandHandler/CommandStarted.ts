@@ -15,32 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import type { RawBotStatus } from "../../types";
+import * as Sentry from "@sentry/node";
+import { Command, Listener } from "discord-akairo";
+import type { Message } from "discord.js";
 
-class BotStats {
-  @prop({ required: true })
-  public updated!: Date;
+export default class CommandStartedListener extends Listener {
+  constructor() {
+    super("commandStarted", {
+      emitter: "commandHandler",
+      event: "commandStarted"
+    });
+  }
 
-  @prop({ required: true })
-  public votes!: number;
-
-  @prop()
-  public servers?: number;
-
-  @prop({ required: true })
-  public status!: RawBotStatus;
+  public async exec(message: Message, command: Command) {
+    return this.client.transactions.set(
+      message.id,
+      Sentry.startTransaction({
+        op: `command_${command.id}`,
+        name: `명령어 - ${command.id}`,
+        data: {
+          message: message.content,
+          author: message.author.id
+        }
+      })
+    );
+  }
 }
-
-class Bot {
-  @prop({ required: true, unique: true })
-  public id!: string;
-
-  @prop({ required: true, default: false })
-  public track!: boolean;
-
-  @prop({ type: () => BotStats, required: true, default: [] })
-  public stats!: BotStats[];
-}
-
-export default getModelForClass(Bot);

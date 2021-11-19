@@ -16,18 +16,18 @@
  */
 
 import { Command, Listener } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { CommandBlocked } from "../../lib/constants";
 
-export default class extends Listener {
-  public constructor() {
+export default class CommandBlockedListener extends Listener {
+  constructor() {
     super("commandBlocked", {
       emitter: "commandHandler",
       event: "commandBlocked"
     });
   }
 
-  public async exec(message: Message, _: Command, reason: string) {
-    if (CommandBlocked[reason]) return message.reply(CommandBlocked[reason]);
+  public async exec(message: Message, _: Command, reason: keyof typeof CommandBlocked) {
+    if (CommandBlocked[reason]) message.reply(CommandBlocked[reason]);
   }
 }

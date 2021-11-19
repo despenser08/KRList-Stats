@@ -15,32 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import type { RawBotStatus } from "../../types";
+// https://github.com/skyra-project/skyra
 
-class BotStats {
-  @prop({ required: true })
-  public updated!: Date;
-
-  @prop({ required: true })
-  public votes!: number;
-
-  @prop()
-  public servers?: number;
-
-  @prop({ required: true })
-  public status!: RawBotStatus;
-}
-
-class Bot {
-  @prop({ required: true, unique: true })
-  public id!: string;
-
-  @prop({ required: true, default: false })
-  public track!: boolean;
-
-  @prop({ type: () => BotStats, required: true, default: [] })
-  public stats!: BotStats[];
-}
-
-export default getModelForClass(Bot);
+export * from "./types";
+export * from "./utils";

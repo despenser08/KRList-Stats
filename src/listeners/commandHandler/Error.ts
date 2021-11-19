@@ -15,11 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as Sentry from "@sentry/node";
 import { Command, Listener } from "discord-akairo";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 
-export default class extends Listener {
-  public constructor() {
+export default class ErrorListener extends Listener {
+  constructor() {
     super("error", {
       emitter: "commandHandler",
       event: "error"
@@ -27,12 +28,17 @@ export default class extends Listener {
   }
 
   public async exec(error: Error, message: Message, command: Command) {
-    this.client.logger.error(
-      `Requested: "${message.content}"\nError on "${command}" command: ${error.message}\n${error.stack}`
-    );
+    this.client.logger.error(`CommandError: Command - ${command} | Request - "${message.content}"\n${error.stack}`);
+    Sentry.captureException(error);
 
-    return message.reply(
-      `\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n${error}`
-    );
+    const transaction = this.client.transactions.get(message.id);
+    if (transaction) {
+      transaction.setStatus("error");
+      transaction.setData("error", error);
+      transaction.finish();
+      this.client.transactions.delete(message.id);
+    }
+
+    return message.reply(`\`${command}\` 명령어를 처리하는 와중에 오류가 발생하였습니다.\n\`\`\`\n${error.stack}\n\`\`\``);
   }
 }

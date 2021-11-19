@@ -1,15 +1,12 @@
 {
+  "extends": "@sapphire/ts-config",
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
-    "sourceMap": true,
+    "target": "ESNext",
+    "removeComments": true,
     "outDir": "./dist",
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "declaration": false,
+    "declarationMap": false,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"]
 }

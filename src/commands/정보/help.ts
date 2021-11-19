@@ -16,37 +16,24 @@
  */
 
 import { Argument, Command, Category } from "discord-akairo";
-import { Message, Util } from "discord.js";
-import KRBSEmbed from "../../lib/utils/KRBSEmbed";
-import KRBSPaginator from "../../lib/utils/KRBSPaginator";
+import type { Message } from "discord.js";
+import { botDescription } from "../../lib/constants";
+import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
-export default class extends Command {
-  public constructor() {
+export default class HelpCommand extends Command {
+  constructor() {
     super("도움말", {
-      aliases: [
-        "도움말",
-        "help",
-        "도움",
-        "헬프",
-        "command",
-        "cmd",
-        "commands",
-        "cmds",
-        "명령어",
-        "커맨드"
-      ],
+      aliases: ["도움말", "help", "도움", "헬프", "command", "cmd", "commands", "cmds", "명령어", "커맨드"],
       channel: "guild",
-      fullDescription: {
+      description: {
         content: "도움말을 보여줍니다.",
         usage: "[명령어 | 카테고리]"
       },
       args: [
         {
           id: "cmdOrCtgry",
-          type: Argument.union(
-            "commandAlias",
-            (_, str) => this.handler.categories.get(str) || null
-          ),
+          type: Argument.union("commandAlias", (_, str) => this.handler.categories.get(str) ?? null),
           prompt: {
             optional: true,
             retry: `명령어 | 카테고리를 입력해 주세요.`
@@ -56,62 +43,53 @@ export default class extends Command {
     });
   }
 
-  public async exec(
-    message: Message,
-    { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }
-  ) {
+  public async exec(message: Message, { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }) {
     if (cmdOrCtgry instanceof Command) {
       return message.reply({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle(`명령어 자세히보기 | ${cmdOrCtgry}`)
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .setDescription(
-              `**별칭**: ${
-                cmdOrCtgry.aliases
-                  ? cmdOrCtgry.aliases
-                      .map((v) => `\`${Util.escapeInlineCode(v)}\``)
-                      .join(", ")
-                  : "별칭 없음"
-              }\n**설명**: ${
-                cmdOrCtgry.fullDescription.content || "설명 없음"
-              }\n**사용법**: ${
-                `${message.util.parsed.prefix}${cmdOrCtgry} ${
-                  cmdOrCtgry.fullDescription.usage || ""
-                }` || "사용법 없음"
-              }`
+              `${botDescription}\n\n**별칭**: ${cmdOrCtgry.aliases ? cmdOrCtgry.aliases.map((v) => `\`${v}\``).join(", ") : "별칭 없음"}\n**설명**: ${
+                cmdOrCtgry.description.content ?? "설명 없음"
+              }\n**사용법**: ${`${message.util?.parsed?.prefix}${cmdOrCtgry} ${cmdOrCtgry.description.usage ?? ""}` ?? "사용법 없음"}`
             )
         ]
       });
     } else if (cmdOrCtgry instanceof Category) {
       return message.reply({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle(`카테고리 자세히보기 | ${cmdOrCtgry}`)
-            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
             .setDescription(
-              cmdOrCtgry
-                .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
-                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+              `${botDescription}\n\n${
+                cmdOrCtgry
+                  .filter((cmd) => cmd.aliases.length > 0)
+                  .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
+                  .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
+              }`
             )
         ]
       });
     }
 
-    const paginator = new KRBSPaginator();
+    const paginator = new KRLSPaginator();
 
     for (const category of this.handler.categories.values())
       paginator.addPage({
         embeds: [
-          new KRBSEmbed()
+          new KRLSEmbed()
             .setTitle("도움말")
-            .setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
+            .setDescription(botDescription)
             .addField(
               category.id,
               category
                 .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${Util.escapeBold(cmd.id)}**`)
-                .join("\n") || "이 카테고리에는 명령어가 없습니다."
+                .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
+                .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
             )
         ]
       });

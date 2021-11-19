@@ -15,15 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { connect } from "mongoose";
+import type { KRLSEnv } from ".";
 
-export default function (
-  url = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?authSource=admin`
-) {
-  return connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
-  });
+declare global {
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface ProcessEnv extends KRLSEnv {}
+  }
 }

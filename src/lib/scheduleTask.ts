@@ -16,67 +16,80 @@
  */
 
 import axios from "axios";
-import { AkairoClient } from "discord-akairo";
+import type { AkairoClient } from "discord-akairo";
 import moment from "moment-timezone";
 import schedule from "node-schedule";
-import { TIMEZONE } from "../config";
-import { KoreanbotsEndPoints } from "./constants";
-import Bot from "./database/models/Bot";
-import { FetchResponse, RawBot } from "./types";
+import { KoreanlistEndPoints } from "./constants";
+import BotDB from "./database/models/Bot";
+import ServerDB from "./database/models/Server";
+import { envParseString } from "./env";
+import type { FetchResponse, RawBot, RawServer } from "./types";
 import convert from "./utils/convertRawToType";
 
-export default function (client: AkairoClient) {
+export default function scheduleTask(client: AkairoClient) {
   return schedule.scheduleJob("* * * * *", (date) => {
-    Bot.find({ track: true }).then((bots) => {
+    BotDB.find({ track: true }).then((bots) => {
       for (const bot of bots)
         axios
-          .get<FetchResponse<RawBot>>(KoreanbotsEndPoints.API.bot(bot.id))
+          .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
           .then(({ data }) => {
+            if (!data.data) return client.logger.warn(`FetchError: Bot - ${bot.id}:\nData is empty.`);
             const res = convert.bot(data.data);
 
             return bot.updateOne({
               $push: {
                 stats: {
-                  updated: moment(date).tz(TIMEZONE).toDate(),
+                  updated: moment(date).toDate(),
                   votes: res.votes,
                   servers: res.servers,
-                  status: res.status.raw
+                  status: res.status?.raw
                 }
               }
             });
           })
-          .catch((e) => {
-            client.logger.warn(
-              `FetchError: Error occurred while fetching bot ${bot.id}:\n${e.message}\n${e.stack}`
-            );
-          });
+          .catch((e) => client.logger.warn(`FetchError: Bot - ${bot.id}:\n${e.stack}`));
+    });
+
+    ServerDB.find({ track: true }).then((servers) => {
+      for (const server of servers)
+        axios
+          .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(server.id))
+          .then(({ data }) => {
+            if (!data.data) return client.logger.warn(`FetchError: Server - ${server.id}:\nData is empty.`);
+            const res = convert.server(data.data);
+
+            return server.updateOne({
+              $push: {
+                stats: {
+                  updated: moment(date).toDate(),
+                  votes: res.votes,
+                  members: res.members
+                }
+              }
+            });
+          })
+          .catch((e) => client.logger.warn(`FetchError: Server - ${server.id}:\n${e.stack}`));
     });
 
     const guildCount = client.guilds.cache.size;
-    if (guildCount !== client.cachedGuildCount)
+    if (guildCount !== client.cachedGuildCount && client.user?.id)
       axios
         .post(
-          KoreanbotsEndPoints.API.stats(client.user.id),
+          KoreanlistEndPoints.API.stats(client.user.id),
           { servers: guildCount },
           {
             headers: {
-              Authorization: process.env.KOREANBOTS_TOKEN,
+              Authorization: envParseString("KOREANLIST_TOKEN"),
               "Content-Type": "application/json"
             }
           }
         )
         .then(({ data }) => {
-          client.logger.info(
-            `Bumped ${guildCount} guilds to koreanbots.dev | Response:\n${JSON.stringify(
-              data
-            )}`
-          );
+          client.logger.info(`Success: Bump guilds - ${guildCount}:\n${JSON.stringify(data)}}`);
           client.cachedGuildCount = guildCount;
         })
         .catch((e) => {
-          client.logger.warn(
-            `FetchError: Error occurred while updaing bot server count:\n${e.message}\n${e.stack}`
-          );
+          client.logger.warn(`FetchError: Bump guilds - ${guildCount}:\n${e.stack}`);
         });
   });
 }
