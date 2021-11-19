@@ -23,7 +23,7 @@ import type { KoreanlistImageOptions } from "./types";
 import type { BotFlags, ServerFlags } from "./utils/Flags";
 import { makeBotURL, makeImageURL, makeServerURL, makeUserURL } from "./utils/format";
 
-export const KoreanlistOrigin = "https://beta.koreanbots.dev";
+export const KoreanlistOrigin = "https://koreanbots.dev";
 export const KoreanlistEndPoints = {
   OG: class {
     static root = "https://og.kbots.link";

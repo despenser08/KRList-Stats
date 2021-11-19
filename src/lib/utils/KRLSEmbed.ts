@@ -24,22 +24,22 @@ export default class KRLSEmbed extends MessageEmbed {
 
     if (!data) {
       this.setColor(Colors.PRIMARY);
-      super.setFooter('해당 서비스는 "한국 디스코드 리스트" 공식 서비스가 아닙니다.');
+      super.setFooter('해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.');
     } else {
       this.setColor(data.color ?? Colors.PRIMARY);
 
-      if (!data.footer) super.setFooter('해당 서비스는 "한국 디스코드 리스트" 공식 서비스가 아닙니다.');
+      if (!data.footer) super.setFooter('해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.');
       else
         super.setFooter(
           data.footer.text
-            ? `${data.footer.text} • 해당 서비스는 "한국 디스코드 리스트" 공식 서비스가 아닙니다.`
-            : '해당 서비스는 "한국 디스코드 리스트" 공식 서비스가 아닙니다.',
+            ? `${data.footer.text} • 해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.`
+            : '해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.',
           data.footer.iconURL
         );
     }
   }
 
   public setFooter(text: string, iconURL?: string) {
-    return super.setFooter(`${text} • 해당 서비스는 "한국 디스코드 리스트" 공식 서비스가 아닙니다.`, iconURL);
+    return super.setFooter(`${text} • 해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.`, iconURL);
   }
 }
