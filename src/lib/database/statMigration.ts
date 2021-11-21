@@ -27,12 +27,11 @@ export default async function statMigration(client: AkairoClient) {
   const botStatCount = await BotDB.countDocuments({ track: true });
   client.logger.info(`Found ${botStatCount} bots to migrate.`);
 
-  const first = Math.floor(botStatCount / 3);
-  const second = first * 2;
-  const third = botStatCount - (first + second);
+  const firstfourth = Math.floor(botStatCount / 5);
+  const fifth = botStatCount - firstfourth * 4;
 
   client.logger.info("Fetching bots... (1)");
-  const bots1 = await BotDB.find({ track: true }).allowDiskUse(true).limit(first);
+  const bots1 = await BotDB.find({ track: true }).limit(firstfourth).allowDiskUse(true);
 
   for await (const bot of bots1) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
@@ -41,7 +40,7 @@ export default async function statMigration(client: AkairoClient) {
   }
 
   client.logger.info("Fetching bots... (2)");
-  const bots2 = await BotDB.find({ track: true }).allowDiskUse(true).limit(second).skip(first);
+  const bots2 = await BotDB.find({ track: true }).limit(firstfourth).allowDiskUse(true).skip(firstfourth);
 
   for await (const bot of bots2) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
@@ -51,11 +50,35 @@ export default async function statMigration(client: AkairoClient) {
 
   client.logger.info("Fetching bots... (3)");
   const bots3 = await BotDB.find({ track: true })
+    .limit(firstfourth)
     .allowDiskUse(true)
-    .limit(third)
-    .skip(first + second);
+    .skip(firstfourth * 2);
 
   for await (const bot of bots3) {
+    client.logger.info(`Migrating stats for ${bot.id}...`);
+    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    client.logger.info(`${bot.id} migration completed.`);
+  }
+
+  client.logger.info("Fetching bots... (4)");
+  const bots4 = await BotDB.find({ track: true })
+    .limit(fifth)
+    .allowDiskUse(true)
+    .skip(firstfourth * 3);
+
+  for await (const bot of bots4) {
+    client.logger.info(`Migrating stats for ${bot.id}...`);
+    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    client.logger.info(`${bot.id} migration completed.`);
+  }
+
+  client.logger.info("Fetching bots... (5)");
+  const bots5 = await BotDB.find({ track: true })
+    .limit(firstfourth)
+    .allowDiskUse(true)
+    .skip(firstfourth * 4);
+
+  for await (const bot of bots5) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
     for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
