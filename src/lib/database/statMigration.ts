@@ -31,7 +31,7 @@ export default async function statMigration(client: AkairoClient) {
   const rest = botStatCount - half;
 
   client.logger.info("Fetching bots... (1)");
-  const bots1 = await BotDB.find({ track: true }).limit(half).sort({ date: 1 });
+  const bots1 = await BotDB.find({ track: true }).allowDiskUse(true).limit(half).sort({ date: 1 });
 
   for await (const bot of bots1) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
@@ -40,7 +40,7 @@ export default async function statMigration(client: AkairoClient) {
   }
 
   client.logger.info("Fetching bots... (2)");
-  const bots2 = await BotDB.find({ track: true }).limit(rest).sort({ date: -1 });
+  const bots2 = await BotDB.find({ track: true }).allowDiskUse(true).limit(rest).sort({ date: -1 });
 
   for await (const bot of bots2) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
