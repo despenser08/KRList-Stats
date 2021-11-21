@@ -20,13 +20,13 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, SnowflakeUtil, User } from "discord.js";
-import { ButtonPaginator } from "djs-interaction-util";
 import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import { FetchResponse, RawUser, UserFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { formatNumber, getId } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class UserCommand extends Command {
   constructor() {
@@ -91,7 +91,7 @@ export default class UserCommand extends Command {
 
         if (user.bots.length < 1 && user.servers.length < 1) return msg.edit({ content: null, embeds: [infoEmbed] });
         else {
-          const paginator = new ButtonPaginator({
+          const paginator = new KRLSPaginator({
             pages: [{ embeds: [infoEmbed] }]
           });
 

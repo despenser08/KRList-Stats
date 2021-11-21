@@ -18,11 +18,11 @@
 import axios from "axios";
 import { Argument, Command, Category } from "discord-akairo";
 import { Message, MessageActionRow, MessageButton } from "discord.js";
-import { ButtonPaginator } from "djs-interaction-util";
 import { botDescription, KoreanlistEndPoints } from "../../lib/constants";
 import type { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
+import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class HelpCommand extends Command {
   constructor() {
@@ -84,7 +84,7 @@ export default class HelpCommand extends Command {
             .catch(() => null)
         : null;
 
-      const paginator = new ButtonPaginator();
+      const paginator = new KRLSPaginator();
 
       if (clientbot)
         paginator.setActionRows([
