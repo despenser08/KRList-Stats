@@ -16,8 +16,9 @@
  */
 
 import { Listener } from "discord-akairo";
+import statMigration from "../../lib/database/statMigration";
 import { envParseArray } from "../../lib/env";
-import scheduleFetch from "../../lib/scheduleTask";
+// import scheduleFetch from "../../lib/scheduleTask";
 
 export default class ReadyListener extends Listener {
   constructor() {
@@ -25,7 +26,8 @@ export default class ReadyListener extends Listener {
   }
 
   public async exec() {
-    scheduleFetch(this.client);
+    // scheduleFetch(this.client);
+    statMigration(this.client);
 
     this.client.user?.setPresence({
       status: "idle",
