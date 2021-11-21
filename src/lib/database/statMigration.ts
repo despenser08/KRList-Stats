@@ -35,7 +35,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const bot of bots1) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
-    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    for await (const stat of bot.stats) await BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
   }
 
@@ -44,7 +44,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const bot of bots2) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
-    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    for await (const stat of bot.stats) await BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
   }
 
@@ -56,7 +56,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const bot of bots3) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
-    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    for await (const stat of bot.stats) await BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
   }
 
@@ -68,7 +68,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const bot of bots4) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
-    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    for await (const stat of bot.stats) await BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
   }
 
@@ -80,7 +80,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const bot of bots5) {
     client.logger.info(`Migrating stats for ${bot.id}...`);
-    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    for await (const stat of bot.stats) await BotStatsDB.create({ id: bot.id, ...stat });
     client.logger.info(`${bot.id} migration completed.`);
   }
 
@@ -89,7 +89,7 @@ export default async function statMigration(client: AkairoClient) {
 
   for await (const server of servers) {
     client.logger.info(`Migrating stats for ${server.id}...`);
-    for await (const stat of server.stats) ServerStatsDB.create({ id: server.id, ...stat });
+    for await (const stat of server.stats) await ServerStatsDB.create({ id: server.id, ...stat });
     client.logger.info(`${server.id} migration completed.`);
   }
 
