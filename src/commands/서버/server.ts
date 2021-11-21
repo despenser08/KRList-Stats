@@ -20,6 +20,7 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Message, MessageAttachment, Guild, SnowflakeUtil } from "discord.js";
+import { ButtonPaginator } from "djs-interaction-util";
 import moment from "moment-timezone";
 import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
@@ -29,7 +30,6 @@ import createChart from "../../lib/utils/createChart";
 import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class ServerCommand extends Command {
   constructor() {
@@ -140,7 +140,7 @@ export default class ServerCommand extends Command {
           const created = SnowflakeUtil.deconstruct(server.id).date;
           const desc = filterDesc(server.desc);
 
-          const paginator = new KRLSPaginator({
+          const paginator = new ButtonPaginator({
             pages: [
               {
                 embeds: [

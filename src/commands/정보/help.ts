@@ -18,11 +18,11 @@
 import axios from "axios";
 import { Argument, Command, Category } from "discord-akairo";
 import { Message, MessageActionRow, MessageButton } from "discord.js";
+import { ButtonPaginator } from "djs-interaction-util";
 import { botDescription, KoreanlistEndPoints } from "../../lib/constants";
 import type { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class HelpCommand extends Command {
   constructor() {
@@ -84,7 +84,7 @@ export default class HelpCommand extends Command {
             .catch(() => null)
         : null;
 
-      const paginator = new KRLSPaginator();
+      const paginator = new ButtonPaginator();
 
       if (clientbot)
         paginator.setActionRows([
@@ -94,6 +94,23 @@ export default class HelpCommand extends Command {
               .setURL(`https://discord.gg/${clientbot.discord}`)
               .setEmoji("911823414623367188")
               .setLabel("서포트 서버")
+              .setStyle("LINK"),
+            // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+            new MessageButton()
+              .setURL("https://github.com/despenser08/KRList-Stats")
+              .setEmoji("900808324667301919")
+              .setLabel("KRList-Stats GitHub")
+              .setStyle("LINK")
+          )
+        ]);
+      else
+        paginator.setActionRows([
+          new MessageActionRow().addComponents(
+            // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+            new MessageButton()
+              .setURL("https://github.com/despenser08/KRList-Stats")
+              .setEmoji("900808324667301919")
+              .setLabel("KRList-Stats GitHub")
               .setStyle("LINK")
           )
         ]);

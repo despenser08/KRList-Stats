@@ -20,12 +20,12 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
+import { ButtonPaginator } from "djs-interaction-util";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import type { FetchResponse, SearchAllResult } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class SearchCommand extends Command {
   constructor() {
@@ -70,7 +70,7 @@ export default class SearchCommand extends Command {
 
         if (serverRes.length < 1 && botRes.length < 1) return msg.edit(`"${query}"에 대한 전체 검색 결과가 없습니다.`);
         else {
-          const paginator = new KRLSPaginator({
+          const paginator = new ButtonPaginator({
             pages: [
               {
                 embeds: [
