@@ -26,7 +26,6 @@ import ServerDB from "./database/models/Server";
 import ServerStats from "./database/models/ServerStats";
 import { envParseString } from "./env";
 import type { FetchResponse, RawBot, RawServer } from "./types";
-import convert from "./utils/convertRawToType";
 
 export default function scheduleTask(client: AkairoClient) {
   return schedule.scheduleJob("* * * * *", (date) => {
@@ -34,18 +33,16 @@ export default function scheduleTask(client: AkairoClient) {
       for (const bot of bots)
         axios
           .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(bot.id))
-          .then(({ data }) => {
-            if (data.data) {
-              const res = convert.bot(data.data);
-
+          .then(({ data: { data } }) => {
+            if (data)
               return BotStatsDB.create({
-                id: res.id,
+                id: data.id,
                 updated: moment(date).toDate(),
-                votes: res.votes,
-                servers: res.servers,
-                status: res.status?.raw
+                votes: data.votes,
+                servers: data.servers,
+                status: data.status
               });
-            } else client.logger.warn(`FetchError: Bot - ${bot.id}:\nData is empty.`);
+            else client.logger.warn(`FetchError: Bot - ${bot.id}:\nData is empty.`);
             return;
           })
           .catch((e) => client.logger.warn(`FetchError: Bot - ${bot.id}:\n${e.stack}`));
@@ -55,17 +52,15 @@ export default function scheduleTask(client: AkairoClient) {
       for (const server of servers)
         axios
           .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(server.id))
-          .then(({ data }) => {
-            if (data.data) {
-              const res = convert.server(data.data);
-
+          .then(({ data: { data } }) => {
+            if (data)
               return ServerStats.create({
-                id: res.id,
+                id: data.id,
                 updated: moment(date).toDate(),
-                votes: res.votes,
-                members: res.members
+                votes: data.votes,
+                members: data.members
               });
-            } else client.logger.warn(`FetchError: Server - ${server.id}:\nData is empty.`);
+            else client.logger.warn(`FetchError: Server - ${server.id}:\nData is empty.`);
             return;
           })
           .catch((e) => client.logger.warn(`FetchError: Server - ${server.id}:\n${e.stack}`));
