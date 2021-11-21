@@ -18,7 +18,7 @@
 import { getModelForClass, prop } from "@typegoose/typegoose";
 import type { RawBotStatus } from "../../types";
 
-export class BotStats {
+class BotStats {
   @prop({ required: true })
   public id!: string;
 

@@ -17,15 +17,13 @@
 
 import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
-import type { BeAnObject, DocumentType } from "@typegoose/typegoose/lib/types";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { User, Message, MessageAttachment, GuildMember, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
-import type { FilterQuery } from "mongoose";
 import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
-import BotStatsDB, { BotStats } from "../../lib/database/models/BotStats";
+import BotStatsDB from "../../lib/database/models/BotStats";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
