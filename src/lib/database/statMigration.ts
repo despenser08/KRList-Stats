@@ -24,22 +24,38 @@ import ServerStatsDB from "./models/ServerStats";
 export default async function statMigration(client: AkairoClient) {
   client.logger.info("Starting stat migration...");
 
-  client.logger.info("Fetching bots...");
-  BotDB.find({ track: true }).then(async (bots) => {
-    for await (const bot of bots) {
-      client.logger.info(`Migrating stats for ${bot.id}...`);
-      for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
-      client.logger.info(`${bot.id} migration completed.`);
-    }
+  const botStatCount = await BotDB.countDocuments({ track: true });
+  client.logger.info(`Found ${botStatCount} bots to migrate.`);
 
-    client.logger.info("Fetching servers...");
-    ServerDB.find({ track: true }).then(async (servers) => {
-      for await (const server of servers) {
-        client.logger.info(`Migrating stats for ${server.id}...`);
-        for await (const stat of server.stats) ServerStatsDB.create({ id: server.id, ...stat });
-        client.logger.info(`${server.id} migration completed.`);
-      }
-      client.logger.info("Stat migration completed.");
-    });
-  });
+  const half = Math.floor(botStatCount / 2);
+  const rest = botStatCount - half;
+
+  client.logger.info("Fetching bots... (1)");
+  const bots1 = await BotDB.find({ track: true }).limit(half).sort({ date: 1 });
+
+  for await (const bot of bots1) {
+    client.logger.info(`Migrating stats for ${bot.id}...`);
+    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    client.logger.info(`${bot.id} migration completed.`);
+  }
+
+  client.logger.info("Fetching bots... (2)");
+  const bots2 = await BotDB.find({ track: true }).limit(rest).sort({ date: -1 });
+
+  for await (const bot of bots2) {
+    client.logger.info(`Migrating stats for ${bot.id}...`);
+    for await (const stat of bot.stats) BotStatsDB.create({ id: bot.id, ...stat });
+    client.logger.info(`${bot.id} migration completed.`);
+  }
+
+  client.logger.info("Fetching servers...");
+  const servers = await ServerDB.find({ track: true });
+
+  for await (const server of servers) {
+    client.logger.info(`Migrating stats for ${server.id}...`);
+    for await (const stat of server.stats) ServerStatsDB.create({ id: server.id, ...stat });
+    client.logger.info(`${server.id} migration completed.`);
+  }
+
+  client.logger.info("Stat migration completed.");
 }
