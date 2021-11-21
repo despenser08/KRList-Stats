@@ -53,12 +53,7 @@ export function makeUserURL({ id }: { id: string }) {
 export function lineUserText(user?: User | BotOwner | ServerOwner) {
   if (!user) return null;
 
-  return `${hyperlink(
-    `${user.username}#${user.tag}`,
-    KoreanlistEndPoints.URL.user({
-      id: user.id
-    })
-  )} (${userMention(user.id)})`;
+  return `${hyperlink(`${user.username}#${user.tag}`, KoreanlistEndPoints.URL.user(user))} (${userMention(user.id)})`;
 }
 
 export function filterDesc(text: string) {

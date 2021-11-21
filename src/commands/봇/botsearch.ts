@@ -73,14 +73,9 @@ export default class BotSearchCommand extends Command {
                   res
                     .map(
                       (bot, index) =>
-                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                          `${bot.name}#${bot.tag}`,
-                          KoreanlistEndPoints.URL.bot({
-                            id: bot.id,
-                            flags: bot.flags,
-                            vanity: bot.vanity
-                          })
-                        )} (${userMention(bot.id)}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
+                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(`${bot.name}#${bot.tag}`, KoreanlistEndPoints.URL.bot(bot))} (${userMention(
+                          bot.id
+                        )}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
                     )
                     .join("\n")
                 )

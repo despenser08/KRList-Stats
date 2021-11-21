@@ -139,11 +139,6 @@ export default class ServerCommand extends Command {
           const flags = server.flags.toArray();
           const created = SnowflakeUtil.deconstruct(server.id).date;
           const desc = filterDesc(server.desc);
-          const urlOptions = {
-            id: server.id,
-            flags: server.flags,
-            vanity: server.vanity
-          };
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -151,7 +146,7 @@ export default class ServerCommand extends Command {
                 embeds: [
                   new KRLSEmbed()
                     .setTitle(server.name)
-                    .setURL(KoreanlistEndPoints.URL.server(urlOptions))
+                    .setURL(KoreanlistEndPoints.URL.server(server))
                     .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(server.id)}`)
                     .setDescription(
                       `https://discord.gg/${server.invite} | ${
@@ -160,9 +155,9 @@ export default class ServerCommand extends Command {
                             ? `${moment.duration(serverDB.stats.length, "minutes").humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
-                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(urlOptions))} | ${hyperlink(
+                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(server))} | ${hyperlink(
                         "신고하기",
-                        KoreanlistEndPoints.URL.serverReport(urlOptions)
+                        KoreanlistEndPoints.URL.serverReport(server)
                       )}\n\n${server.intro}`
                     )
                     .addField("멤버 수", server.members ? server.members.toString() : "N/A", true)

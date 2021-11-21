@@ -50,4 +50,18 @@ export default class KRLSPaginator extends ButtonPaginator {
       )
     );
   }
+
+  // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+  public setActionRows(actionRows: MessageActionRow[]) {
+    return super.setActionRows([
+      ...actionRows,
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setURL("https://github.com/despenser08/KRList-Stats")
+          .setEmoji("900808324667301919")
+          .setLabel("KRList-Stats GitHub")
+          .setStyle("LINK")
+      )
+    ]);
+  }
 }

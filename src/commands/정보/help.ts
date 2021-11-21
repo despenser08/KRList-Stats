@@ -15,9 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import axios from "axios";
 import { Argument, Command, Category } from "discord-akairo";
-import type { Message } from "discord.js";
-import { botDescription } from "../../lib/constants";
+import { Message, MessageActionRow, MessageButton } from "discord.js";
+import { botDescription, KoreanlistEndPoints } from "../../lib/constants";
+import type { FetchResponse, RawBot } from "../../lib/types";
+import convert from "../../lib/utils/convertRawToType";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
@@ -44,7 +47,7 @@ export default class HelpCommand extends Command {
   }
 
   public async exec(message: Message, { cmdOrCtgry }: { cmdOrCtgry?: Command | Category<string, Command> }) {
-    if (cmdOrCtgry instanceof Command) {
+    if (cmdOrCtgry instanceof Command)
       return message.reply({
         embeds: [
           new KRLSEmbed()
@@ -57,7 +60,7 @@ export default class HelpCommand extends Command {
             )
         ]
       });
-    } else if (cmdOrCtgry instanceof Category) {
+    else if (cmdOrCtgry instanceof Category)
       return message.reply({
         embeds: [
           new KRLSEmbed()
@@ -73,27 +76,46 @@ export default class HelpCommand extends Command {
             )
         ]
       });
+    else {
+      const clientbot = this.client.user?.id
+        ? await axios
+            .get<FetchResponse<RawBot>>(KoreanlistEndPoints.API.bot(this.client.user.id))
+            .then(async ({ data }) => (data.data ? convert.bot(data.data) : null))
+            .catch(() => null)
+        : null;
+
+      const paginator = new KRLSPaginator();
+
+      if (clientbot)
+        paginator.setActionRows([
+          new MessageActionRow().addComponents(
+            new MessageButton().setURL(KoreanlistEndPoints.URL.botVote(clientbot)).setEmoji("❤️").setLabel("하트 추가").setStyle("LINK"),
+            new MessageButton()
+              .setURL(`https://discord.gg/${clientbot.discord}`)
+              .setEmoji("911823414623367188")
+              .setLabel("서포트 서버")
+              .setStyle("LINK")
+          )
+        ]);
+
+      for (const category of this.handler.categories.values())
+        paginator.addPage({
+          embeds: [
+            new KRLSEmbed()
+              .setTitle("도움말")
+              .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
+              .setDescription(botDescription)
+              .addField(
+                category.id,
+                category
+                  .filter((cmd) => cmd.aliases.length > 0)
+                  .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
+                  .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
+              )
+          ]
+        });
+
+      return paginator.run(message);
     }
-
-    const paginator = new KRLSPaginator();
-
-    for (const category of this.handler.categories.values())
-      paginator.addPage({
-        embeds: [
-          new KRLSEmbed()
-            .setTitle("도움말")
-            .setThumbnail(this.client.user?.displayAvatarURL({ dynamic: true }) ?? "")
-            .setDescription(botDescription)
-            .addField(
-              category.id,
-              category
-                .filter((cmd) => cmd.aliases.length > 0)
-                .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
-                .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
-            )
-        ]
-      });
-
-    return paginator.run(message);
   }
 }

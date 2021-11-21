@@ -127,11 +127,6 @@ export default class BotCommand extends Command {
           const flags = bot.flags.toArray();
           const created = SnowflakeUtil.deconstruct(bot.id).date;
           const desc = filterDesc(bot.desc);
-          const urlOptions = {
-            id: bot.id,
-            flags: bot.flags,
-            vanity: bot.vanity
-          };
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -139,7 +134,7 @@ export default class BotCommand extends Command {
                 embeds: [
                   new KRLSEmbed()
                     .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
-                    .setURL(KoreanlistEndPoints.URL.bot(urlOptions))
+                    .setURL(KoreanlistEndPoints.URL.bot(bot))
                     .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
                     .setDescription(
                       `${userMention(bot.id)} | ${
@@ -155,9 +150,9 @@ export default class BotCommand extends Command {
                               "초대 링크",
                               DiscordEndPoints.URL.inviteBot(bot.id, false)
                             )}`
-                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(urlOptions))} | ${hyperlink(
+                      }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
                         "신고하기",
-                        KoreanlistEndPoints.URL.botReport(urlOptions)
+                        KoreanlistEndPoints.URL.botReport(bot)
                       )}\n\n${bot.intro}`
                     )
                     .addField("접두사", bot.prefix, true)

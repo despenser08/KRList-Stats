@@ -80,7 +80,7 @@ export default class UserCommand extends Command {
 
         const infoEmbed = new KRLSEmbed()
           .setTitle(`${user.username}#${user.tag}`)
-          .setURL(KoreanlistEndPoints.URL.user({ id: user.id }))
+          .setURL(KoreanlistEndPoints.URL.user(user))
           .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(user.id)}`)
           .setDescription(userMention(user.id))
           .addField("봇", user.bots.length > 0 ? `${user.bots.length}개` : "없음", true)
@@ -100,13 +100,7 @@ export default class UserCommand extends Command {
               embeds: [
                 new KRLSEmbed()
                   .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji} (봇)`)
-                  .setURL(
-                    KoreanlistEndPoints.URL.bot({
-                      id: bot.id,
-                      flags: bot.flags,
-                      vanity: bot.vanity
-                    })
-                  )
+                  .setURL(KoreanlistEndPoints.URL.bot(bot))
                   .setDescription(
                     `${userMention(bot.id)}${
                       bot.url
@@ -128,13 +122,7 @@ export default class UserCommand extends Command {
               embeds: [
                 new KRLSEmbed()
                   .setTitle(`${server.name} (서버)`)
-                  .setURL(
-                    KoreanlistEndPoints.URL.server({
-                      id: server.id,
-                      flags: server.flags,
-                      vanity: server.vanity
-                    })
-                  )
+                  .setURL(KoreanlistEndPoints.URL.server(server))
                   .setDescription(`https://discord.gg/${server.invite}`)
                   .setImage(
                     KoreanlistEndPoints.OG.server(server.id, server.name, server.intro, server.category, [

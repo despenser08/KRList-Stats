@@ -73,14 +73,9 @@ export default class ServerSearchCommand extends Command {
                   res
                     .map(
                       (server, index) =>
-                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                          server.name,
-                          KoreanlistEndPoints.URL.server({
-                            id: server.id,
-                            flags: server.flags,
-                            vanity: server.vanity
-                          })
-                        )} [멤버: ${server.members ?? "N/A"}] - ❤️${server.votes}`
+                        `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(server.name, KoreanlistEndPoints.URL.server(server))} [멤버: ${
+                          server.members ?? "N/A"
+                        }] - ❤️${server.votes}`
                     )
                     .join("\n")
                 )

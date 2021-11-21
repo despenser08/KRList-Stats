@@ -85,11 +85,7 @@ export default class SearchCommand extends Command {
                                 (bot, index) =>
                                   `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
                                     `${bot.name}#${bot.tag}`,
-                                    KoreanlistEndPoints.URL.bot({
-                                      id: bot.id,
-                                      flags: bot.flags,
-                                      vanity: bot.vanity
-                                    })
+                                    KoreanlistEndPoints.URL.bot(bot)
                                   )} (${userMention(bot.id)}) ${bot.status?.emoji} [서버: ${bot.servers ?? "N/A"}] - ❤️${bot.votes}`
                               )
                               .join("\n")
@@ -110,14 +106,9 @@ export default class SearchCommand extends Command {
                           : serverRes
                               .map(
                                 (server, index) =>
-                                  `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(
-                                    server.name,
-                                    KoreanlistEndPoints.URL.server({
-                                      id: server.id,
-                                      flags: server.flags,
-                                      vanity: server.vanity
-                                    })
-                                  )} [멤버: ${server.members ?? "N/A"}] - ❤️${server.votes}`
+                                  `**${index + 1 + 16 * (page - 1)}.** ${hyperlink(server.name, KoreanlistEndPoints.URL.server(server))} [멤버: ${
+                                    server.members ?? "N/A"
+                                  }] - ❤️${server.votes}`
                               )
                               .join("\n")
                       }`
