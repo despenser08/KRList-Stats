@@ -21,6 +21,7 @@ import { Argument, Command } from "discord-akairo";
 import type { Guild, Message } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
+import ServerStatsDB from "../../lib/database/models/ServerStats";
 import type { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { getId } from "../../lib/utils/format";
@@ -68,9 +69,10 @@ export default class ServerCollectCommand extends Command {
         if (!owners.map((owner) => owner.id).includes(message.author.id)) return msg.edit(`**${server.name}** 관리자만 수집 요청이 가능합니다.`);
 
         const serverDB = await ServerDB.findOneAndUpdate({ id: server.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
+        const statCount = await ServerStatsDB.countDocuments({ id: server.id });
 
         if (serverDB.track) {
-          if (serverDB.stats.length > 0) return msg.edit(`**${server.name}** 수집은 이미 시작되었습니다.`);
+          if (statCount > 0) return msg.edit(`**${server.name}** 수집은 이미 시작되었습니다.`);
           else return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
         }
 

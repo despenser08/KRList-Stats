@@ -23,9 +23,11 @@ import { Guild, Message, MessageAttachment, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
 import { KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import ServerDB from "../../lib/database/models/Server";
+import ServerStatsDB from "../../lib/database/models/ServerStats";
 import { FetchResponse, RawServer, ServerFlagsEnum } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
+import filterStats from "../../lib/utils/filterStats";
 import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -122,18 +124,7 @@ export default class ServerCommand extends Command {
         const server = convert.server(data.data);
 
         const serverDB = await ServerDB.findOneAndUpdate({ id: server.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
-
-        let stats = serverDB.stats;
-        if (limit instanceof Date) {
-          const date = moment(limit).startOf("day");
-          const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
-
-          stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
-        } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
-          stats.reverse();
-          stats.splice(limit);
-          stats.reverse();
-        }
+        const statCount = await ServerStatsDB.countDocuments({ id: server.id });
 
         if (info === "info") {
           const flags = server.flags.toArray();
@@ -151,8 +142,8 @@ export default class ServerCommand extends Command {
                     .setDescription(
                       `https://discord.gg/${server.invite} | ${
                         serverDB.track
-                          ? serverDB.stats.length > 0
-                            ? `${moment.duration(serverDB.stats.length, "minutes").humanize()} 수집됨`
+                          ? statCount > 0
+                            ? `${moment.duration(statCount, "minutes").humanize()} 수집됨`
                             : "수집 대기중"
                           : "수집되지 않음"
                       }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(server))} | ${hyperlink(
@@ -206,13 +197,16 @@ export default class ServerCommand extends Command {
             return msg.edit(
               `**${server.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}서버수집을 사용하여 서버 수집을 시작하세요.`
             );
-          else if (stats.length < 1) return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
+          else if (statCount < 1) return msg.edit(`**${server.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
-          const datas: number[] = [];
+          const datas: (number | null)[] = [];
           const dates: string[] = [];
 
+          const filter = filterStats(server.id, statCount, limit, endOfDate);
+          const stats = await ServerStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
+
           for await (const stat of stats) {
-            datas.push(stat[info] ?? 0);
+            datas.push(stat[info] ?? null);
             dates.push(moment(stat.updated).format("YYYY/MM/DD HH:mm"));
           }
 

@@ -114,18 +114,6 @@ export default class BotCommand extends Command {
         const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
         const statCount = await BotStatsDB.countDocuments({ id: bot.id });
 
-        // let stats = botDB.stats;
-        // if (limit instanceof Date) {
-        //   const date = moment(limit).startOf("day");
-        //   const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
-
-        //   stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
-        // } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
-        //   stats.reverse();
-        //   stats.splice(limit);
-        //   stats.reverse();
-        // }
-
         if (info === "info") {
           const flags = bot.flags.toArray();
           const created = SnowflakeUtil.deconstruct(bot.id).date;
@@ -216,9 +204,7 @@ export default class BotCommand extends Command {
           };
 
           const filter = filterStats(bot.id, statCount, limit, endOfDate);
-          const stats = await BotStatsDB.find(filter.query)
-            .sort({ date: filter.sort })
-            .limit(filter.sort === -1 ? (limit as number) : statCount);
+          const stats = await BotStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
 
           for await (const stat of stats.map((bot) => bot.status)) status[stat]++;
 
@@ -275,16 +261,14 @@ export default class BotCommand extends Command {
             return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
           else if (statCount < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
-          const datas: number[] = [];
+          const datas: (number | null)[] = [];
           const dates: string[] = [];
 
           const filter = filterStats(bot.id, statCount, limit, endOfDate);
-          const stats = await BotStatsDB.find(filter.query)
-            .sort({ date: filter.sort })
-            .limit(filter.sort === -1 ? (limit as number) : statCount);
+          const stats = await BotStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
 
           for await (const stat of stats) {
-            datas.push(stat[info] ?? 0);
+            datas.push(stat[info] ?? null);
             dates.push(moment(stat.updated).format("YYYY/MM/DD HH:mm"));
           }
 

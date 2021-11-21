@@ -16,21 +16,6 @@
  */
 
 import { getModelForClass, prop } from "@typegoose/typegoose";
-import type { RawBotStatus } from "../../types";
-
-class BotStats {
-  @prop({ required: true })
-  public updated!: Date;
-
-  @prop({ required: true })
-  public votes!: number;
-
-  @prop()
-  public servers?: number;
-
-  @prop({ required: true })
-  public status!: RawBotStatus;
-}
 
 class Bot {
   @prop({ required: true, unique: true })
@@ -38,9 +23,6 @@ class Bot {
 
   @prop({ required: true, default: false })
   public track!: boolean;
-
-  @prop({ type: () => BotStats, required: true, default: [] })
-  public stats!: BotStats[];
 }
 
 export default getModelForClass(Bot);

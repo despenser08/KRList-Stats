@@ -17,26 +17,12 @@
 
 import { getModelForClass, prop } from "@typegoose/typegoose";
 
-class ServerStats {
-  @prop({ required: true })
-  public updated!: Date;
-
-  @prop({ required: true })
-  public votes!: number;
-
-  @prop()
-  public members?: number;
-}
-
 class Server {
   @prop({ required: true, unique: true })
   public id!: string;
 
   @prop({ required: true, default: false })
   public track!: boolean;
-
-  @prop({ type: () => ServerStats, required: true, default: [] })
-  public stats!: ServerStats[];
 }
 
 export default getModelForClass(Server);

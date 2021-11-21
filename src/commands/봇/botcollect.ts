@@ -20,6 +20,7 @@ import { Argument, Command } from "discord-akairo";
 import type { GuildMember, Message, User } from "discord.js";
 import { KoreanlistEndPoints } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
+import BotStatsDB from "../../lib/database/models/BotStats";
 import type { FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import { getId } from "../../lib/utils/format";
@@ -61,9 +62,10 @@ export default class BotCollectCommand extends Command {
         if (!bot.owners.map((owner) => owner.id).includes(message.author.id)) return msg.edit(`**${bot.name}** 관리자만 수집 요청이 가능합니다.`);
 
         const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
+        const statCount = await BotStatsDB.countDocuments({ id: bot.id });
 
         if (botDB.track) {
-          if (botDB.stats.length > 0) return msg.edit(`**${bot.name}** 수집은 이미 시작되었습니다.`);
+          if (statCount > 0) return msg.edit(`**${bot.name}** 수집은 이미 시작되었습니다.`);
           else return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
         }
 
