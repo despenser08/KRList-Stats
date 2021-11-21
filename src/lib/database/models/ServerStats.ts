@@ -16,8 +16,7 @@
  */
 
 import { getModelForClass, prop } from "@typegoose/typegoose";
-
-class ServerStats {
+export class ServerStats {
   @prop({ required: true })
   public id!: string;
 

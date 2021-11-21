@@ -17,15 +17,19 @@
 
 import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
+import type { BeAnObject, DocumentType } from "@typegoose/typegoose/lib/types";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { User, Message, MessageAttachment, GuildMember, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
+import type { FilterQuery } from "mongoose";
 import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
 import BotDB from "../../lib/database/models/Bot";
+import BotStatsDB, { BotStats } from "../../lib/database/models/BotStats";
 import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
 import convert from "../../lib/utils/convertRawToType";
 import createChart from "../../lib/utils/createChart";
+import filterStats from "../../lib/utils/filterStats";
 import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
 import isInterface from "../../lib/utils/isInterface";
 import KRLSEmbed from "../../lib/utils/KRLSEmbed";
@@ -110,18 +114,19 @@ export default class BotCommand extends Command {
         const bot = convert.bot(data.data);
 
         const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
+        const statCount = await BotStatsDB.countDocuments({ id: bot.id });
 
-        let stats = botDB.stats;
-        if (limit instanceof Date) {
-          const date = moment(limit).startOf("day");
-          const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
+        // let stats = botDB.stats;
+        // if (limit instanceof Date) {
+        //   const date = moment(limit).startOf("day");
+        //   const nextDate = endOfDate ? moment(endOfDate).endOf("day") : moment(limit).endOf("day");
 
-          stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
-        } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
-          stats.reverse();
-          stats.splice(limit);
-          stats.reverse();
-        }
+        //   stats = stats.filter((stat) => stat.updated >= date.toDate() && stat.updated <= nextDate.toDate());
+        // } else if (typeof limit === "number" && Number.isInteger(limit) && stats.length > limit) {
+        //   stats.reverse();
+        //   stats.splice(limit);
+        //   stats.reverse();
+        // }
 
         if (info === "info") {
           const flags = bot.flags.toArray();
@@ -138,11 +143,7 @@ export default class BotCommand extends Command {
                     .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
                     .setDescription(
                       `${userMention(bot.id)} | ${
-                        botDB.track
-                          ? botDB.stats.length > 0
-                            ? `${moment.duration(botDB.stats.length, "minutes").humanize()} 수집됨`
-                            : "수집 대기중"
-                          : "수집되지 않음"
+                        botDB.track ? (statCount > 0 ? `${moment.duration(statCount, "minutes").humanize()} 수집됨` : "수집 대기중") : "수집되지 않음"
                       }${
                         bot.url
                           ? ` | ${hyperlink("초대 링크", bot.url)}`
@@ -200,7 +201,7 @@ export default class BotCommand extends Command {
         } else if (info === "uptime") {
           if (!botDB.track)
             return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
-          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
+          else if (statCount < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           const status: {
             online: number;
@@ -215,6 +216,11 @@ export default class BotCommand extends Command {
             streaming: 0,
             offline: 0
           };
+
+          const filter = filterStats(bot.id, statCount, limit, endOfDate);
+          const stats = await BotStatsDB.find(filter.query)
+            .sort({ date: filter.sort })
+            .limit(filter.sort === -1 ? (limit as number) : statCount);
 
           for await (const stat of stats.map((bot) => bot.status)) status[stat]++;
 
@@ -269,10 +275,15 @@ export default class BotCommand extends Command {
         } else {
           if (!botDB.track)
             return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
-          else if (stats.length < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
+          else if (statCount < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
           const datas: number[] = [];
           const dates: string[] = [];
+
+          const filter = filterStats(bot.id, statCount, limit, endOfDate);
+          const stats = await BotStatsDB.find(filter.query)
+            .sort({ date: filter.sort })
+            .limit(filter.sort === -1 ? (limit as number) : statCount);
 
           for await (const stat of stats) {
             datas.push(stat[info] ?? 0);
