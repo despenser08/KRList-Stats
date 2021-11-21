@@ -1,7 +1,7 @@
 import moment from "moment-timezone";
 
 export default function filterStats(id: string, statCount: number, limit: "all" | number | Date, endOfDate?: Date) {
-  const query: { updated?: { $gte: Date; $lte: Date } } = { id };
+  const query: { id: string; updated?: { $gte: Date; $lte: Date } } = { id };
 
   let sort = 1;
 
