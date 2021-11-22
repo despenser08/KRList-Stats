@@ -313,7 +313,7 @@ export default class BotCommand extends Command {
 
           return msg
             .edit({
-              content: `**${bot.name}** ${statName} 차트입니다.`,
+              content: `**${bot.name}** ${statName}${info === "votes" || limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`,
               files: [new MessageAttachment(chart, "chart.png")]
             })
             .then((resmsg) => {
