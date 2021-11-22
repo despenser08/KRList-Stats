@@ -7,7 +7,7 @@ export default async function filterStats(
   limit: "all" | "quarter" | number | Date,
   endOfDateOrQuarter?: Date | number
 ) {
-  const query: { id: string; updated?: { $gte?: Date; $lte?: Date } } = { id };
+  const query: { id: string; updated?: { $gte?: Date; $lte?: Date; $lt?: Date } } = { id };
 
   let skip = 0;
 
@@ -25,7 +25,7 @@ export default async function filterStats(
     quarter = typeof endOfDateOrQuarter === "number" ? (await QuarterDB.findOne({ quarter: endOfDateOrQuarter })) ?? quarters[0] : quarters[0];
 
     const nextQuarter = await QuarterDB.findOne({ quarter: quarter.quarter + 1 });
-    if (nextQuarter) query.updated = { $gte: nextQuarter.start, $lte: quarter.start };
+    if (nextQuarter) query.updated = { $gte: nextQuarter.start, $lt: quarter.start };
     else query.updated = { $gte: quarter.start };
   }
 

@@ -281,7 +281,7 @@ export default class BotCommand extends Command {
               labels: dates,
               datasets: [
                 {
-                  label: `${statName} 수${info === "votes" ? ` (${filter.quarter}분기)` : ""}`,
+                  label: `${statName} 수`,
                   data: datas,
                   backgroundColor: [color],
                   borderColor: [color],
@@ -295,7 +295,7 @@ export default class BotCommand extends Command {
               plugins: {
                 title: {
                   display: true,
-                  text: `${bot.name} ${statName} 수`,
+                  text: `${bot.name} ${statName} 수${info === "votes" || limit === "quarter" ? ` (${filter.quarter}분기)` : ""}`,
                   font: { size: 40 }
                 },
                 legend: {
