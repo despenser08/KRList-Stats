@@ -11,7 +11,7 @@ export default async function filterStats(
 
   let skip = 0;
 
-  let quarters = await QuarterDB.find({}, {}, { sort: { start: -1 } });
+  const quarters = await QuarterDB.find({}, {}, { sort: { start: -1 } });
   let quarter = quarters[0];
 
   if (limit instanceof Date) {
@@ -20,13 +20,7 @@ export default async function filterStats(
     query.updated = { $gte: date.toDate(), $lte: nextDate.toDate() };
   } else if (typeof limit === "number" && Number.isInteger(limit) && statCount > limit) skip = statCount - limit;
   else if (limit === "quarter") {
-    if (!quarters.length)
-      quarters = [
-        await QuarterDB.create({
-          quarter: 1,
-          start: new Date()
-        })
-      ];
+    if (quarters.length < 1 || !quarter) throw new Error("No quarters found");
 
     quarter = typeof endOfDateOrQuarter === "number" ? (await QuarterDB.findOne({ quarter: endOfDateOrQuarter })) ?? quarters[0] : quarters[0];
 
