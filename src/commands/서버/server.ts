@@ -202,7 +202,7 @@ export default class ServerCommand extends Command {
           const datas: (number | null)[] = [];
           const dates: string[] = [];
 
-          const filter = filterStats(server.id, statCount, limit, endOfDate);
+          const filter = await filterStats(server.id, statCount, limit, endOfDate);
           const stats = await ServerStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
 
           for await (const stat of stats) {
