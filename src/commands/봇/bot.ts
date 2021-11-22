@@ -65,19 +65,19 @@ export default class BotCommand extends Command {
         },
         {
           id: "limit",
-          type: Argument.union(Argument.range("integer", 1, Infinity), "date", ["all", "전체"]),
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", ["all", "전체"], ["quarter", "분기"]),
           prompt: {
             optional: true,
-            retry: '"전체" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
+            retry: '"전체" | "분기" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'
           },
           default: "all"
         },
         {
-          id: "endOfDate",
-          type: "date",
+          id: "endOfDateOrQuarter",
+          type: Argument.union("date", Argument.range("integer", 1, Infinity)),
           prompt: {
             optional: true,
-            retry: "날짜를 입력해 주세요."
+            retry: "날짜 | 분기를 입력해 주세요."
           }
         }
       ]
@@ -90,12 +90,12 @@ export default class BotCommand extends Command {
       userOrId,
       info,
       limit,
-      endOfDate
+      endOfDateOrQuarter
     }: {
       userOrId: User | GuildMember | string;
       info: "info" | "votes" | "servers" | "uptime";
-      limit: "all" | number | Date;
-      endOfDate?: Date;
+      limit: "all" | "quarter" | number | Date;
+      endOfDateOrQuarter?: Date | number;
     }
   ) {
     const msg = await message.reply("잠시만 기다려주세요...");
@@ -203,7 +203,7 @@ export default class BotCommand extends Command {
             offline: 0
           };
 
-          const filter = filterStats(bot.id, statCount, limit, endOfDate);
+          const filter = await filterStats(bot.id, statCount, limit, endOfDateOrQuarter);
           const stats = await BotStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
 
           for await (const stat of stats.map((bot) => bot.status)) status[stat]++;
@@ -264,7 +264,7 @@ export default class BotCommand extends Command {
           const datas: (number | null)[] = [];
           const dates: string[] = [];
 
-          const filter = filterStats(bot.id, statCount, limit, endOfDate);
+          const filter = await filterStats(bot.id, statCount, info === "votes" && limit === "all" ? "quarter" : limit, endOfDateOrQuarter);
           const stats = await BotStatsDB.find(filter.query, {}, { skip: filter.skip, sort: { updated: 1 } });
 
           for await (const stat of stats) {
@@ -281,7 +281,7 @@ export default class BotCommand extends Command {
               labels: dates,
               datasets: [
                 {
-                  label: `${statName} 수`,
+                  label: `${statName} 수${info === "votes" ? ` (${filter.quarter}분기)` : ""}`,
                   data: datas,
                   backgroundColor: [color],
                   borderColor: [color],
