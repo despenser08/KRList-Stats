@@ -65,7 +65,10 @@ export default class BotCommand extends Command {
         },
         {
           id: "limit",
-          type: Argument.union(Argument.range("integer", 1, Infinity), "date", ["all", "전체"], ["quarter", "분기"]),
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date", [
+            ["all", "전체"],
+            ["quarter", "분기"]
+          ]),
           prompt: {
             optional: true,
             retry: '"전체" | "분기" | 최근 정보 수(자연수) | 날짜를 입력해 주세요.'

@@ -11,7 +11,7 @@ export default async function filterStats(
 
   let skip = 0;
 
-  const quarters = await QuarterDB.find({}, {}, { sort: { start: -1 } });
+  const quarters = await QuarterDB.find().sort({ start: -1 });
   let currentQuarter = quarters[0];
 
   if (limit instanceof Date) {
