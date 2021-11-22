@@ -74,7 +74,7 @@ export default class BotCommand extends Command {
         },
         {
           id: "endOfDateOrQuarter",
-          type: Argument.union("date", Argument.range("integer", 1, Infinity)),
+          type: Argument.union(Argument.range("integer", 1, Infinity), "date"),
           prompt: {
             optional: true,
             retry: "날짜 | 분기를 입력해 주세요."
