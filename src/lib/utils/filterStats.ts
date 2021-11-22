@@ -20,7 +20,7 @@ export default async function filterStats(
     query.updated = { $gte: date.toDate(), $lte: nextDate.toDate() };
   } else if (typeof limit === "number" && Number.isInteger(limit) && statCount > limit) skip = statCount - limit;
   else if (limit === "quarter") {
-    if (quarters.length < 1)
+    if (!quarters.length)
       quarters = [
         await QuarterDB.create({
           quarter: 1,
