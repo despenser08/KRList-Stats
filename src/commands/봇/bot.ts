@@ -239,7 +239,7 @@ export default class BotCommand extends Command {
                 },
                 title: {
                   display: true,
-                  text: `${bot.name} 업타임`,
+                  text: `${bot.name} 업타임${limit === "quarter" ? ` (${filter.quarter}분기)` : ""}`,
                   font: { size: 40 }
                 },
                 subtitle: {
@@ -256,7 +256,7 @@ export default class BotCommand extends Command {
           });
 
           return msg.edit({
-            content: `**${bot.name}** 업타임 차트입니다.`,
+            content: `**${bot.name}** 업타임${limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`,
             files: [new MessageAttachment(chart, "chart.png")]
           });
         } else {
