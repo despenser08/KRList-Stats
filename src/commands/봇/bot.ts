@@ -192,13 +192,7 @@ export default class BotCommand extends Command {
             return msg.edit(`**${bot.name}** 데이터가 수집되지 않았습니다. ${message.util?.parsed?.prefix}봇수집을 사용하여 봇 수집을 시작하세요.`);
           else if (statCount < 1) return msg.edit(`**${bot.name}** 수집 대기중입니다. 잠시만 기다려주세요.`);
 
-          const status: {
-            online: number;
-            idle: number;
-            dnd: number;
-            streaming: number;
-            offline: number;
-          } = {
+          const status = {
             online: 0,
             idle: 0,
             dnd: 0,
