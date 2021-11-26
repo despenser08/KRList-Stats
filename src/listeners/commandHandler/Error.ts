@@ -16,6 +16,7 @@
  */
 
 import * as Sentry from "@sentry/node";
+import { SpanStatus } from "@sentry/tracing";
 import { Command, Listener } from "discord-akairo";
 import type { Message } from "discord.js";
 
@@ -33,7 +34,7 @@ export default class ErrorListener extends Listener {
 
     const transaction = this.client.transactions.get(message.id);
     if (transaction) {
-      transaction.setStatus("error");
+      transaction.setStatus(SpanStatus.InternalError);
       transaction.setData("error", error);
       transaction.finish();
       this.client.transactions.delete(message.id);

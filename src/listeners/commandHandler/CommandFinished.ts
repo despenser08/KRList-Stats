@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { SpanStatus } from "@sentry/tracing";
 import { Listener } from "discord-akairo";
 import type { Message } from "discord.js";
 
@@ -29,7 +30,7 @@ export default class CommandFinishedListener extends Listener {
   public async exec(message: Message) {
     const transaction = this.client.transactions.get(message.id);
     if (transaction) {
-      transaction.setStatus("success");
+      transaction.setStatus(SpanStatus.Ok);
       transaction.finish();
       this.client.transactions.delete(message.id);
     }

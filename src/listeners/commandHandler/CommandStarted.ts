@@ -27,15 +27,21 @@ export default class CommandStartedListener extends Listener {
     });
   }
 
-  public async exec(message: Message, command: Command) {
+  public async exec(message: Message, command: Command, args: unknown) {
     return this.client.transactions.set(
       message.id,
       Sentry.startTransaction({
         op: `command_${command.id}`,
         name: `명령어 - ${command.id}`,
         data: {
-          message: message.content,
-          author: message.author.id
+          message: {
+            id: message.id,
+            content: message.content,
+            author: { id: message.author.id, tag: message.author.tag },
+            channel: { id: message.channelId }
+          },
+          command: { id: command.id },
+          args
         }
       })
     );
