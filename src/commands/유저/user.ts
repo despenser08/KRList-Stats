@@ -53,9 +53,7 @@ export default class UserCommand extends Command {
         {
           id: "userOrId",
           type: Argument.union("user", "member", "string"),
-          prompt: {
-            start: "봇 | 유저를 입력해 주세요."
-          }
+          prompt: { start: "유저를 입력해 주세요." }
         }
       ]
     });
