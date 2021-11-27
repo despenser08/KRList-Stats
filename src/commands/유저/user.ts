@@ -106,6 +106,9 @@ export default class UserCommand extends Command {
                         : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
                             "초대 링크",
                             DiscordEndPoints.URL.inviteBot(bot.id, false)
+                          )}\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
+                            "신고하기",
+                            KoreanlistEndPoints.URL.botReport(bot)
                           )}`
                     }`
                   )
@@ -121,7 +124,12 @@ export default class UserCommand extends Command {
                 new KRLSEmbed()
                   .setTitle(`${server.name} (서버)`)
                   .setURL(KoreanlistEndPoints.URL.server(server))
-                  .setDescription(`https://discord.gg/${server.invite}`)
+                  .setDescription(
+                    `https://discord.gg/${server.invite}\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(server))} | ${hyperlink(
+                      "신고하기",
+                      KoreanlistEndPoints.URL.serverReport(server)
+                    )}`
+                  )
                   .setImage(
                     KoreanlistEndPoints.OG.server(server.id, server.name, server.intro, server.category, [
                       formatNumber(server.votes),
