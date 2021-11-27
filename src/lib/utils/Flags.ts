@@ -42,8 +42,8 @@ export class ServerFlags extends BitField<ServerFlagsString> {
 export class UserFlags extends BitField<UserFlagsString> {
   static FLAGS = {
     STAFF: 1 << 0,
-    BUG_HUNTER: 1 << 1,
-    BOT_REVIEWER: 1 << 2,
+    BUGHUNTER: 1 << 1,
+    BOTREVIEWER: 1 << 2,
     PREMIUM: 1 << 3
   };
 }

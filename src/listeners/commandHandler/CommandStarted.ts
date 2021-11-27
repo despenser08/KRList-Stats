@@ -37,8 +37,9 @@ export default class CommandStartedListener extends Listener {
           message: {
             id: message.id,
             content: message.content,
-            author: { id: message.author.id, tag: message.author.tag },
-            channel: { id: message.channelId }
+            author: message.author,
+            channel: { id: message.channelId },
+            guild: { id: message.guildId }
           },
           command: { id: command.id },
           args
