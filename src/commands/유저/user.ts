@@ -106,11 +106,11 @@ export default class UserCommand extends Command {
                         : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
                             "초대 링크",
                             DiscordEndPoints.URL.inviteBot(bot.id, false)
-                          )}\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
-                            "신고하기",
-                            KoreanlistEndPoints.URL.botReport(bot)
                           )}`
-                    }`
+                    }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
+                      "신고하기",
+                      KoreanlistEndPoints.URL.botReport(bot)
+                    )}`
                   )
                   .setImage(
                     KoreanlistEndPoints.OG.bot(bot.id, bot.name, bot.intro, bot.category, [formatNumber(bot.votes), formatNumber(bot.servers)])
