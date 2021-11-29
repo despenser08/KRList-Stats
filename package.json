@@ -37,7 +37,7 @@
     "djs-interaction-util": "^0.1.10",
     "dokdo": "^0.5.1",
     "moment-timezone": "^0.5.34",
-    "mongoose": "^6.0.13",
+    "mongoose": "^6.0.14",
     "node-schedule": "^2.1.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
