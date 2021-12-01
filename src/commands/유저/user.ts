@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "#lib/constants";
+import { FetchResponse, RawUser, UserFlagsEnum } from "#lib/types";
+import convert from "#utils/convertRawToType";
+import { formatNumber, getId } from "#utils/format";
+import isInterface from "#utils/isInterface";
+import KRLSEmbed from "#utils/KRLSEmbed";
+import KRLSPaginator from "#utils/KRLSPaginator";
 import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, SnowflakeUtil, User } from "discord.js";
-import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
-import { FetchResponse, RawUser, UserFlagsEnum } from "../../lib/types";
-import convert from "../../lib/utils/convertRawToType";
-import { formatNumber, getId } from "../../lib/utils/format";
-import isInterface from "../../lib/utils/isInterface";
-import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class UserCommand extends Command {
   constructor() {

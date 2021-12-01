@@ -15,23 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "#lib/constants";
+import BotDB from "#lib/database/models/Bot";
+import BotStatsDB from "#lib/database/models/BotStats";
+import { BotFlagsEnum, FetchResponse, RawBot } from "#lib/types";
+import convert from "#utils/convertRawToType";
+import createChart from "#utils/createChart";
+import filterStats from "#utils/filterStats";
+import { filterDesc, formatNumber, getId, lineUserText } from "#utils/format";
+import isInterface from "#utils/isInterface";
+import KRLSEmbed from "#utils/KRLSEmbed";
+import KRLSPaginator from "#utils/KRLSPaginator";
 import { hyperlink, time, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
-import { User, Message, MessageAttachment, GuildMember, SnowflakeUtil } from "discord.js";
+import { GuildMember, Message, MessageAttachment, SnowflakeUtil, User } from "discord.js";
 import moment from "moment-timezone";
-import { DiscordEndPoints, KoreanlistEndPoints, KoreanlistOrigin } from "../../lib/constants";
-import BotDB from "../../lib/database/models/Bot";
-import BotStatsDB from "../../lib/database/models/BotStats";
-import { BotFlagsEnum, FetchResponse, RawBot } from "../../lib/types";
-import convert from "../../lib/utils/convertRawToType";
-import createChart from "../../lib/utils/createChart";
-import filterStats from "../../lib/utils/filterStats";
-import { filterDesc, formatNumber, getId, lineUserText } from "../../lib/utils/format";
-import isInterface from "../../lib/utils/isInterface";
-import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class BotCommand extends Command {
   constructor() {

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { BotFlagsString, ServerFlagsString, UserFlagsString } from "#lib/types";
 import { BitField } from "discord.js";
-import type { BotFlagsString, ServerFlagsString, UserFlagsString } from "../types";
 
 export class BotFlags extends BitField<BotFlagsString> {
   static FLAGS = {

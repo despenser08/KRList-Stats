@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { KoreanlistEndPoints } from "#lib/constants";
+import ServerDB from "#lib/database/models/Server";
+import ServerStatsDB from "#lib/database/models/ServerStats";
+import type { FetchResponse, RawServer, ServerOwner } from "#lib/types";
+import convert from "#utils/convertRawToType";
+import { getId } from "#utils/format";
+import isInterface from "#utils/isInterface";
+import KRLSEmbed from "#utils/KRLSEmbed";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Guild, Message } from "discord.js";
-import { KoreanlistEndPoints } from "../../lib/constants";
-import ServerDB from "../../lib/database/models/Server";
-import ServerStatsDB from "../../lib/database/models/ServerStats";
-import type { FetchResponse, RawServer, ServerOwner } from "../../lib/types";
-import convert from "../../lib/utils/convertRawToType";
-import { getId } from "../../lib/utils/format";
-import isInterface from "../../lib/utils/isInterface";
-import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class ServerCollectCommand extends Command {
   constructor() {

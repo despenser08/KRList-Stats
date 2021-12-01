@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "Discord Bot that shows Koreanlist stats",
   "main": "dist/index.js",
+  "imports": {
+    "#utils/*": "./dist/lib/utils/*.js",
+    "#lib/*": "./dist/lib/*.js",
+    "#lib/env": "./dist/lib/env/index.js"
+  },
   "scripts": {
     "start": "node .",
     "lint": "eslint src --ext .ts",

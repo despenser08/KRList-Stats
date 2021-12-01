@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Colors } from "#lib/constants";
 import { MessageEmbed, MessageEmbedOptions } from "discord.js";
-import { Colors } from "../constants";
 
 export default class KRLSEmbed extends MessageEmbed {
   constructor(data?: MessageEmbed | MessageEmbedOptions) {

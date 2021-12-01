@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { KoreanlistEndPoints } from "#lib/constants";
+import type { BotOwner, ImageOptions, ServerOwner, User } from "#lib/types";
 import { hyperlink, userMention } from "@discordjs/builders";
 import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
-import { KoreanlistEndPoints } from "../constants";
-import type { ImageOptions, BotOwner, User, ServerOwner } from "../types";
 import { BotFlags, ServerFlags } from "./Flags";
 
 export function formatNumber(value?: number) {
@@ -44,10 +44,6 @@ export function makeBotURL({ id, vanity, flags = new BotFlags(0) }: { id: string
 
 export function makeServerURL({ id, vanity, flags = new ServerFlags(0) }: { id: string; flags?: ServerFlags; vanity?: string }) {
   return `/servers/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
-}
-
-export function makeUserURL({ id }: { id: string }) {
-  return `/users/${id}`;
 }
 
 export function lineUserText(user?: User | BotOwner | ServerOwner) {

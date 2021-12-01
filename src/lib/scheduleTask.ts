@@ -23,7 +23,7 @@ import { KoreanlistEndPoints } from "./constants";
 import BotDB from "./database/models/Bot";
 import BotStatsDB from "./database/models/BotStats";
 import ServerDB from "./database/models/Server";
-import ServerStats from "./database/models/ServerStats";
+import ServerStatsDB from "./database/models/ServerStats";
 import { envParseString } from "./env";
 import type { FetchResponse, RawBot, RawServer } from "./types";
 
@@ -54,7 +54,7 @@ export default function scheduleTask(client: AkairoClient) {
           .get<FetchResponse<RawServer>>(KoreanlistEndPoints.API.server(server.id))
           .then(({ data: { data } }) => {
             if (data)
-              return ServerStats.create({
+              return ServerStatsDB.create({
                 id: data.id,
                 updated: moment(date).toDate(),
                 votes: data.votes,

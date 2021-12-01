@@ -15,9 +15,9 @@ FROM base as builder
 
 COPY . .
 
-RUN yarn install --frozen-lockfile \
-  && yarn cache clean \
-  && yarn build
+RUN yarn install --frozen-lockfile && yarn cache clean
+
+RUN yarn build
 
 
 FROM base as production
@@ -27,7 +27,7 @@ COPY --from=builder /usr/src/bot/dist ./dist
 COPY ./assets ./assets
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --production --frozen-lockfile \
-  && yarn cache clean
+
+RUN yarn install --production --frozen-lockfile && yarn cache clean
 
 CMD yarn start

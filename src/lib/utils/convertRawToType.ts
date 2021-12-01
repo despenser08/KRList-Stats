@@ -18,21 +18,21 @@
 import {
   Bot,
   BotOwner,
-  RawBot,
-  RawBotOwner,
-  RawUser,
   BotState,
   BotStatusEmojiEnum,
   BotStatusEnum,
-  User,
+  RawBot,
+  RawBotOwner,
   RawServer,
-  Server,
-  ServerState,
-  RawServerOwner,
-  ServerOwner,
   RawServerBot,
-  ServerBot
-} from "../types";
+  RawServerOwner,
+  RawUser,
+  Server,
+  ServerBot,
+  ServerOwner,
+  ServerState,
+  User
+} from "#lib/types";
 import { BotFlags, ServerFlags, UserFlags } from "./Flags";
 
 function bot(bot: RawBot): Bot {

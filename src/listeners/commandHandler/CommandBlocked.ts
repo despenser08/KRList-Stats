@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { CommandBlocked } from "#lib/constants";
 import { Command, Listener } from "discord-akairo";
 import type { Message } from "discord.js";
-import { CommandBlocked } from "../../lib/constants";
 
 export default class CommandBlockedListener extends Listener {
   constructor() {

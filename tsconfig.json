@@ -2,6 +2,12 @@
   "extends": "@sapphire/ts-config",
   "compilerOptions": {
     "target": "ESNext",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "#utils/*": ["lib/utils/*"],
+      "#lib/*": ["lib/*"]
+    },
     "removeComments": true,
     "outDir": "./dist",
     "declaration": false,

@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as Tracing from "@sentry/tracing";
+import { CommandBlocked } from "#lib/constants";
+import { envParseArray, envParseInteger, envParseString } from "#lib/env";
+import createLogger from "#utils/createLogger";
 import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 import type { Transaction } from "@sentry/types";
 import { AkairoClient, CommandHandler, ListenerHandler } from "discord-akairo";
 import { Collection, Intents } from "discord.js";
 import Dokdo from "dokdo";
+import moment from "moment-timezone";
 import { connect } from "mongoose";
 import path from "path";
-import { CommandBlocked } from "../lib/constants";
-import createLogger from "../lib/utils/createLogger";
-import moment from "moment-timezone";
-import { envParseArray, envParseInteger, envParseString } from "../lib/env";
 import type { Logger } from "winston";
 
 class CustomDokdo extends Dokdo {

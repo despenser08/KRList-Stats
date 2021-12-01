@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { botDescription, KoreanlistEndPoints } from "#lib/constants";
+import type { FetchResponse, RawBot } from "#lib/types";
+import convert from "#utils/convertRawToType";
+import KRLSEmbed from "#utils/KRLSEmbed";
+import KRLSPaginator from "#utils/KRLSPaginator";
 import axios from "axios";
-import { Argument, Command, Category } from "discord-akairo";
+import { Argument, Category, Command } from "discord-akairo";
 import { Message, MessageActionRow, MessageButton } from "discord.js";
-import { botDescription, KoreanlistEndPoints } from "../../lib/constants";
-import type { FetchResponse, RawBot } from "../../lib/types";
-import convert from "../../lib/utils/convertRawToType";
-import KRLSEmbed from "../../lib/utils/KRLSEmbed";
-import KRLSPaginator from "../../lib/utils/KRLSPaginator";
 
 export default class HelpCommand extends Command {
   constructor() {

@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { envParseArray } from "#lib/env";
+import scheduleTask from "#lib/scheduleTask";
 import { Listener } from "discord-akairo";
-import { envParseArray } from "../../lib/env";
-import scheduleFetch from "../../lib/scheduleTask";
 
 export default class ReadyListener extends Listener {
   constructor() {
@@ -25,7 +25,7 @@ export default class ReadyListener extends Listener {
   }
 
   public async exec() {
-    scheduleFetch(this.client);
+    scheduleTask(this.client);
 
     this.client.user?.setPresence({
       status: "idle",

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { BotFlags, ServerFlags, UserFlags } from "#utils/Flags";
 import { formatEmoji } from "@discordjs/builders";
-import type { BotFlags, ServerFlags, UserFlags } from "./utils/Flags";
 
 export interface FetchResponse<T> {
   code: number;

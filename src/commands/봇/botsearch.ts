@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { KoreanlistEndPoints } from "#lib/constants";
+import type { FetchListResponse, RawBot } from "#lib/types";
+import convert from "#utils/convertRawToType";
+import isInterface from "#utils/isInterface";
+import KRLSEmbed from "#utils/KRLSEmbed";
 import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
-import { KoreanlistEndPoints } from "../../lib/constants";
-import type { FetchListResponse, RawBot } from "../../lib/types";
-import convert from "../../lib/utils/convertRawToType";
-import isInterface from "../../lib/utils/isInterface";
-import KRLSEmbed from "../../lib/utils/KRLSEmbed";
 
 export default class BotSearchCommand extends Command {
   constructor() {

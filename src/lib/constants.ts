@@ -17,11 +17,11 @@
 
 // https://github.com/koreanbots/core
 
+import type { BotFlags, ServerFlags } from "#utils/Flags";
+import { makeBotURL, makeImageURL, makeServerURL } from "#utils/format";
 import { Permissions } from "discord.js";
 import { URL } from "url";
 import type { KoreanlistImageOptions } from "./types";
-import type { BotFlags, ServerFlags } from "./utils/Flags";
-import { makeBotURL, makeImageURL, makeServerURL, makeUserURL } from "./utils/format";
 
 export const KoreanlistOrigin = "https://koreanbots.dev";
 export const KoreanlistEndPoints = {
@@ -79,7 +79,7 @@ export const KoreanlistEndPoints = {
       return `${this.server(options)}/report`;
     }
     static user(options: { id: string }) {
-      return `${KoreanlistOrigin}${makeUserURL(options)}`;
+      return `${KoreanlistOrigin}/users/${options.id}`;
     }
   },
   API: class {

@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { allowDokdoCommand, CommandBlocked } from "#lib/constants";
+import { envParseArray } from "#lib/env";
 import { Command } from "discord-akairo";
 import type { Message } from "discord.js";
-import { allowDokdoCommand, CommandBlocked } from "../../lib/constants";
-import { envParseArray } from "../../lib/env";
 
 export default class DokdoCommand extends Command {
   constructor() {

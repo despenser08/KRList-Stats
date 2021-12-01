@@ -30,8 +30,7 @@ export default function createChart(
     height,
     plugins: { requireLegacy: ["chartjs-plugin-datalabels"] },
     chartCallback: (chart) => {
-      // chart.defaults.font.family = "Noto Sans KR";
-      chart.defaults.set("font", { family: "Noto Sans KR" });
+      chart.defaults.font.family = "Noto Sans KR";
       chart.defaults.color = "#000";
     },
     backgroundColour: "white"

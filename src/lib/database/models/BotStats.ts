@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import type { RawBotStatus } from "#lib/types";
 import { getModelForClass, prop } from "@typegoose/typegoose";
-import type { RawBotStatus } from "../../types";
 
 class BotStats {
   @prop({ required: true })
