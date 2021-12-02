@@ -66,7 +66,6 @@ export default class MarkedRenderer extends marked.Renderer {
   public tablecell(content: string, flags: { header: boolean; align: "center" | "left" | "right" }) {
     if (flags.header) this.tableHeader.push(content);
     else this.tableData[this.tableData.length - 1].push(content);
-
     this.tableAlign.push(flags.align || "justify");
     return content;
   }
