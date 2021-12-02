@@ -11,7 +11,7 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
-"@discordjs/builders@^0.8.1", "@discordjs/builders@^0.8.2":
+"@discordjs/builders@^0.8.1":
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-0.8.2.tgz#c3ef99caa9ebe70a4196b987011d90136c71054a"
   integrity sha512-/YRd11SrcluqXkKppq/FAVzLIPRVlIVmc6X8ZklspzMIHDtJ+A4W37D43SHvLdH//+NnK+SHW/WeOF4Ts54PeQ==
@@ -21,6 +21,17 @@
     ow "^0.27.0"
     ts-mixer "^6.0.0"
     tslib "^2.3.1"
+
+"@discordjs/builders@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-0.9.0.tgz#1ca17677e7c180d4f266191596e17e9633180417"
+  integrity sha512-XM/5yrTxMF0SDKza32YzGDQO1t+qEJTaF8Zvxu/UOjzoqzMPPGQBjC1VgZxz8/CBLygW5qI+UVygMa88z13G3g==
+  dependencies:
+    "@sindresorhus/is" "^4.2.0"
+    discord-api-types "^0.24.0"
+    ts-mixer "^6.0.0"
+    tslib "^2.3.1"
+    zod "^3.11.6"
 
 "@discordjs/collection@^0.3.2":
   version "0.3.2"
@@ -2039,3 +2050,8 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+zod@^3.11.6:
+  version "3.11.6"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.11.6.tgz#e43a5e0c213ae2e02aefe7cb2b1a6fa3d7f1f483"
+  integrity sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==
