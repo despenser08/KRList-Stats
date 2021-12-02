@@ -58,7 +58,7 @@ export default class MarkedRenderer extends marked.Renderer {
     this.tableData.pop();
     return codeBlock(
       table([this.tableHeader, ...this.tableData], {
-        columnDefault: { width: Math.round(40 / this.tableHeader.length) },
+        columnDefault: { width: Math.round(50 / this.tableHeader.length) },
         columns: this.tableAlign.map((align) => ({ alignment: align }))
       })
     );
