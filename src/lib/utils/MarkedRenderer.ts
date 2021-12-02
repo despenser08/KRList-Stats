@@ -43,10 +43,10 @@ export default class MarkedRenderer extends marked.Renderer {
     return hyperlink(text, href, title);
   }
   public list(body: string, ordered: boolean, start: number) {
-    return `${ordered ? `${start}.` : "-"} ${body}`;
+    return `${ordered ? `${start}.` : "-"} ${body}\n`;
   }
   public listitem(text: string) {
-    return `- ${text}`;
+    return `- ${text}\n`;
   }
   public paragraph(text: string) {
     return `${text}\n`;
