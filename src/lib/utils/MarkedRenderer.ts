@@ -1,4 +1,4 @@
-import { blockQuote, bold, codeBlock, hyperlink, inlineCode, italic, strikethrough } from "@discordjs/builders";
+import { bold, codeBlock, hyperlink, inlineCode, italic, quote, strikethrough } from "@discordjs/builders";
 import { marked } from "marked";
 import { table } from "table";
 
@@ -8,8 +8,8 @@ export default class MarkedRenderer extends marked.Renderer {
   private tableAlign: ("center" | "justify" | "left" | "right")[] = [];
   private tableData: string[][] = [];
 
-  public blockquote(quote: string) {
-    return blockQuote(quote);
+  public blockquote(blockQuote: string) {
+    return quote(blockQuote);
   }
   public br() {
     return "\n";
