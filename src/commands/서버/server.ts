@@ -177,6 +177,7 @@ export default class ServerCommand extends Command {
               embeds: [
                 new KRLSEmbed()
                   .setTitle(`설명 이미지 #${i + 1}`)
+                  .setDescription(desc.images[i].endsWith(".svg") ? "SVG (미리보기 없음)" : "")
                   .setURL(desc.images[i])
                   .setImage(desc.images[i])
               ]

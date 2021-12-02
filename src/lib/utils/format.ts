@@ -19,7 +19,9 @@ import { KoreanlistEndPoints } from "#lib/constants";
 import type { BotOwner, ImageOptions, ServerOwner, User } from "#lib/types";
 import { hyperlink, userMention } from "@discordjs/builders";
 import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
+import { marked } from "marked";
 import { BotFlags, ServerFlags } from "./Flags";
+import MarkedRenderer from "./MarkedRenderer";
 
 export function formatNumber(value?: number) {
   if (!value) return "0";
@@ -53,21 +55,22 @@ export function lineUserText(user?: User | BotOwner | ServerOwner) {
 }
 
 export function filterDesc(text: string) {
-  const imageRegex = /!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/g;
-  const images: string[] = [];
+  const escapeSymbol = {
+    nbsp: " ",
+    amp: "&",
+    quot: '"',
+    lt: "<",
+    gt: ">"
+  };
 
-  const res = text
-    .replace(/<[^>]*>/g, "")
-    .replace(imageRegex, (image) => {
-      const url = image.replace(imageRegex, "$1");
-      images.push(url);
+  const renderer = new MarkedRenderer();
 
-      return hyperlink(`[설명 이미지 #${images.length}]`, url);
-    })
-    .replace(/^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,} {0,}(\n)?\s{0,}$/gm, "\n")
-    .replace(/(\r\n|\n|\r){2,}/g, "\n\n");
+  const res = marked
+    .parse(text, { renderer })
+    .replace(/(\r\n|\n|\r){2,}/g, "\n\n")
+    .replace(/&(nbsp|amp|quot|lt|gt);/g, (_, entity: keyof typeof escapeSymbol) => escapeSymbol[entity]);
 
-  return { res, images };
+  return { res, images: renderer.images };
 }
 
 export function getId(data: DiscordUser | GuildMember | Guild | string) {
