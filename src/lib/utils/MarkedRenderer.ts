@@ -56,10 +56,12 @@ export default class MarkedRenderer extends marked.Renderer {
   }
   public table() {
     this.tableData.pop();
-    return `\n\`\`\`\n${table([this.tableHeader, ...this.tableData], {
-      columnDefault: { width: Math.round(40 / this.tableHeader.length) },
-      columns: this.tableAlign.map((align) => ({ alignment: align }))
-    })}\n\`\`\`\n`;
+    return codeBlock(
+      table([this.tableHeader, ...this.tableData], {
+        columnDefault: { width: Math.round(40 / this.tableHeader.length) },
+        columns: this.tableAlign.map((align) => ({ alignment: align }))
+      })
+    );
   }
   public tablecell(content: string, flags: { header: boolean; align: "center" | "left" | "right" }) {
     if (flags.header) this.tableHeader.push(content);
@@ -70,6 +72,6 @@ export default class MarkedRenderer extends marked.Renderer {
   }
   public tablerow(content: string) {
     this.tableData.push([]);
-    return `${content}`;
+    return content;
   }
 }
