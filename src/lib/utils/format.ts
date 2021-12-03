@@ -65,10 +65,11 @@ export function filterDesc(text: string) {
 
   const renderer = new MarkedRenderer();
 
-  const res = marked
+  let res = marked
     .parse(text, { renderer })
     .replace(/(\r\n|\n|\r){2,}/g, "\n\n")
     .replace(/&(nbsp|amp|quot|lt|gt);/g, (_, entity: keyof typeof escapeSymbol) => escapeSymbol[entity]);
+  if (res.length > 4096) res = `${res.substring(0, 4092)}\n...`;
 
   return { res, images: renderer.images };
 }

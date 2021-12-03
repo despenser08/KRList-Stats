@@ -56,12 +56,17 @@ export default class MarkedRenderer extends marked.Renderer {
   }
   public table() {
     this.tableData.pop();
-    return codeBlock(
-      table([this.tableHeader, ...this.tableData], {
-        columnDefault: { width: Math.round(50 / this.tableHeader.length) },
-        columns: this.tableAlign.map((align) => ({ alignment: align }))
-      })
-    );
+
+    const res = table([this.tableHeader, ...this.tableData], {
+      columnDefault: { width: Math.round(50 / this.tableHeader.length) },
+      columns: this.tableAlign.map((align) => ({ alignment: align }))
+    });
+
+    this.tableHeader = [];
+    this.tableAlign = [];
+    this.tableData = [];
+
+    return `\n\`\`\`\n${res}\n\`\`\`\n`;
   }
   public tablecell(content: string, flags: { header: boolean; align: "center" | "left" | "right" }) {
     if (flags.header) this.tableHeader.push(content);
