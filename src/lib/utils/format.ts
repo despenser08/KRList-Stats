@@ -23,6 +23,11 @@ import { marked } from "marked";
 import { BotFlags, ServerFlags } from "./Flags";
 import MarkedRenderer from "./MarkedRenderer";
 
+/**
+ * @copyright Koreanbots
+ * @license https://github.com/koreanbots/core/blob/master/LICENSE
+ * @see https://github.com/koreanbots/core/blob/master/utils/Tools.ts
+ */
 export function formatNumber(value?: number) {
   if (!value) return "0";
   const suffixes = ["", "만", "억", "조", "해"];
@@ -36,14 +41,29 @@ export function formatNumber(value?: number) {
   return shortValue + suffixes[suffixNum];
 }
 
+/**
+ * @copyright Koreanbots
+ * @license https://github.com/koreanbots/core/blob/master/LICENSE
+ * @see https://github.com/koreanbots/core/blob/master/utils/Tools.ts
+ */
 export function makeImageURL(root: string, { format = "gif", size = 512 }: ImageOptions = { format: "gif", size: 512 }): string {
   return `${root}.${format}?size=${size}`;
 }
 
+/**
+ * @copyright Koreanbots
+ * @license https://github.com/koreanbots/core/blob/master/LICENSE
+ * @see https://github.com/koreanbots/core/blob/master/utils/Tools.ts
+ */
 export function makeBotURL({ id, vanity, flags = new BotFlags(0) }: { id: string; flags?: BotFlags; vanity?: string }) {
   return `/bots/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
 }
 
+/**
+ * @copyright Koreanbots
+ * @license https://github.com/koreanbots/core/blob/master/LICENSE
+ * @see https://github.com/koreanbots/core/blob/master/utils/Tools.ts
+ */
 export function makeServerURL({ id, vanity, flags = new ServerFlags(0) }: { id: string; flags?: ServerFlags; vanity?: string }) {
   return `/servers/${(flags.has("TRUSTED") || flags.has("PARTNERED")) && vanity ? vanity : id}`;
 }
