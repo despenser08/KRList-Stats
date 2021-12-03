@@ -57,7 +57,7 @@ export default class BotCommand extends Command {
           ],
           prompt: {
             optional: true,
-            retry: '"정보" | "투표" | "서버" | "키워드"를 입력해 주세요.'
+            retry: '"정보" | "투표" | "서버" | "업타임"을 입력해 주세요.'
           },
           default: "info"
         },
