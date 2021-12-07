@@ -118,7 +118,7 @@ export default class BotCommand extends Command {
         if (info === "info") {
           const flags = bot.flags.toArray();
           const created = SnowflakeUtil.deconstruct(bot.id).date;
-          const desc = filterDesc(bot.desc);
+          const desc = await filterDesc(bot.desc);
 
           const paginator = new KRLSPaginator({
             pages: [
@@ -165,16 +165,17 @@ export default class BotCommand extends Command {
             ]
           });
 
-          for (let i = 0; i < desc.images.length; i++)
-            paginator.addPage({
-              embeds: [
-                new KRLSEmbed()
-                  .setTitle(`설명 이미지 #${i + 1}`)
-                  .setDescription(desc.images[i].endsWith(".svg") ? "SVG (미리보기 없음)" : "")
-                  .setURL(desc.images[i])
-                  .setImage(desc.images[i])
-              ]
-            });
+          for await (const image of desc.images) {
+            if (image.raw)
+              paginator.addPage({
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(image.url)]
+              });
+            else
+              paginator.addPage({
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(`attachment://${image.index}.png`)],
+                files: [image.data]
+              });
+          }
 
           if (bot.banner)
             paginator.addPage({

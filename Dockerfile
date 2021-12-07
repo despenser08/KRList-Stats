@@ -8,6 +8,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /usr/share/fonts/opentype/noto
+COPY ./assets/fonts/NotoSansKR-Regular.otf /usr/share/fonts/opentype/noto/NotoSansKR-Regular.otf
+RUN fc-cache -fv
+
 WORKDIR /usr/src/bot
 
 

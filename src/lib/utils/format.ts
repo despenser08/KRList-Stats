@@ -18,8 +18,10 @@
 import { KoreanlistEndPoints } from "#lib/constants";
 import type { BotOwner, ImageOptions, ServerOwner, User } from "#lib/types";
 import { hyperlink, userMention } from "@discordjs/builders";
-import type { Guild, GuildMember, User as DiscordUser } from "discord.js";
+import axios from "axios";
+import { Guild, GuildMember, MessageAttachment, User as DiscordUser } from "discord.js";
 import { marked } from "marked";
+import sharp from "sharp";
 import { BotFlags, ServerFlags } from "./Flags";
 import MarkedRenderer from "./MarkedRenderer";
 
@@ -74,7 +76,7 @@ export function lineUserText(user?: User | BotOwner | ServerOwner) {
   return `${hyperlink(`${user.username}#${user.tag}`, KoreanlistEndPoints.URL.user(user))} (${userMention(user.id)})`;
 }
 
-export function filterDesc(text: string) {
+export async function filterDesc(text: string) {
   const escapeSymbol = {
     nbsp: " ",
     amp: "&",
@@ -91,7 +93,28 @@ export function filterDesc(text: string) {
     .replace(/&(nbsp|amp|quot|lt|gt);/g, (_, entity: keyof typeof escapeSymbol) => escapeSymbol[entity]);
   if (res.length > 4096) res = `${res.substring(0, 4092)}\n...`;
 
-  return { res, images: renderer.images };
+  const images: ({ raw: true; url: string; index: number } | { raw: false; url: string; index: number; data: MessageAttachment })[] = [];
+  for await (const url of renderer.images) {
+    const index = renderer.images.indexOf(url) + 1;
+
+    const res = await axios
+      .get(url)
+      .then((data) => {
+        if (data.headers["content-type"].includes("image/svg+xml"))
+          return Buffer.from(data.data.replace(/font-family="[^"]*"/, 'font-family="Noto Sans KR"'));
+        else return null;
+      })
+      .catch(() => null);
+
+    if (res)
+      await sharp(res)
+        .png()
+        .toBuffer()
+        .then((data) => images.push({ raw: false, url, index, data: new MessageAttachment(data, `${index}.png`) }));
+    else images.push({ raw: true, url, index });
+  }
+
+  return { res, images };
 }
 
 export function getId(data: DiscordUser | GuildMember | Guild | string) {
