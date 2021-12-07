@@ -87,15 +87,16 @@ export async function filterDesc(text: string) {
 
   const renderer = new MarkedRenderer();
 
-  let res = marked
-    .parse(text, { renderer })
-    .replace(/(\r\n|\n|\r){2,}/g, "\n\n")
-    .replace(/&(nbsp|amp|quot|lt|gt);/g, (_, entity: keyof typeof escapeSymbol) => escapeSymbol[entity]);
-  if (res.length > 4096) res = `${res.substring(0, 4092)}\n...`;
+  const res =
+    marked
+      .parse(text, { renderer })
+      .replace(/(\r\n|\n|\r){2,}/g, "\n\n")
+      .replace(/&(nbsp|amp|quot|lt|gt);/g, (_, entity: keyof typeof escapeSymbol) => escapeSymbol[entity])
+      .match(/[\s\S]{1,4096}/g) ?? [];
 
-  const images: ({ raw: true; url: string; index: number } | { raw: false; url: string; index: number; data: MessageAttachment })[] = [];
+  const images: ({ raw: true; url: string; order: number } | { raw: false; url: string; order: number; data: MessageAttachment })[] = [];
   for await (const url of renderer.images) {
-    const index = renderer.images.indexOf(url) + 1;
+    const order = renderer.images.indexOf(url) + 1;
 
     const res = await axios
       .get(url)
@@ -110,8 +111,8 @@ export async function filterDesc(text: string) {
       await sharp(res)
         .png()
         .toBuffer()
-        .then((data) => images.push({ raw: false, url, index, data: new MessageAttachment(data, `${index}.png`) }));
-    else images.push({ raw: true, url, index });
+        .then((data) => images.push({ raw: false, url, order, data: new MessageAttachment(data, `${order}.png`) }));
+    else images.push({ raw: true, url, order });
   }
 
   return { res, images };

@@ -167,19 +167,23 @@ export default class ServerCommand extends Command {
                       ])
                     )
                 ]
-              },
-              { embeds: [new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res)] }
+              }
             ]
           });
+
+          if (desc.res.length > 1)
+            for (let i = 0; i < desc.res.length; i++)
+              paginator.addPage({ embeds: [new KRLSEmbed().setTitle(`서버 설명 #${i + 1}`).setDescription(desc.res[i])] });
+          else paginator.addPage({ embeds: [new KRLSEmbed().setTitle("서버 설명").setDescription(desc.res[0])] });
 
           for await (const image of desc.images) {
             if (image.raw)
               paginator.addPage({
-                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(image.url)]
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.order}`).setURL(image.url).setImage(image.url)]
               });
             else
               paginator.addPage({
-                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(`attachment://${image.index}.png`)],
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.order}`).setURL(image.url).setImage(`attachment://${image.order}.png`)],
                 files: [image.data]
               });
           }

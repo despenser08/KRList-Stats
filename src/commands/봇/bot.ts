@@ -31,6 +31,7 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, MessageAttachment, SnowflakeUtil, User } from "discord.js";
+import { ButtonCheckBool } from "djs-interaction-util";
 import moment from "moment-timezone";
 
 export default class BotCommand extends Command {
@@ -112,6 +113,13 @@ export default class BotCommand extends Command {
         }
         const bot = convert.bot(data.data);
 
+        if (bot.category.includes("NSFW")) {
+          const checkNSFW = new ButtonCheckBool({
+            page: { embeds: [new KRLSEmbed().setTitle("해당 컨텐츠는 만19세 이상의 성인만 열람할 수 있습니다.").setDescription("계속하시겠습니까?")] }
+          });
+          if (!(await checkNSFW.run(message, msg))) return msg.edit("취소되었습니다.");
+        }
+
         const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
         const statCount = await BotStatsDB.countDocuments({ id: bot.id });
 
@@ -160,19 +168,23 @@ export default class BotCommand extends Command {
                       KoreanlistEndPoints.OG.bot(bot.id, bot.name, bot.intro, bot.category, [formatNumber(bot.votes), formatNumber(bot.servers)])
                     )
                 ]
-              },
-              { embeds: [new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res)] }
+              }
             ]
           });
+
+          if (desc.res.length > 1)
+            for (let i = 0; i < desc.res.length; i++)
+              paginator.addPage({ embeds: [new KRLSEmbed().setTitle(`봇 설명 #${i + 1}`).setDescription(desc.res[i])] });
+          else paginator.addPage({ embeds: [new KRLSEmbed().setTitle("봇 설명").setDescription(desc.res[0])] });
 
           for await (const image of desc.images) {
             if (image.raw)
               paginator.addPage({
-                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(image.url)]
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.order}`).setURL(image.url).setImage(image.url)]
               });
             else
               paginator.addPage({
-                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.index}`).setURL(image.url).setImage(`attachment://${image.index}.png`)],
+                embeds: [new KRLSEmbed().setTitle(`설명 이미지 #${image.order}`).setURL(image.url).setImage(`attachment://${image.order}.png`)],
                 files: [image.data]
               });
           }
