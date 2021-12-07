@@ -774,7 +774,7 @@ discord.js@^13.3.1:
     node-fetch "^2.6.1"
     ws "^8.2.3"
 
-djs-interaction-util@^0.2.3:
+djs-interaction-util@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.2.4.tgz#e75d73b12c89c93ab5c510b12929c27bd013e380"
   integrity sha512-QNd1OHaohp4sBaRNg1gTL+spbRhx3GumvivSbO1ubIhKR5e9nnp/saYTgP55SwSBRZ6fs4XRFx8iVQx6/Zv+sw==
