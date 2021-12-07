@@ -239,10 +239,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^16.11.11":
-  version "16.11.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.11.tgz#6ea7342dfb379ea1210835bada87b3c512120234"
-  integrity sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==
+"@types/node@*", "@types/node@^16.11.12":
+  version "16.11.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.12.tgz#ac7fb693ac587ee182c3780c26eb65546a1a3c10"
+  integrity sha512-+2Iggwg7PxoO5Kyhvsq9VarmPbIelXP070HMImEpbtGCoyWNINQj4wzjbQCXzdHTRXnqufutJb5KAURZANNBAw==
 
 "@types/sharp@^0.29.4":
   version "0.29.4"
@@ -774,10 +774,10 @@ discord.js@^13.3.1:
     node-fetch "^2.6.1"
     ws "^8.2.3"
 
-djs-interaction-util@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.2.2.tgz#99e4d1dbf234e7d56c1fc79184d71b254b76dc0c"
-  integrity sha512-6zy7GvxoGltdailgx6H2PKVY9aydHjdOxCVUV2AaIUL+yb7TTc5t4lyaRdRDSfqjEc5Oe2zy3+uoef9GwYUGkw==
+djs-interaction-util@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/djs-interaction-util/-/djs-interaction-util-0.2.3.tgz#7a93c27e60d9870f18c0533dd29ac199ad9dd128"
+  integrity sha512-eJuR4brt8Ui0Uzxs3h7DrMNPeLfCN5XIJCJG7uQlKZLowgaSpCr4rQILkqpmaXtp3Pirxs7rOmcuBPkNlk5xmQ==
 
 doctrine@^3.0.0:
   version "3.0.0"
