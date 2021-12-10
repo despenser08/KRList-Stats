@@ -24,6 +24,7 @@ import createChart from "#utils/createChart";
 import filterStats from "#utils/filterStats";
 import { filterDesc, formatNumber, getId, lineUserText } from "#utils/format";
 import isInterface from "#utils/isInterface";
+import KRLSCheckBool from "#utils/KRLSCheckBool";
 import KRLSEmbed from "#utils/KRLSEmbed";
 import KRLSPaginator from "#utils/KRLSPaginator";
 import { hyperlink, time, userMention } from "@discordjs/builders";
@@ -31,7 +32,6 @@ import * as Sentry from "@sentry/node";
 import axios, { AxiosError } from "axios";
 import { Argument, Command } from "discord-akairo";
 import { GuildMember, Message, MessageAttachment, SnowflakeUtil, User } from "discord.js";
-import { ButtonCheckBool } from "djs-interaction-util";
 import moment from "moment-timezone";
 
 export default class BotCommand extends Command {
@@ -114,10 +114,10 @@ export default class BotCommand extends Command {
         const bot = convert.bot(data.data);
 
         if (bot.category.includes("NSFW")) {
-          const checkNSFW = new ButtonCheckBool({
+          const checkNSFW = new KRLSCheckBool({
             page: { embeds: [new KRLSEmbed().setTitle("해당 컨텐츠는 만19세 이상의 성인만 열람할 수 있습니다.").setDescription("계속하시겠습니까?")] }
           });
-          if (!(await checkNSFW.run(message, msg))) return msg.edit("취소되었습니다.");
+          if (!(await checkNSFW.run(message, msg))) return msg.edit({ embeds: [new KRLSEmbed().setDescription("취소되었습니다.")] });
         }
 
         const botDB = await BotDB.findOneAndUpdate({ id: bot.id }, {}, { upsert: true, new: true, setDefaultsOnInsert: true });
