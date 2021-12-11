@@ -39,7 +39,7 @@
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "discord-akairo/discord-akairo",
     "discord.js": "^13.3.1",
-    "djs-interaction-util": "^0.2.6",
+    "djs-interaction-util": "^0.2.7",
     "dokdo": "^0.5.1",
     "marked": "^4.0.7",
     "moment-timezone": "^0.5.34",
