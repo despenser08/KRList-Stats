@@ -258,7 +258,13 @@ export default class ServerCommand extends Command {
               new KRLSEmbed()
                 .setTitle(server.name)
                 .setURL(KoreanlistEndPoints.URL.server(server))
-                .setDescription(`${statName} 차트입니다.`)
+                .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.icon(server.id)}`)
+                .setDescription(
+                  `https://discord.gg/${server.invite} | ${moment.duration(statCount, "minutes").humanize()} 수집됨\n${hyperlink(
+                    "하트 추가",
+                    KoreanlistEndPoints.URL.serverVote(server)
+                  )} | ${hyperlink("신고하기", KoreanlistEndPoints.URL.serverReport(server))}\n\n${statName} 차트입니다.`
+                )
                 .setImage("attachment://chart.png")
             ],
             files: [new MessageAttachment(chart, "chart.png")]

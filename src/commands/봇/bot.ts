@@ -267,7 +267,20 @@ export default class BotCommand extends Command {
               new KRLSEmbed()
                 .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
                 .setURL(KoreanlistEndPoints.URL.bot(bot))
-                .setDescription(`업타임${limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`)
+                .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
+                .setDescription(
+                  `${userMention(bot.id)} | ${moment.duration(statCount, "minutes").humanize()} 수집됨${
+                    bot.url
+                      ? ` | ${hyperlink("초대 링크", bot.url)}`
+                      : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
+                          "초대 링크",
+                          DiscordEndPoints.URL.inviteBot(bot.id, false)
+                        )}`
+                  }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
+                    "신고하기",
+                    KoreanlistEndPoints.URL.botReport(bot)
+                  )}\n\n업타임${limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`
+                )
                 .setImage("attachment://chart.png")
             ],
             files: [new MessageAttachment(chart, "chart.png")]
@@ -331,7 +344,20 @@ export default class BotCommand extends Command {
                 new KRLSEmbed()
                   .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
                   .setURL(KoreanlistEndPoints.URL.bot(bot))
-                  .setDescription(`${statName}${info === "votes" || limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`)
+                  .setThumbnail(`${KoreanlistOrigin}${KoreanlistEndPoints.CDN.avatar(bot.id)}`)
+                  .setDescription(
+                    `${userMention(bot.id)} | ${moment.duration(statCount, "minutes").humanize()} 수집됨${
+                      bot.url
+                        ? ` | ${hyperlink("초대 링크", bot.url)}`
+                        : `\n생성됨: ${hyperlink("슬래시 초대 링크", DiscordEndPoints.URL.inviteBot(bot.id))} | ${hyperlink(
+                            "초대 링크",
+                            DiscordEndPoints.URL.inviteBot(bot.id, false)
+                          )}`
+                    }\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.botVote(bot))} | ${hyperlink(
+                      "신고하기",
+                      KoreanlistEndPoints.URL.botReport(bot)
+                    )}\n\n${statName}${info === "votes" || limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`
+                  )
                   .setImage("attachment://chart.png")
               ],
               files: [new MessageAttachment(chart, "chart.png")]
