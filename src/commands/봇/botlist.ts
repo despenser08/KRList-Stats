@@ -18,11 +18,10 @@
 import { KoreanlistEndPoints } from "#lib/constants";
 import type { FetchListResponse, RawBot } from "#lib/types";
 import convert from "#utils/convertRawToType";
-import isInterface from "#utils/isInterface";
 import KRLSEmbed from "#utils/KRLSEmbed";
 import { hyperlink, userMention } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
 
@@ -93,7 +92,7 @@ export default class BotListCommand extends Command {
           });
         })
         .catch((e) => {
-          if (isInterface<AxiosError>(e, "response")) {
+          if (axios.isAxiosError(e)) {
             this.client.logger.warn(`FetchError: Bot vote list:\n${e.stack}`);
             return msg.edit({
               content: null,
@@ -138,7 +137,7 @@ export default class BotListCommand extends Command {
           });
         })
         .catch((e) => {
-          if (isInterface<AxiosError>(e, "response")) {
+          if (axios.isAxiosError(e)) {
             this.client.logger.warn(`FetchError: Bot new list:\n${e.stack}`);
             return msg.edit({
               content: null,

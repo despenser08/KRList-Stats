@@ -21,10 +21,9 @@ import ServerStatsDB from "#lib/database/models/ServerStats";
 import type { FetchResponse, RawServer, ServerOwner } from "#lib/types";
 import convert from "#utils/convertRawToType";
 import { getId } from "#utils/format";
-import isInterface from "#utils/isInterface";
 import KRLSEmbed from "#utils/KRLSEmbed";
 import * as Sentry from "@sentry/node";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Guild, Message } from "discord.js";
 
@@ -81,7 +80,7 @@ export default class ServerCollectCommand extends Command {
         return msg.edit(`1분마다 **${server.name}** 수집이 시작됩니다.`);
       })
       .catch((e) => {
-        if (isInterface<AxiosError>(e, "response")) {
+        if (axios.isAxiosError(e)) {
           switch (e.response?.status) {
             case 404:
               return msg.edit({

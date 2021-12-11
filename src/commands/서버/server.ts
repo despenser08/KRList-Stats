@@ -23,12 +23,11 @@ import convert from "#utils/convertRawToType";
 import createChart from "#utils/createChart";
 import filterStats from "#utils/filterStats";
 import { filterDesc, formatNumber, getId, lineUserText } from "#utils/format";
-import isInterface from "#utils/isInterface";
 import KRLSEmbed from "#utils/KRLSEmbed";
 import KRLSPaginator from "#utils/KRLSPaginator";
 import { hyperlink, time } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import { Guild, Message, MessageAttachment, SnowflakeUtil } from "discord.js";
 import moment from "moment-timezone";
@@ -272,7 +271,7 @@ export default class ServerCommand extends Command {
         }
       })
       .catch(async (e) => {
-        if (isInterface<AxiosError>(e, "response")) {
+        if (axios.isAxiosError(e)) {
           switch (e.response?.status) {
             case 404:
               return msg.edit({

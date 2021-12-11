@@ -18,11 +18,10 @@
 import { KoreanlistEndPoints } from "#lib/constants";
 import type { FetchListResponse, RawServer } from "#lib/types";
 import convert from "#utils/convertRawToType";
-import isInterface from "#utils/isInterface";
 import KRLSEmbed from "#utils/KRLSEmbed";
 import { hyperlink } from "@discordjs/builders";
 import * as Sentry from "@sentry/node";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Argument, Command } from "discord-akairo";
 import type { Message } from "discord.js";
 
@@ -85,7 +84,7 @@ export default class ServerSearchCommand extends Command {
           });
       })
       .catch((e) => {
-        if (isInterface<AxiosError>(e, "response")) {
+        if (axios.isAxiosError(e)) {
           switch (e.response?.status) {
             case 404:
               return msg.edit({
