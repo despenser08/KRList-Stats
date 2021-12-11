@@ -262,7 +262,14 @@ export default class BotCommand extends Command {
           });
 
           return msg.edit({
-            content: `**${bot.name}** 업타임${limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`,
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
+                .setURL(KoreanlistEndPoints.URL.bot(bot))
+                .setDescription(`업타임${limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`)
+                .setImage("attachment://chart.png")
+            ],
             files: [new MessageAttachment(chart, "chart.png")]
           });
         } else {
@@ -319,7 +326,14 @@ export default class BotCommand extends Command {
 
           return msg
             .edit({
-              content: `**${bot.name}** ${statName}${info === "votes" || limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`,
+              content: null,
+              embeds: [
+                new KRLSEmbed()
+                  .setTitle(`${bot.name}#${bot.tag} ${bot.status?.emoji}`)
+                  .setURL(KoreanlistEndPoints.URL.bot(bot))
+                  .setDescription(`${statName}${info === "votes" || limit === "quarter" ? ` ${filter.quarter}분기` : ""} 차트입니다.`)
+                  .setImage("attachment://chart.png")
+              ],
               files: [new MessageAttachment(chart, "chart.png")]
             })
             .then((resmsg) => {

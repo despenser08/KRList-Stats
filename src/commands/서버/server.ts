@@ -253,7 +253,14 @@ export default class ServerCommand extends Command {
           });
 
           return msg.edit({
-            content: `**${server.name}** ${statName} 차트입니다.`,
+            content: null,
+            embeds: [
+              new KRLSEmbed()
+                .setTitle(server.name)
+                .setURL(KoreanlistEndPoints.URL.server(server))
+                .setDescription(`${statName} 차트입니다.`)
+                .setImage("attachment://chart.png")
+            ],
             files: [new MessageAttachment(chart, "chart.png")]
           });
         }
