@@ -18,6 +18,7 @@
 import * as Sentry from "@sentry/node";
 import { Command, Listener } from "discord-akairo";
 import type { Message } from "discord.js";
+import { inspect } from "util";
 
 export default class CommandStartedListener extends Listener {
   constructor() {
@@ -34,15 +35,9 @@ export default class CommandStartedListener extends Listener {
         op: `command_${command.id}`,
         name: `명령어 - ${command.id}`,
         data: {
-          message: {
-            id: message.id,
-            content: message.content,
-            author: message.author,
-            channel: { id: message.channelId },
-            guild: { id: message.guildId }
-          },
-          command: { id: command.id },
-          args
+          message: inspect(message),
+          command: inspect(command),
+          args: inspect(args)
         }
       })
     );
