@@ -1,7 +1,5 @@
 FROM node:lts-bullseye-slim as base
 
-ENV GIT_SSL_NO_VERIFY=1
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential git libvips libcairo2-dev \
   libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \
@@ -35,4 +33,3 @@ COPY yarn.lock .
 RUN yarn install --production --frozen-lockfile && yarn cache clean
 
 CMD yarn start
-
