@@ -102,7 +102,7 @@ export async function filterDesc(text: string) {
       .get(url)
       .then((data) => {
         if (data.headers["content-type"].includes("image/svg+xml"))
-          return Buffer.from(data.data.replace(/font-family="[^"]*"/, 'font-family="Noto Sans KR"'));
+          return Buffer.from(data.data.replace(/font-family=("|')[^"']*("|')/g, 'font-family="Noto Sans KR"'));
         else return null;
       })
       .catch(() => null);
