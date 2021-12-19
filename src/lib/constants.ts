@@ -118,7 +118,7 @@ export const DiscordEndPoints = {
 };
 
 export const botDescription = "한국 디스코드 리스트의 스텟을 확인하세요.";
-export const allowDokdoCommand = ["docs", "djs"];
+export const allowDokdoCommand = ["docs", "djs", "version", "ver"];
 export enum Colors {
   PRIMARY = "#7070FB"
 }

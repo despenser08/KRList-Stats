@@ -1,5 +1,11 @@
 FROM node:lts-bullseye-slim as base
 
+ARG VERSION
+ARG REVISION
+
+ENV VERSION=$VERSION
+ENV REVISION=$REVISION
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
   build-essential git libvips libcairo2-dev \
   libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev \

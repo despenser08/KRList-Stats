@@ -16,6 +16,7 @@
  */
 
 import { botDescription, KoreanlistEndPoints } from "#lib/constants";
+import { envParseString } from "#lib/env";
 import type { FetchResponse, RawBot } from "#lib/types";
 import convert from "#utils/convertRawToType";
 import KRLSEmbed from "#utils/KRLSEmbed";
@@ -129,6 +130,7 @@ export default class HelpCommand extends Command {
                   .map((cmd) => `• **${cmd.id}** - ${cmd.description.content}`)
                   .join("\n") ?? "이 카테고리에는 명령어가 없습니다."
               )
+              .setFooter(`v${envParseString("VERSION")} • ${envParseString("REVISION").slice(0, 7)}`)
           ]
         });
 

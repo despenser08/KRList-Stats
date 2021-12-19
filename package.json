@@ -1,7 +1,8 @@
 {
   "name": "krlist-stats",
-  "version": "0.0.1",
+  "version": "2.2.8",
   "description": "Discord Bot that shows Koreanlist stats",
+  "private": true,
   "main": "dist/index.js",
   "imports": {
     "#utils/*": "./dist/lib/utils/*.js",

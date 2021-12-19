@@ -35,4 +35,7 @@ export interface KRLSEnv {
   KOREANLIST_TOKEN: string;
 
   SENTRY_DSN: string;
+
+  VERSION: string;
+  REVISION: string;
 }

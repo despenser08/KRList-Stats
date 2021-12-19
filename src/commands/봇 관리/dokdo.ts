@@ -16,7 +16,7 @@
  */
 
 import { allowDokdoCommand, CommandBlocked } from "#lib/constants";
-import { envParseArray } from "#lib/env";
+import { envParseArray, envParseString } from "#lib/env";
 import { Command } from "discord-akairo";
 import type { Message } from "discord.js";
 
@@ -27,13 +27,18 @@ export default class DokdoCommand extends Command {
       description: {
         content: "wonderlandpark님이 개발하신 디스코드 봇 디버깅 툴"
       },
-      args: [{ id: "action" }]
+      args: [{ id: "action" }, { id: "args", match: "rest" }]
     });
   }
 
   public async exec(message: Message, { action }: { action?: string }) {
-    if (action && !allowDokdoCommand.includes(action) && !envParseArray("OWNERS").includes(message.author.id))
-      return message.reply(CommandBlocked.owner);
+    if (action) {
+      if (!allowDokdoCommand.includes(action) && !envParseArray("OWNERS").includes(message.author.id)) return message.reply(CommandBlocked.owner);
+      if (action === "version" || action === "ver")
+        return message.reply(
+          `Version: \`${envParseString("VERSION")}\`\nRevision: \`${envParseString("REVISION").slice(0, 7)}\`\n(\`${envParseString("REVISION")}\`)`
+        );
+    }
 
     this.client.dokdo.options.prefix = message.util?.parsed?.prefix;
     this.client.dokdo.owners = [message.author.id];
