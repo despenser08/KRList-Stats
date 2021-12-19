@@ -15,14 +15,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Parse package.json
+        id: package-json
+        run: |
+          CONTENT=$(cat ./path/to/package.json)
+          CONTENT="${CONTENT//'%'/'%25'}"
+          CONTENT="${CONTENT//$'\n'/'%0A'}"
+          CONTENT="${CONTENT//$'\r'/'%0D'}"
+          echo "::set-output name=packageJson::$CONTENT"
+
       - name: Set Environment Variables
         run: |
           IMG=krlist-stats
           OWNER="$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')"
           echo "IMG=${IMG}" >> $GITHUB_ENV
           echo "IMAGE=ghcr.io/${OWNER}/${IMG}" >> $GITHUB_ENV
-          echo "RAW_PACKAGE=$(cat package.json)" >> $GITHUB_ENV
-          echo "VERSION=${{ fromJSON(env.RAW_PACKAGE).version }}" >> $GITHUB_ENV
+          echo "VERSION=${{ fromJSON(steps.package-json.outputs.packageJson).version }}" >> $GITHUB_ENV
 
       - name: Docker meta
         id: meta
