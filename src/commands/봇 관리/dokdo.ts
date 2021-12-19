@@ -36,7 +36,7 @@ export default class DokdoCommand extends Command {
       if (!allowDokdoCommand.includes(action) && !envParseArray("OWNERS").includes(message.author.id)) return message.reply(CommandBlocked.owner);
       if (action === "version" || action === "ver")
         return message.reply(
-          `Version: \`${envParseString("VERSION")}\`\nRevision: \`${envParseString("REVISION").slice(0, 7)}\`\n(\`${envParseString("REVISION")}\`)`
+          `Version: \`${envParseString("VERSION")}\`\nRevision: \`${envParseString("REVISION").slice(0, 7)}\` (\`${envParseString("REVISION")}\`)`
         );
     }
 

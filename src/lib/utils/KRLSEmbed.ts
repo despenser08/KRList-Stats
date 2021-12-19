@@ -16,30 +16,29 @@
  */
 
 import { Colors } from "#lib/constants";
+import { envParseString } from "#lib/env";
 import { MessageEmbed, MessageEmbedOptions } from "discord.js";
 
 export default class KRLSEmbed extends MessageEmbed {
+  public template = `해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다. • v${envParseString("VERSION")} • ${envParseString(
+    "REVISION"
+  ).slice(0, 7)}`;
+
   constructor(data?: MessageEmbed | MessageEmbedOptions) {
     super(data);
 
     if (!data) {
       this.setColor(Colors.PRIMARY);
-      super.setFooter('해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.');
+      super.setFooter(this.template);
     } else {
       this.setColor(data.color ?? Colors.PRIMARY);
 
-      if (!data.footer) super.setFooter('해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.');
-      else
-        super.setFooter(
-          data.footer.text
-            ? `${data.footer.text} • 해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.`
-            : '해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.',
-          data.footer.iconURL
-        );
+      if (!data.footer) super.setFooter(this.template);
+      else super.setFooter(data.footer.text ? `${data.footer.text} • ${this.template}` : this.template, data.footer.iconURL);
     }
   }
 
   public setFooter(text: string, iconURL?: string) {
-    return super.setFooter(`${text} • 해당 서비스는 "한국 디스코드 리스트"의 공식 서비스가 아닙니다.`, iconURL);
+    return super.setFooter(`${text} • ${this.template}`, iconURL);
   }
 }
