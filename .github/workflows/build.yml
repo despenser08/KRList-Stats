@@ -18,7 +18,7 @@ jobs:
       - name: Parse package.json
         id: package-json
         run: |
-          CONTENT=$(cat ./path/to/package.json)
+          CONTENT=$(cat package.json)
           CONTENT="${CONTENT//'%'/'%25'}"
           CONTENT="${CONTENT//$'\n'/'%0A'}"
           CONTENT="${CONTENT//$'\r'/'%0D'}"
