@@ -42,7 +42,7 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}},value=v${{ env.VERSION }}
-            type=sha
+            type=raw,value={{sha}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
