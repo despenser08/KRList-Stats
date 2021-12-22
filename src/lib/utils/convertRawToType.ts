@@ -47,7 +47,9 @@ function bot(bot: RawBot): Bot {
           emoji: BotStatusEmojiEnum[bot.status]
         }
       : undefined,
-    state: BotState[bot.state]
+    state: BotState[bot.state],
+    url: bot.url ? encodeURI(bot.url) : undefined,
+    discord: bot.discord ? encodeURI(`https://discord.gg/${bot.discord}`) : undefined
   };
 }
 
@@ -57,7 +59,8 @@ function server(server: RawServer): Server {
     flags: new ServerFlags(server.flags),
     owner: server.owner ? serverOwner(server.owner) : undefined,
     bots: server.bots.map((raw) => serverBot(raw)),
-    state: ServerState[server.state]
+    state: ServerState[server.state],
+    invite: encodeURI(`https://discord.gg/${server.invite}`)
   };
 }
 

@@ -160,7 +160,7 @@ export default class BotCommand extends Command {
                     .addField("플래그", flags.length > 0 ? flags.map((flag) => BotFlagsEnum[flag]).join(", ") : "없음", flags.length < 1)
                     .addField("카테고리", bot.category.length > 0 ? bot.category.join(", ") : "없음", flags.length < 1)
                     .addField("관리자", bot.owners.map((owner) => lineUserText(owner)).join("\n"))
-                    .addField("디스코드", bot.discord ? `https://discord.gg/${bot.discord}` : "없음", !bot.discord)
+                    .addField("디스코드", bot.discord ? bot.discord : "없음", !bot.discord)
                     .addField("웹사이트", bot.web ?? "없음", !bot.web)
                     .addField("Git", bot.git ?? "없음", !bot.git)
                     .setImage(

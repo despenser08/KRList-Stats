@@ -85,35 +85,28 @@ export default class HelpCommand extends Command {
         : null;
 
       const paginator = new KRLSPaginator();
+      const actionRow = new MessageActionRow();
 
-      if (clientbot)
-        paginator.setActionRows([
-          new MessageActionRow().addComponents(
-            new MessageButton().setURL(KoreanlistEndPoints.URL.botVote(clientbot)).setEmoji("❤️").setLabel("하트 추가").setStyle("LINK"),
-            new MessageButton()
-              .setURL(`https://discord.gg/${clientbot.discord}`)
-              .setEmoji("911823414623367188")
-              .setLabel("서포트 서버")
-              .setStyle("LINK"),
-            // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
-            new MessageButton()
-              .setURL("https://github.com/despenser08/KRList-Stats")
-              .setEmoji("900808324667301919")
-              .setLabel("KRList-Stats GitHub")
-              .setStyle("LINK")
-          )
-        ]);
-      else
-        paginator.setActionRows([
-          new MessageActionRow().addComponents(
-            // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
-            new MessageButton()
-              .setURL("https://github.com/despenser08/KRList-Stats")
-              .setEmoji("900808324667301919")
-              .setLabel("KRList-Stats GitHub")
-              .setStyle("LINK")
-          )
-        ]);
+      if (clientbot) {
+        actionRow.addComponents(
+          new MessageButton().setURL(KoreanlistEndPoints.URL.botVote(clientbot)).setEmoji("❤️").setLabel("하트 추가").setStyle("LINK")
+        );
+        if (clientbot.discord)
+          actionRow.addComponents(
+            new MessageButton().setURL(clientbot.discord).setEmoji("911823414623367188").setLabel("서포트 서버").setStyle("LINK")
+          );
+      }
+
+      // PLEASE DO NOT REMOVE OR EDIT THIS BUTTON CODE; This button is for show credits
+      actionRow.addComponents(
+        new MessageButton()
+          .setURL("https://github.com/despenser08/KRList-Stats")
+          .setEmoji("900808324667301919")
+          .setLabel("KRList-Stats GitHub")
+          .setStyle("LINK")
+      );
+
+      paginator.setActionRows([actionRow]);
 
       for (const category of this.handler.categories.values())
         paginator.addPage({

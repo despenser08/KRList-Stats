@@ -124,7 +124,7 @@ export default class UserCommand extends Command {
                   .setTitle(`${server.name} (서버)`)
                   .setURL(KoreanlistEndPoints.URL.server(server))
                   .setDescription(
-                    `https://discord.gg/${server.invite}\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(server))} | ${hyperlink(
+                    `${server.invite}\n${hyperlink("하트 추가", KoreanlistEndPoints.URL.serverVote(server))} | ${hyperlink(
                       "신고하기",
                       KoreanlistEndPoints.URL.serverReport(server)
                     )}`
