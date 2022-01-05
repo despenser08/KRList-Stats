@@ -47,7 +47,7 @@
     "mongoose": "^6.1.5",
     "node-schedule": "^2.1.0",
     "sharp": "^0.29.3",
-    "table": "^6.7.5",
+    "table": "^6.8.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
