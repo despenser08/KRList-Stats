@@ -35,7 +35,7 @@
     "@sentry/tracing": "^6.16.1",
     "@typegoose/typegoose": "^9.5.0",
     "axios": "^0.25.0",
-    "chart.js": "^3.7.0",
+    "chart.js": "^3.7.1",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.0.0",
     "discord-akairo": "discord-akairo/discord-akairo",
