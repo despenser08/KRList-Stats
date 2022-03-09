@@ -48,7 +48,7 @@
     "node-schedule": "^2.1.0",
     "sharp": "^0.30.2",
     "table": "^6.8.0",
-    "winston": "^3.4.0",
+    "winston": "^3.6.0",
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
