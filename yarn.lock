@@ -113,10 +113,10 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.1.9.tgz#ce69611c8753c4affd905a7ef43061c7eb95c01b"
   integrity sha512-CbXaGwwlEMq+l1TRu01FJCvySJ1CEFKFclHT48nIfNeZXaAAmmwwy7scUKmYHPUa3GhoMp6Qr1B3eAJux6XgOQ==
 
-"@sapphire/ts-config@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/ts-config/-/ts-config-3.3.2.tgz#8cc2f31832f53a22d579a572fb3c647b24ec5040"
-  integrity sha512-NbM+Pdx+jY4MfdlRGOMzVFjZHZlmsBUvWEKEWMKjopvTndvxyP9gHJwYu73bDkGu9JxuahtnpOGs6Zle4BhmUg==
+"@sapphire/ts-config@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/ts-config/-/ts-config-3.3.3.tgz#c8c74db8fc8f1a0e7175a431ba53b2a746f8b736"
+  integrity sha512-pL0Il7dOMspwOfScGMsdW+Qv3gKYrrEoLUdxHHTiuSqt9J4Oz+B5ezT3+HSorP/t3g8vYdbsB0zlfFvnVcJmSw==
   dependencies:
     tslib "^2.3.1"
     typescript "^4.6.2"
