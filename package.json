@@ -30,7 +30,7 @@
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
     "@sapphire/ts-config": "^3.3.3",
-    "@sapphire/utilities": "^3.6.0",
+    "@sapphire/utilities": "^3.6.1",
     "@sentry/node": "^6.18.2",
     "@sentry/tracing": "^6.18.2",
     "@typegoose/typegoose": "^9.7.0",

@@ -121,10 +121,10 @@
     tslib "^2.3.1"
     typescript "^4.6.2"
 
-"@sapphire/utilities@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.6.0.tgz#8e5bb26fdf17bcb0111cbea2cc6624b86a2d1694"
-  integrity sha512-zpMM5xNitahW0lMrbOyXFk4BTSgV39Yqhrc7dgJBm6ZXXdBEO8YGWWEOL8GpdDHcxzl0KnHqgsdZEZURXVXauw==
+"@sapphire/utilities@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.6.1.tgz#dff636c3f767b1cbab7c1ca7d18d021dd1742355"
+  integrity sha512-pV5q7Qj0TS5hspfP+TFHyLll4icz5dI4qWCHek6p/rA5ApeZ2yTzzlC1oJKCfpmj0+e9mWWoV8mxsWiNAf1Tkg==
 
 "@sentry/core@6.18.2":
   version "6.18.2"
