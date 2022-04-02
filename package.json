@@ -29,7 +29,7 @@
   "homepage": "https://github.com/despenser08/KRList-Stats#readme",
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
-    "@sapphire/ts-config": "^3.3.3",
+    "@sapphire/ts-config": "^3.3.4",
     "@sapphire/utilities": "^3.6.1",
     "@sentry/node": "^6.19.3",
     "@sentry/tracing": "^6.19.3",
