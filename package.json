@@ -46,7 +46,7 @@
     "moment-timezone": "^0.5.34",
     "mongoose": "^6.3.0",
     "node-schedule": "^2.1.0",
-    "sharp": "^0.30.3",
+    "sharp": "^0.30.4",
     "table": "^6.8.0",
     "winston": "^3.7.1",
     "winston-daily-rotate-file": "^4.6.1"
