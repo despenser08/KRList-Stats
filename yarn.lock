@@ -209,10 +209,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
 
-"@typegoose/typegoose@^9.8.0":
-  version "9.8.0"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.8.0.tgz#2813f04a282cf6fefe7b213bbb22e8798560ffa1"
-  integrity sha512-YMwyy2jHMVy4T9cIdwpNcg4VmBsGe7ijIsSJz1hDxmYo4JeXhqCPl4fS1+rig4bXCYIupCiBujLdVp385FJdOQ==
+"@typegoose/typegoose@^9.8.1":
+  version "9.8.1"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.8.1.tgz#0160ffed706c47195f3971bceb8af2f98ad9f3c7"
+  integrity sha512-7m9ydYlzOSwxgFRWOrUK/wiNb1GBHLaztGQBkWsiGIIy4P2AmiHKKlwB34DaQEtvwWa8MxEDXtUWA04a3KSFjg==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.8.0"
