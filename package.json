@@ -33,7 +33,7 @@
     "@sapphire/utilities": "^3.6.2",
     "@sentry/node": "^6.19.6",
     "@sentry/tracing": "^6.19.6",
-    "@typegoose/typegoose": "^9.8.0",
+    "@typegoose/typegoose": "^9.8.1",
     "axios": "^0.26.1",
     "chart.js": "^3.7.1",
     "chartjs-node-canvas": "^4.1.6",
