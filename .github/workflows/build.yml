@@ -45,7 +45,7 @@ jobs:
             type=raw,value={{sha}}
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v1
