@@ -46,7 +46,7 @@
     "moment-timezone": "^0.5.34",
     "mongoose": "^6.3.2",
     "node-schedule": "^2.1.0",
-    "sharp": "^0.30.4",
+    "sharp": "^0.30.7",
     "table": "^6.8.0",
     "winston": "^3.7.1",
     "winston-daily-rotate-file": "^4.6.1"
@@ -55,7 +55,7 @@
     "@types/marked": "^4.0.3",
     "@types/node": "^16.11.45",
     "@types/node-schedule": "^2.1.0",
-    "@types/sharp": "^0.30.2",
+    "@types/sharp": "^0.30.4",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.14.0",
