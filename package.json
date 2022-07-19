@@ -44,7 +44,7 @@
     "dokdo": "^0.5.1",
     "marked": "^4.0.18",
     "moment-timezone": "^0.5.34",
-    "mongoose": "^6.3.2",
+    "mongoose": "^6.4.5",
     "node-schedule": "^2.1.0",
     "sharp": "^0.30.7",
     "table": "^6.8.0",
