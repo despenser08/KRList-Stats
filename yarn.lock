@@ -206,16 +206,16 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.2.0.tgz#667bfc6186ae7c9e0b45a08960c551437176e1ca"
   integrity sha512-VkE3KLBmJwcCaVARtQpfuKcKv8gcBmUubrfHGF84dXuuW6jgsRYxPtzcIhPyK9WAPpRt2/xY6zkD9MnRaJzSyw==
 
-"@typegoose/typegoose@^9.8.1":
-  version "9.8.1"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.8.1.tgz#0160ffed706c47195f3971bceb8af2f98ad9f3c7"
-  integrity sha512-7m9ydYlzOSwxgFRWOrUK/wiNb1GBHLaztGQBkWsiGIIy4P2AmiHKKlwB34DaQEtvwWa8MxEDXtUWA04a3KSFjg==
+"@typegoose/typegoose@^9.10.1":
+  version "9.10.1"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.10.1.tgz#34561ecdc00fbceff9565f65651765ae616f2cec"
+  integrity sha512-wHThVHSKNrCAWcasiBrN0hDDN3JRVJmRCHueyungRf/KexFArK/asqffllXSaAXKb1APrJbGGxEWueZR0z9fpw==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.8.0"
     reflect-metadata "^0.1.13"
     semver "^7.3.7"
-    tslib "^2.3.1"
+    tslib "^2.4.0"
 
 "@types/json-schema@^7.0.9":
   version "7.0.9"
