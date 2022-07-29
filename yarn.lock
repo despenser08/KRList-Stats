@@ -27,13 +27,13 @@
     tslib "^2.3.1"
     zod "^3.11.6"
 
-"@discordjs/builders@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-0.16.0.tgz#3201f57fa57c4dd77aebb480cf47da77b7ba2e8c"
-  integrity sha512-9/NCiZrLivgRub2/kBc0Vm5pMBE5AUdYbdXsLu/yg9ANgvnaJ0bZKTY8yYnLbsEc/LYUP79lEIdC73qEYhWq7A==
+"@discordjs/builders@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-1.1.0.tgz#4366a4fe069238c3e6e674b74404c79f3ba76525"
+  integrity sha512-EO8TSltiIc9Z1wE854wAFvv5AccqEtvjFmao9PPoxQhRaJ0hEb7FwWRTCA1jGg4ZWI3hcp4m+RET5ufZQz3rOg==
   dependencies:
     "@sapphire/shapeshift" "^3.5.1"
-    discord-api-types "^0.36.2"
+    discord-api-types "^0.36.3"
     fast-deep-equal "^3.1.3"
     ts-mixer "^6.0.1"
     tslib "^2.4.0"
@@ -777,10 +777,10 @@ discord-api-types@^0.25.2:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.25.2.tgz#e50ed152e6d48fe7963f5de1002ca6f2df57c61b"
   integrity sha512-O243LXxb5gLLxubu5zgoppYQuolapGVWPw3ll0acN0+O8TnPUE2kFp9Bt3sTRYodw8xFIknOVxjSeyWYBpVcEQ==
 
-discord-api-types@^0.36.2:
-  version "0.36.2"
-  resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.36.2.tgz#2362bc544837be965ec99a5919f900c9699a7028"
-  integrity sha512-TunPAvzwneK/m5fr4hxH3bMsrtI22nr9yjfHyo5NBGMjpsAauGNiGCmwoFf0oO3jSd2mZiKUvZwCKDaB166u2Q==
+discord-api-types@^0.36.3:
+  version "0.36.3"
+  resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.36.3.tgz#a931b7e57473a5c971d6937fa5f392eb30047579"
+  integrity sha512-bz/NDyG0KBo/tY14vSkrwQ/n3HKPf87a0WFW/1M9+tXYK+vp5Z5EksawfCWo2zkAc6o7CClc0eff1Pjrqznlwg==
 
 discord.js@^13.4.0:
   version "13.4.0"
