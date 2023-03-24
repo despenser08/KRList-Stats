@@ -45,7 +45,7 @@
     "marked": "^4.0.18",
     "moment-timezone": "^0.5.42",
     "mongoose": "^6.4.5",
-    "node-schedule": "^2.1.0",
+    "node-schedule": "^2.1.1",
     "sharp": "^0.30.7",
     "table": "^6.8.0",
     "winston": "^3.8.1",
